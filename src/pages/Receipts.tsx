@@ -1,12 +1,30 @@
-import { useState } from 'react';
-import { evidence, issues } from '@/data/seedData';
+import { useState, useEffect } from 'react';
 import { FileText, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Receipts() {
   const [filterIssue, setFilterIssue] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'newest' | 'featured'>('newest');
+  const [evidence, setEvidence] = useState<any[]>([]);
+  const [issues, setIssues] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const [evidenceData, issuesData] = await Promise.all([
+      supabase.from('evidence').select('*, issues(title, slug)').order('date_of_doc', { ascending: false }),
+      supabase.from('issues').select('id, title, slug'),
+    ]);
+
+    setEvidence(evidenceData.data || []);
+    setIssues(issuesData.data || []);
+    setLoading(false);
+  };
   
   let filteredEvidence = [...evidence];
   
@@ -25,6 +43,14 @@ export default function Receipts() {
   } else {
     filteredEvidence.sort((a, b) => Number(b.featured) - Number(a.featured));
   }
+
+  if (loading) {
+    return (
+      <div className="container px-4 py-12">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
   
   return (
     <div className="container px-4 py-12">
@@ -42,31 +68,33 @@ export default function Receipts() {
           <span>Filter by:</span>
         </div>
         
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setFilterIssue(null)}
-            className={`text-xs px-3 py-1.5 rounded font-mono transition-colors ${
-              !filterIssue
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-            }`}
-          >
-            All Issues
-          </button>
-          {issues.map(issue => (
+        {issues.length > 0 && (
+          <div className="flex flex-wrap gap-2">
             <button
-              key={issue.id}
-              onClick={() => setFilterIssue(issue.id)}
+              onClick={() => setFilterIssue(null)}
               className={`text-xs px-3 py-1.5 rounded font-mono transition-colors ${
-                filterIssue === issue.id
+                !filterIssue
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
               }`}
             >
-              {issue.title}
+              All Issues
             </button>
-          ))}
-        </div>
+            {issues.map(issue => (
+              <button
+                key={issue.id}
+                onClick={() => setFilterIssue(issue.id)}
+                className={`text-xs px-3 py-1.5 rounded font-mono transition-colors ${
+                  filterIssue === issue.id
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                }`}
+              >
+                {issue.title}
+              </button>
+            ))}
+          </div>
+        )}
         
         <div className="flex flex-wrap gap-2">
           <button
@@ -79,7 +107,7 @@ export default function Receipts() {
           >
             All Types
           </button>
-          {(['image', 'pdf'] as const).map(type => (
+          {(['image', 'pdf', 'url'] as const).map(type => (
             <button
               key={type}
               onClick={() => setFilterType(type)}
@@ -120,61 +148,71 @@ export default function Receipts() {
       
       {/* Evidence Grid */}
       <div className="grid gap-4 md:grid-cols-2">
-        {filteredEvidence.map(ev => {
-          const relatedIssue = issues.find(i => i.id === ev.issue_ref);
-          
-          return (
-            <div
-              key={ev.id}
-              className="bg-card border border-border rounded-lg p-5 hover-lift hover:glow-orange transition-all"
-            >
-              <div className="flex items-start gap-3 mb-3">
-                <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-bold">{ev.title}</h3>
-                    {ev.featured && (
-                      <span className="text-xs px-2 py-0.5 rounded bg-alert/20 text-alert-foreground font-mono">
-                        Featured
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">{ev.caption}</p>
-                  {ev.file && (
-                    <img
-                      src={ev.file}
-                      alt={ev.title}
-                      className="rounded border border-border w-full mb-3"
-                    />
-                  )}
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>{new Date(ev.date_of_doc).toLocaleDateString()}</span>
-                    {relatedIssue && (
-                      <Link
-                        to={`/issues/${relatedIssue.slug}`}
-                        className="text-primary hover:underline font-mono"
-                      >
-                        #{relatedIssue.slug}
-                      </Link>
-                    )}
-                  </div>
-                  {ev.redacted && (
-                    <div className="mt-2">
-                      <span className="text-xs px-2 py-1 rounded bg-destructive/20 text-destructive font-mono">
-                        REDACTED
-                      </span>
-                    </div>
+        {filteredEvidence.map(ev => (
+          <div
+            key={ev.id}
+            className="bg-card border border-border rounded-lg p-5 hover-lift hover:glow-orange transition-all"
+          >
+            <div className="flex items-start gap-3 mb-3">
+              <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
+              <div className="flex-1">
+                <div className="flex items-start justify-between mb-2">
+                  <h3 className="font-bold">{ev.title}</h3>
+                  {ev.featured && (
+                    <span className="text-xs px-2 py-0.5 rounded bg-alert/20 text-alert-foreground font-mono">
+                      Featured
+                    </span>
                   )}
                 </div>
+                <p className="text-sm text-muted-foreground mb-3">{ev.caption}</p>
+                {ev.file && (
+                  <img
+                    src={ev.file}
+                    alt={ev.title}
+                    className="rounded border border-border w-full mb-3"
+                  />
+                )}
+                {ev.external_url && (
+                  <a
+                    href={ev.external_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary hover:underline block mb-3"
+                  >
+                    View external link →
+                  </a>
+                )}
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{new Date(ev.date_of_doc).toLocaleDateString()}</span>
+                  {ev.issues && (
+                    <Link
+                      to={`/issues/${ev.issues.slug}`}
+                      className="text-primary hover:underline font-mono"
+                    >
+                      #{ev.issues.slug}
+                    </Link>
+                  )}
+                </div>
+                {ev.redacted && (
+                  <div className="mt-2">
+                    <span className="text-xs px-2 py-1 rounded bg-destructive/20 text-destructive font-mono">
+                      REDACTED
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
       
       {filteredEvidence.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No evidence found matching your filters.</p>
+          <p className="text-muted-foreground">
+            {evidence.length === 0 
+              ? 'No evidence yet. Check back soon!' 
+              : 'No evidence found matching your filters.'}
+          </p>
         </div>
       )}
     </div>

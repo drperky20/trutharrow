@@ -1,5 +1,6 @@
-import { Grade } from '@/types';
 import { cn } from '@/lib/utils';
+
+type Grade = 'A' | 'B' | 'C' | 'D' | 'F';
 
 const gradeColors: Record<Grade, string> = {
   A: 'bg-success text-background',
@@ -18,12 +19,14 @@ const gradeLabels: Record<Grade, string> = {
 };
 
 interface GradeBadgeProps {
-  grade: Grade;
+  grade: string;
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
 }
 
 export const GradeBadge = ({ grade, size = 'md', showLabel = false }: GradeBadgeProps) => {
+  const validGrade = (grade as Grade) in gradeColors ? (grade as Grade) : 'C';
+  
   const sizeClasses = {
     sm: 'text-xs px-2 py-1',
     md: 'text-sm px-3 py-1.5',
@@ -34,12 +37,12 @@ export const GradeBadge = ({ grade, size = 'md', showLabel = false }: GradeBadge
     <span
       className={cn(
         'inline-flex items-center gap-2 rounded-full font-bold font-mono',
-        gradeColors[grade],
+        gradeColors[validGrade],
         sizeClasses[size]
       )}
     >
-      <span>{grade}</span>
-      {showLabel && <span className="font-normal">{gradeLabels[grade]}</span>}
+      <span>{validGrade}</span>
+      {showLabel && <span className="font-normal">{gradeLabels[validGrade]}</span>}
     </span>
   );
 };

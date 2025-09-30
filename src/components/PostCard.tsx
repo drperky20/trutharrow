@@ -1,20 +1,5 @@
-import { Post } from '@/types';
 import { ThumbsUp, Laugh, Angry, MessageCircle, Repeat2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const typeLabels: Record<Post['type'], string> = {
-  'assignment': 'Assignment',
-  'detention-slip': 'Detention Slip',
-  'pop-quiz': 'Pop Quiz',
-  'announcement': 'Announcement',
-};
-
-const typeBadgeColors: Record<Post['type'], string> = {
-  'assignment': 'bg-primary/20 text-primary',
-  'detention-slip': 'bg-destructive/20 text-destructive',
-  'pop-quiz': 'bg-alert/20 text-alert-foreground',
-  'announcement': 'bg-secondary text-secondary-foreground',
-};
 
 interface PostCardProps {
   post: any;

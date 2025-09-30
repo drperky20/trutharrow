@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
-import { issues, evidence, timeline } from '@/data/seedData';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { GradeBadge } from '@/components/GradeBadge';
 import { Button } from '@/components/ui/button';
 import { FileText, ExternalLink, Calendar, AlertCircle } from 'lucide-react';
@@ -7,21 +8,58 @@ import { IssueCard } from '@/components/IssueCard';
 
 export default function IssueDetail() {
   const { slug } = useParams();
-  const issue = issues.find(i => i.slug === slug);
+  const [issue, setIssue] = useState<any>(null);
+  const [evidence, setEvidence] = useState<any[]>([]);
+  const [timeline, setTimeline] = useState<any[]>([]);
+  const [relatedIssues, setRelatedIssues] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   
+  useEffect(() => {
+    fetchIssueData();
+  }, [slug]);
+
+  const fetchIssueData = async () => {
+    const { data: issueData } = await supabase
+      .from('issues')
+      .select('*')
+      .eq('slug', slug)
+      .maybeSingle();
+    
+    if (!issueData) {
+      setLoading(false);
+      return;
+    }
+
+    setIssue(issueData);
+
+    const [evidenceData, timelineData, relatedData] = await Promise.all([
+      supabase.from('evidence').select('*').eq('issue_ref', issueData.id).order('date_of_doc', { ascending: false }),
+      supabase.from('timeline').select('*').eq('issue_ref', issueData.id).order('date', { ascending: false }),
+      supabase.from('issues').select('*').neq('id', issueData.id).limit(3),
+    ]);
+
+    setEvidence(evidenceData.data || []);
+    setTimeline(timelineData.data || []);
+    setRelatedIssues(relatedData.data || []);
+    setLoading(false);
+  };
+  
+  if (loading) {
+    return (
+      <div className="container px-4 py-12">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
   if (!issue) {
     return (
       <div className="container px-4 py-12">
         <p>Issue not found.</p>
+        <Link to="/issues" className="text-primary hover:underline">← Back to Issues</Link>
       </div>
     );
   }
-  
-  const issueEvidence = evidence.filter(e => e.issue_ref === issue.id);
-  const issueTimeline = timeline
-    .filter(t => t.issue_ref === issue.id)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  const relatedIssues = issues.filter(i => i.id !== issue.id).slice(0, 3);
   
   return (
     <div className="container px-4 py-12">
@@ -30,16 +68,18 @@ export default function IssueDetail() {
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <h1 className="text-4xl md:text-5xl font-black mb-4">{issue.title}</h1>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {issue.tags.map(tag => (
-                <span
-                  key={tag}
-                  className="text-xs px-2 py-1 rounded bg-secondary text-secondary-foreground font-mono"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
+            {issue.tags && issue.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                {issue.tags.map((tag: string) => (
+                  <span
+                    key={tag}
+                    className="text-xs px-2 py-1 rounded bg-secondary text-secondary-foreground font-mono"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
           <GradeBadge grade={issue.grade} size="lg" showLabel />
         </div>
@@ -72,78 +112,82 @@ export default function IssueDetail() {
       </div>
       
       {/* Evidence */}
-      <section className="mb-12">
-        <h2 className="text-3xl font-black mb-6">Evidence ({issueEvidence.length})</h2>
-        <div className="space-y-4">
-          {issueEvidence.map(ev => (
-            <div key={ev.id} className="bg-card border border-border rounded-lg p-5 hover-lift hover:glow-orange transition-all">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-start gap-3 flex-1">
-                  <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
-                  <div className="flex-1">
-                    <h3 className="font-bold mb-1">{ev.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-2">{ev.caption}</p>
-                    {ev.file && (
-                      <img
-                        src={ev.file}
-                        alt={ev.title}
-                        className="rounded border border-border w-full max-w-2xl mt-3"
-                      />
+      {evidence.length > 0 && (
+        <section className="mb-12">
+          <h2 className="text-3xl font-black mb-6">Evidence ({evidence.length})</h2>
+          <div className="space-y-4">
+            {evidence.map(ev => (
+              <div key={ev.id} className="bg-card border border-border rounded-lg p-5 hover-lift hover:glow-orange transition-all">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-start gap-3 flex-1">
+                    <FileText className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-1" />
+                    <div className="flex-1">
+                      <h3 className="font-bold mb-1">{ev.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-2">{ev.caption}</p>
+                      {ev.file && (
+                        <img
+                          src={ev.file}
+                          alt={ev.title}
+                          className="rounded border border-border w-full max-w-2xl mt-3"
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {ev.redacted && (
+                      <span className="text-xs px-2 py-1 rounded bg-alert/20 text-alert-foreground font-mono">
+                        REDACTED
+                      </span>
                     )}
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(ev.date_of_doc).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {ev.redacted && (
-                    <span className="text-xs px-2 py-1 rounded bg-alert/20 text-alert-foreground font-mono">
-                      REDACTED
-                    </span>
-                  )}
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(ev.date_of_doc).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-              {ev.external_url && (
-                <a
-                  href={ev.external_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-                >
-                  <ExternalLink className="h-3 w-3" />
-                  Open original
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-      
-      {/* Timeline */}
-      <section className="mb-12">
-        <h2 className="text-3xl font-black mb-6">Timeline</h2>
-        <div className="space-y-4">
-          {issueTimeline.map((entry, idx) => (
-            <div key={entry.id} className="flex gap-4">
-              <div className="flex flex-col items-center">
-                <div className="w-3 h-3 rounded-full bg-primary flex-shrink-0" />
-                {idx < issueTimeline.length - 1 && (
-                  <div className="w-0.5 h-full bg-border mt-2" />
+                {ev.external_url && (
+                  <a
+                    href={ev.external_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    Open original
+                  </a>
                 )}
               </div>
-              <div className="flex-1 pb-8">
-                <div className="flex items-center gap-2 mb-1">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-mono text-muted-foreground">
-                    {new Date(entry.date).toLocaleDateString()}
-                  </span>
+            ))}
+          </div>
+        </section>
+      )}
+      
+      {/* Timeline */}
+      {timeline.length > 0 && (
+        <section className="mb-12">
+          <h2 className="text-3xl font-black mb-6">Timeline</h2>
+          <div className="space-y-4">
+            {timeline.map((entry, idx) => (
+              <div key={entry.id} className="flex gap-4">
+                <div className="flex flex-col items-center">
+                  <div className="w-3 h-3 rounded-full bg-primary flex-shrink-0" />
+                  {idx < timeline.length - 1 && (
+                    <div className="w-0.5 h-full bg-border mt-2" />
+                  )}
                 </div>
-                <p className="font-medium">{entry.note}</p>
+                <div className="flex-1 pb-8">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm font-mono text-muted-foreground">
+                      {new Date(entry.date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="font-medium">{entry.note}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
       
       {/* Take Action */}
       <section className="mb-12">

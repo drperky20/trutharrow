@@ -2,14 +2,35 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Search as SearchIcon } from 'lucide-react';
-import { issues, posts, evidence } from '@/data/seedData';
 import { IssueCard } from '@/components/IssueCard';
 import { PostCard } from '@/components/PostCard';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') || '');
   const [activeTab, setActiveTab] = useState<'all' | 'issues' | 'posts' | 'evidence'>('all');
+  const [issues, setIssues] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [evidence, setEvidence] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  
+  const fetchData = async () => {
+    const [issuesData, postsData, evidenceData] = await Promise.all([
+      supabase.from('issues').select('*'),
+      supabase.from('posts').select('*, profiles(alias)').eq('status', 'approved'),
+      supabase.from('evidence').select('*'),
+    ]);
+
+    setIssues(issuesData.data || []);
+    setPosts(postsData.data || []);
+    setEvidence(evidenceData.data || []);
+    setLoading(false);
+  };
   
   useEffect(() => {
     if (query) {
@@ -22,14 +43,12 @@ export default function Search() {
   const matchedIssues = issues.filter(
     i => i.title.toLowerCase().includes(searchQuery) || 
          i.summary.toLowerCase().includes(searchQuery) ||
-         i.tags.some(t => t.toLowerCase().includes(searchQuery))
+         (i.tags && i.tags.some((t: string) => t.toLowerCase().includes(searchQuery)))
   );
   
   const matchedPosts = posts.filter(
-    p => p.status === 'approved' && (
-      p.content.toLowerCase().includes(searchQuery) ||
-      p.type.toLowerCase().includes(searchQuery)
-    )
+    p => p.content.toLowerCase().includes(searchQuery) ||
+         p.type.toLowerCase().includes(searchQuery)
   );
   
   const matchedEvidence = evidence.filter(
@@ -38,6 +57,14 @@ export default function Search() {
   );
   
   const hasResults = matchedIssues.length > 0 || matchedPosts.length > 0 || matchedEvidence.length > 0;
+
+  if (loading) {
+    return (
+      <div className="container px-4 py-12">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
   
   return (
     <div className="container px-4 py-12">

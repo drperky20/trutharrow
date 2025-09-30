@@ -1,21 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { IssueCard } from '@/components/IssueCard';
-import { issues } from '@/data/seedData';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Issues() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [issues, setIssues] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchIssues();
+  }, []);
+
+  const fetchIssues = async () => {
+    const { data } = await supabase
+      .from('issues')
+      .select('*')
+      .order('last_updated', { ascending: false });
+    setIssues(data || []);
+    setLoading(false);
+  };
   
-  const allTags = Array.from(new Set(issues.flatMap(i => i.tags)));
+  const allTags = Array.from(new Set(issues.flatMap(i => i.tags || [])));
   
   const filteredIssues = issues.filter(issue => {
     const matchesSearch = issue.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          issue.summary.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTag = !selectedTag || issue.tags.includes(selectedTag);
+    const matchesTag = !selectedTag || (issue.tags && issue.tags.includes(selectedTag));
     return matchesSearch && matchesTag;
   });
+
+  if (loading) {
+    return (
+      <div className="container px-4 py-12">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
   
   return (
     <div className="container px-4 py-12">
@@ -38,31 +61,33 @@ export default function Issues() {
           />
         </div>
         
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setSelectedTag(null)}
-            className={`text-xs px-3 py-1.5 rounded font-mono transition-colors ${
-              !selectedTag
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-            }`}
-          >
-            All
-          </button>
-          {allTags.map(tag => (
+        {allTags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
             <button
-              key={tag}
-              onClick={() => setSelectedTag(tag)}
+              onClick={() => setSelectedTag(null)}
               className={`text-xs px-3 py-1.5 rounded font-mono transition-colors ${
-                selectedTag === tag
+                !selectedTag
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
               }`}
             >
-              #{tag}
+              All
             </button>
-          ))}
-        </div>
+            {allTags.map(tag => (
+              <button
+                key={tag}
+                onClick={() => setSelectedTag(tag)}
+                className={`text-xs px-3 py-1.5 rounded font-mono transition-colors ${
+                  selectedTag === tag
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                }`}
+              >
+                #{tag}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       
       {/* Issues Grid */}
@@ -74,7 +99,11 @@ export default function Issues() {
       
       {filteredIssues.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No issues found matching your criteria.</p>
+          <p className="text-muted-foreground">
+            {issues.length === 0 
+              ? 'No issues yet. Check back soon!' 
+              : 'No issues found matching your criteria.'}
+          </p>
         </div>
       )}
     </div>
