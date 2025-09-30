@@ -14,16 +14,309 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      banners: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          id: string
+          severity: Database["public"]["Enums"]["severity_type"]
+          title: string
+          url: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          severity: Database["public"]["Enums"]["severity_type"]
+          title: string
+          url?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          severity?: Database["public"]["Enums"]["severity_type"]
+          title?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      evidence: {
+        Row: {
+          caption: string
+          created_at: string | null
+          date_of_doc: string
+          external_url: string | null
+          featured: boolean | null
+          file: string | null
+          id: string
+          issue_ref: string | null
+          redacted: boolean | null
+          sensitivity: string | null
+          title: string
+          type: Database["public"]["Enums"]["evidence_type"]
+        }
+        Insert: {
+          caption: string
+          created_at?: string | null
+          date_of_doc: string
+          external_url?: string | null
+          featured?: boolean | null
+          file?: string | null
+          id?: string
+          issue_ref?: string | null
+          redacted?: boolean | null
+          sensitivity?: string | null
+          title: string
+          type: Database["public"]["Enums"]["evidence_type"]
+        }
+        Update: {
+          caption?: string
+          created_at?: string | null
+          date_of_doc?: string
+          external_url?: string | null
+          featured?: boolean | null
+          file?: string | null
+          id?: string
+          issue_ref?: string | null
+          redacted?: boolean | null
+          sensitivity?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["evidence_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidence_issue_ref_fkey"
+            columns: ["issue_ref"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      issues: {
+        Row: {
+          created_at: string | null
+          grade: string
+          hero_image: string | null
+          id: string
+          last_updated: string | null
+          slug: string
+          summary: string
+          tags: string[] | null
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          grade: string
+          hero_image?: string | null
+          id?: string
+          last_updated?: string | null
+          slug: string
+          summary: string
+          tags?: string[] | null
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          grade?: string
+          hero_image?: string | null
+          id?: string
+          last_updated?: string | null
+          slug?: string
+          summary?: string
+          tags?: string[] | null
+          title?: string
+        }
+        Relationships: []
+      }
+      polls: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          id: string
+          options: string[]
+          question: string
+          results: Json | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          options: string[]
+          question: string
+          results?: Json | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          options?: string[]
+          question?: string
+          results?: Json | null
+        }
+        Relationships: []
+      }
+      posts: {
+        Row: {
+          content: string
+          created_at: string | null
+          featured: boolean | null
+          id: string
+          images: string[] | null
+          issue_refs: string[] | null
+          reactions: Json | null
+          status: string | null
+          type: Database["public"]["Enums"]["post_type"]
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          featured?: boolean | null
+          id?: string
+          images?: string[] | null
+          issue_refs?: string[] | null
+          reactions?: Json | null
+          status?: string | null
+          type: Database["public"]["Enums"]["post_type"]
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          featured?: boolean | null
+          id?: string
+          images?: string[] | null
+          issue_refs?: string[] | null
+          reactions?: Json | null
+          status?: string | null
+          type?: Database["public"]["Enums"]["post_type"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          alias: string | null
+          created_at: string | null
+          id: string
+        }
+        Insert: {
+          alias?: string | null
+          created_at?: string | null
+          id: string
+        }
+        Update: {
+          alias?: string | null
+          created_at?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      ticker_quotes: {
+        Row: {
+          approved: boolean | null
+          created_at: string | null
+          id: string
+          source_label: string
+          text: string
+        }
+        Insert: {
+          approved?: boolean | null
+          created_at?: string | null
+          id?: string
+          source_label: string
+          text: string
+        }
+        Update: {
+          approved?: boolean | null
+          created_at?: string | null
+          id?: string
+          source_label?: string
+          text?: string
+        }
+        Relationships: []
+      }
+      timeline: {
+        Row: {
+          created_at: string | null
+          date: string
+          entry_type: Database["public"]["Enums"]["entry_type"]
+          id: string
+          issue_ref: string | null
+          note: string
+          ref_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          entry_type: Database["public"]["Enums"]["entry_type"]
+          id?: string
+          issue_ref?: string | null
+          note: string
+          ref_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          entry_type?: Database["public"]["Enums"]["entry_type"]
+          id?: string
+          issue_ref?: string | null
+          note?: string
+          ref_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "timeline_issue_ref_fkey"
+            columns: ["issue_ref"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_alias: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      entry_type: "post" | "doc" | "milestone"
+      evidence_type: "pdf" | "image" | "url"
+      post_type: "assignment" | "detention-slip" | "pop-quiz" | "announcement"
+      severity_type: "info" | "alert" | "win"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +443,12 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      entry_type: ["post", "doc", "milestone"],
+      evidence_type: ["pdf", "image", "url"],
+      post_type: ["assignment", "detention-slip", "pop-quiz", "announcement"],
+      severity_type: ["info", "alert", "win"],
+    },
   },
 } as const

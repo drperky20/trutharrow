@@ -1,65 +1,74 @@
-import { Link, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, LogOut, Shield } from 'lucide-react';
+import { Button } from './ui/button';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Navbar = () => {
-  const location = useLocation();
-  
-  const isActive = (path: string) => location.pathname === path;
-  
+  const { user, isAdmin, signOut } = useAuth();
+
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between px-4">
-        <Link to="/" className="flex items-center space-x-2">
-          <span className="text-xl font-black">TruthArrow</span>
-        </Link>
-        
-        <div className="hidden md:flex items-center space-x-6">
-          <Link
-            to="/"
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              isActive('/') ? 'text-primary' : 'text-muted-foreground'
-            }`}
+    <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+      <div className="container px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link 
+            to="/" 
+            className="text-2xl font-black hover:text-primary transition-colors relative group"
           >
-            Front Office
+            TruthArrow
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary via-alert to-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
           </Link>
-          <Link
-            to="/issues"
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              isActive('/issues') ? 'text-primary' : 'text-muted-foreground'
-            }`}
-          >
-            Detention Board
-          </Link>
-          <Link
-            to="/feed"
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              isActive('/feed') ? 'text-primary' : 'text-muted-foreground'
-            }`}
-          >
-            Cafeteria
-          </Link>
-          <Link
-            to="/receipts"
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              isActive('/receipts') ? 'text-primary' : 'text-muted-foreground'
-            }`}
-          >
-            Receipts
-          </Link>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Link to="/submit">
-            <Button size="sm" className="font-semibold">
-              Submit
-            </Button>
-          </Link>
-          <Link to="/search">
-            <Button size="sm" variant="ghost">
-              <Search className="h-4 w-4" />
-            </Button>
-          </Link>
+
+          {/* Center Links */}
+          <div className="hidden md:flex items-center gap-6">
+            <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
+              Front Office
+            </Link>
+            <Link to="/issues" className="text-sm font-medium hover:text-primary transition-colors">
+              Detention Board
+            </Link>
+            <Link to="/feed" className="text-sm font-medium hover:text-primary transition-colors">
+              Cafeteria
+            </Link>
+            <Link to="/receipts" className="text-sm font-medium hover:text-primary transition-colors">
+              Receipts
+            </Link>
+            {isAdmin && (
+              <Link to="/admin" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
+                <Shield className="h-4 w-4" />
+                Admin
+              </Link>
+            )}
+          </div>
+
+          {/* Right Side */}
+          <div className="flex items-center gap-3">
+            {user ? (
+              <>
+                <Link to="/submit">
+                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    Submit
+                  </Button>
+                </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="p-2 hover:bg-accent rounded-md transition-colors"
+                  title="Sign out"
+                >
+                  <LogOut className="h-5 w-5" />
+                </button>
+              </>
+            ) : (
+              <Link to="/auth">
+                <Button variant="outline">Sign In</Button>
+              </Link>
+            )}
+            <Link to="/search">
+              <button className="p-2 hover:bg-accent rounded-md transition-colors">
+                <Search className="h-5 w-5" />
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     </nav>

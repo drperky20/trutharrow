@@ -3,9 +3,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Navbar } from "@/components/Navbar";
-import { RainbowBanner } from "@/components/RainbowBanner";
-import { Footer } from "@/components/Footer";
+import { AuthProvider } from "./hooks/useAuth";
+import { Navbar } from "./components/Navbar";
+import { RainbowBanner } from "./components/RainbowBanner";
+import { Footer } from "./components/Footer";
 import Index from "./pages/Index";
 import Issues from "./pages/Issues";
 import IssueDetail from "./pages/IssueDetail";
@@ -14,6 +15,10 @@ import Receipts from "./pages/Receipts";
 import Submit from "./pages/Submit";
 import About from "./pages/About";
 import Search from "./pages/Search";
+import Auth from "./pages/Auth";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminIssues from "./pages/admin/Issues";
+import AdminPosts from "./pages/admin/Posts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,10 +29,10 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <RainbowBanner />
-          <main className="flex-1">
+        <AuthProvider>
+          <div className="min-h-screen bg-background text-foreground">
+            <Navbar />
+            <RainbowBanner />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/issues" element={<Issues />} />
@@ -37,11 +42,15 @@ const App = () => (
               <Route path="/submit" element={<Submit />} />
               <Route path="/about" element={<About />} />
               <Route path="/search" element={<Search />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/issues" element={<AdminIssues />} />
+              <Route path="/admin/posts" element={<AdminPosts />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </main>
-          <Footer />
-        </div>
+            <Footer />
+          </div>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

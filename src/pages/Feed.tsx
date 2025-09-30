@@ -1,29 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PostCard } from '@/components/PostCard';
 import { ComposeBox } from '@/components/ComposeBox';
-import { posts } from '@/data/seedData';
-import { PostType } from '@/types';
-
-const typeLabels: Record<PostType | 'all', string> = {
-  all: 'All',
-  assignment: 'Assignments',
-  'detention-slip': 'Detention Slips',
-  'pop-quiz': 'Pop Quizzes',
-  announcement: 'Announcements',
-};
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Feed() {
-  const [filter, setFilter] = useState<PostType | 'all'>('all');
-  
-  const approvedPosts = posts.filter(p => p.status === 'approved');
-  const filteredPosts = filter === 'all' 
-    ? approvedPosts 
-    : approvedPosts.filter(p => p.type === filter);
-  
-  const sortedPosts = [...filteredPosts].sort(
-    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  );
-  
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    const { data } = await supabase
+      .from('posts')
+      .select('*, profiles(alias)')
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false });
+    
+    setPosts(data || []);
+    setLoading(false);
+  };
+
+  const handleNewPost = () => {
+    fetchPosts();
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <div className="max-w-2xl mx-auto px-4 py-6">
@@ -34,41 +46,23 @@ export default function Feed() {
           </p>
         </div>
         
-        {/* Filter Tabs */}
-        <div className="mb-6 flex gap-1 overflow-x-auto pb-2 border-b border-border">
-          {(['all', 'assignment', 'detention-slip', 'pop-quiz', 'announcement'] as const).map(type => (
-            <button
-              key={type}
-              onClick={() => setFilter(type)}
-              className={`px-4 py-2 text-sm font-semibold whitespace-nowrap transition-colors relative ${
-                filter === type
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {typeLabels[type]}
-              {filter === type && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t" />
-              )}
-            </button>
-          ))}
-        </div>
-        
         {/* Compose Box */}
-        <div className="mb-4">
-          <ComposeBox />
-        </div>
+        {user && (
+          <div className="mb-4">
+            <ComposeBox onPost={handleNewPost} />
+          </div>
+        )}
         
         {/* Posts Feed */}
         <div className="space-y-4">
-          {sortedPosts.map(post => (
+          {posts.map(post => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>
         
-        {sortedPosts.length === 0 && (
+        {posts.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No posts found in this category.</p>
+            <p className="text-muted-foreground">No posts yet. Be the first to post!</p>
           </div>
         )}
       </div>

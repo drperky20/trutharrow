@@ -1,18 +1,48 @@
 import { useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Image, Smile } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
-export const ComposeBox = () => {
+interface ComposeBoxProps {
+  onPost?: () => void;
+}
+
+export const ComposeBox = ({ onPost }: ComposeBoxProps) => {
   const [content, setContent] = useState('');
-  const maxLength = 280;
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const maxLength = 500;
 
-  const handleSubmit = () => {
-    if (content.trim()) {
-      // TODO: Submit post
-      console.log('Posting:', content);
+  const handleSubmit = async () => {
+    if (!content.trim() || !user) return;
+
+    setLoading(true);
+    const { error } = await supabase.from('posts').insert({
+      user_id: user.id,
+      type: 'assignment',
+      content: content.trim(),
+      status: 'pending',
+    });
+
+    if (error) {
+      toast({
+        title: "Error posting",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Post submitted!",
+        description: "Your post is pending review.",
+      });
       setContent('');
+      onPost?.();
     }
+
+    setLoading(false);
   };
 
   return (
@@ -29,29 +59,19 @@ export const ComposeBox = () => {
             className="min-h-[100px] resize-none border-0 focus-visible:ring-0 bg-transparent p-0"
           />
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-            <div className="flex gap-2">
-              <button className="text-muted-foreground hover:text-primary transition-colors">
-                <Image className="h-4 w-4" />
-              </button>
-              <button className="text-muted-foreground hover:text-primary transition-colors">
-                <Smile className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className={`text-xs font-mono ${
-                content.length > maxLength - 20 ? 'text-alert' : 'text-muted-foreground'
-              }`}>
-                {content.length}/{maxLength}
-              </span>
-              <Button 
-                onClick={handleSubmit}
-                disabled={!content.trim()}
-                size="sm"
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                Post
-              </Button>
-            </div>
+            <span className={`text-xs font-mono ${
+              content.length > maxLength - 50 ? 'text-alert' : 'text-muted-foreground'
+            }`}>
+              {content.length}/{maxLength}
+            </span>
+            <Button 
+              onClick={handleSubmit}
+              disabled={!content.trim() || loading}
+              size="sm"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              {loading ? 'Posting...' : 'Post'}
+            </Button>
           </div>
         </div>
       </div>

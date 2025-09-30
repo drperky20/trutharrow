@@ -17,7 +17,7 @@ const typeBadgeColors: Record<Post['type'], string> = {
 };
 
 interface PostCardProps {
-  post: Post;
+  post: any;
   isNew?: boolean;
 }
 
@@ -48,16 +48,13 @@ export const PostCard = ({ post, isNew = false }: PostCardProps) => {
         <div className="flex gap-3">
           {/* Avatar */}
           <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-mono">{post.alias.split('-')[1]?.slice(0, 2) || '??'}</span>
+            <span className="text-xs font-mono">{post.profiles?.alias?.split('-')[1]?.slice(0, 2) || '??'}</span>
           </div>
           
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-semibold text-sm truncate">{post.alias}</span>
-              <span className={cn('text-xs font-mono px-1.5 py-0.5 rounded', typeBadgeColors[post.type])}>
-                {typeLabels[post.type]}
-              </span>
+              <span className="font-semibold text-sm truncate">{post.profiles?.alias || 'Anonymous'}</span>
               <span className="text-xs text-muted-foreground">·</span>
               <span className="text-xs text-muted-foreground">
                 {formatTime(post.created_at)}
