@@ -222,7 +222,7 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               className={cn(
-                "resize-none border-0 focus-visible:ring-0 bg-transparent p-0 transition-all",
+                "resize-none border-0 focus-visible:ring-0 bg-transparent p-0 pl-2 transition-all placeholder:font-bold",
                 isFocused ? "min-h-[120px]" : "min-h-[84px]"
               )}
             />
