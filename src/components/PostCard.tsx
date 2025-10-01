@@ -1,9 +1,12 @@
-import { ThumbsUp, Laugh, Angry, MessageCircle } from 'lucide-react';
+import { ThumbsUp, Laugh, Angry, MessageCircle, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AliasAvatar } from '@/components/AliasAvatar';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 interface PostCardProps {
   post: any;
@@ -14,8 +17,11 @@ interface PostCardProps {
 
 export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0 }: PostCardProps) => {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
+  const { toast } = useToast();
   const [reactions, setReactions] = useState(post.reactions || { like: 0, lol: 0, angry: 0 });
   const [reacting, setReacting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -62,6 +68,41 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
     navigate(`/feed/${post.thread_id || post.id}`);
   };
 
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!window.confirm('Are you sure you want to delete this post? This cannot be undone.')) {
+      return;
+    }
+
+    setIsDeleting(true);
+    
+    try {
+      const { error } = await supabase
+        .from('posts')
+        .delete()
+        .eq('id', post.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Post deleted",
+        description: "The post has been removed.",
+      });
+
+      // Reload the page to refresh the feed
+      window.location.reload();
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete post. Please try again.",
+        variant: "destructive",
+      });
+      setIsDeleting(false);
+    }
+  };
+
   const isPending = post.status === 'pending';
 
   return (
@@ -94,6 +135,20 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 <span className="text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-500 rounded">
                   Pending
                 </span>
+              )}
+              
+              {/* Admin delete button */}
+              {isAdmin && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="ml-auto h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+                  aria-label="Delete post"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
               )}
             </div>
             

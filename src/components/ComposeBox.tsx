@@ -57,6 +57,8 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
         body: { content: content.trim() }
       });
 
+      let postStatus = 'approved'; // Default to approved for immediate posting
+      
       if (moderationError) {
         console.error('Moderation error:', moderationError);
         // Fail open: allow post if moderation service fails
@@ -65,23 +67,23 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
           description: "Posting anyway. Our team will review it.",
         });
       } else if (moderationData && !moderationData.approved) {
-        // Post was rejected by moderation
+        // Post was rejected by AI - send to admin review
+        postStatus = 'pending';
         toast({
-          title: "Post blocked",
-          description: moderationData.reason || "Your post violates our community guidelines.",
-          variant: "destructive",
+          title: "Post flagged for review",
+          description: moderationData.reason || "Your post has been flagged and will be reviewed by admins.",
+          variant: "default",
         });
-        setLoading(false);
-        return;
       }
 
-      // Post passed moderation or moderation failed (fail open)
+      // Insert post with appropriate status
       const { error } = await supabase.from('posts').insert({
         alias: alias.trim(),
         content: content.trim(),
         parent_id: parentId || null,
         user_id: user?.id || null,
         type: 'assignment',
+        status: postStatus,
       });
 
       if (error) {
@@ -91,10 +93,17 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
           variant: "destructive",
         });
       } else {
-        toast({
-          title: "Posted!",
-          description: "Your post is pending admin review.",
-        });
+        if (postStatus === 'approved') {
+          toast({
+            title: "Posted!",
+            description: "Your post is live.",
+          });
+        } else {
+          toast({
+            title: "Submitted for review",
+            description: "Admins will review your post shortly.",
+          });
+        }
         setContent('');
         setIsFocused(false);
         onPost?.();
