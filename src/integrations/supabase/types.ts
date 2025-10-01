@@ -159,42 +159,62 @@ export type Database = {
       }
       posts: {
         Row: {
+          alias: string
           content: string
           created_at: string | null
           featured: boolean | null
           id: string
           images: string[] | null
           issue_refs: string[] | null
+          parent_id: string | null
           reactions: Json | null
+          reply_count: number | null
           status: string | null
+          thread_id: string | null
           type: Database["public"]["Enums"]["post_type"]
-          user_id: string
+          user_id: string | null
         }
         Insert: {
+          alias: string
           content: string
           created_at?: string | null
           featured?: boolean | null
           id?: string
           images?: string[] | null
           issue_refs?: string[] | null
+          parent_id?: string | null
           reactions?: Json | null
+          reply_count?: number | null
           status?: string | null
+          thread_id?: string | null
           type: Database["public"]["Enums"]["post_type"]
-          user_id: string
+          user_id?: string | null
         }
         Update: {
+          alias?: string
           content?: string
           created_at?: string | null
           featured?: boolean | null
           id?: string
           images?: string[] | null
           issue_refs?: string[] | null
+          parent_id?: string | null
           reactions?: Json | null
+          reply_count?: number | null
           status?: string | null
+          thread_id?: string | null
           type?: Database["public"]["Enums"]["post_type"]
-          user_id?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "posts_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -309,6 +329,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_reaction: {
+        Args: { p_kind: string; p_post_id: string }
+        Returns: undefined
       }
     }
     Enums: {

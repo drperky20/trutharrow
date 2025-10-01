@@ -1,12 +1,21 @@
-import { ThumbsUp, Laugh, Angry, MessageCircle, Repeat2 } from 'lucide-react';
+import { ThumbsUp, Laugh, Angry, MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface PostCardProps {
   post: any;
   isNew?: boolean;
+  showReplyLine?: boolean;
+  level?: number;
 }
 
-export const PostCard = ({ post, isNew = false }: PostCardProps) => {
+export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0 }: PostCardProps) => {
+  const navigate = useNavigate();
+  const [reactions, setReactions] = useState(post.reactions || { like: 0, lol: 0, angry: 0 });
+  const [reacting, setReacting] = useState(false);
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -22,35 +31,98 @@ export const PostCard = ({ post, isNew = false }: PostCardProps) => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
+  const handleReaction = async (kind: 'like' | 'lol' | 'angry') => {
+    if (reacting) return;
+    setReacting(true);
+
+    // Optimistic update
+    setReactions(prev => ({
+      ...prev,
+      [kind]: (prev[kind] || 0) + 1
+    }));
+
+    const { error } = await supabase.rpc('increment_reaction', {
+      p_post_id: post.id,
+      p_kind: kind
+    });
+
+    if (error) {
+      // Revert on error
+      setReactions(prev => ({
+        ...prev,
+        [kind]: Math.max((prev[kind] || 0) - 1, 0)
+      }));
+    }
+
+    setReacting(false);
+  };
+
+  const handleOpenThread = () => {
+    navigate(`/feed/${post.thread_id || post.id}`);
+  };
+
+  const getAvatarColor = (alias: string) => {
+    const colors = [
+      'bg-blue-500/20',
+      'bg-green-500/20',
+      'bg-purple-500/20',
+      'bg-orange-500/20',
+      'bg-pink-500/20',
+      'bg-teal-500/20',
+    ];
+    const hash = alias.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return colors[hash % colors.length];
+  };
+
+  const isPending = post.status === 'pending';
+
   return (
     <div
       className={cn(
-        'bg-card border border-border hover:bg-card/80 transition-all cursor-pointer',
-        isNew && 'pop-in glow-yellow'
+        'relative bg-card border-b border-border hover:bg-card/50 transition-all',
+        isNew && 'pop-in',
+        level > 0 && 'ml-12'
       )}
     >
+      {/* Reply line connector */}
+      {showReplyLine && level > 0 && (
+        <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-border" />
+      )}
+
       <div className="p-4">
         <div className="flex gap-3">
           {/* Avatar */}
-          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-mono">{post.profiles?.alias?.split('-')[1]?.slice(0, 2) || '??'}</span>
+          <div 
+            className={cn(
+              'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
+              getAvatarColor(post.alias)
+            )}
+          >
+            <span className="text-sm font-mono font-semibold">
+              {post.alias?.[0]?.toUpperCase() || '?'}
+            </span>
           </div>
           
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-semibold text-sm truncate">{post.profiles?.alias || 'Anonymous'}</span>
+              <span className="font-bold text-sm truncate">{post.alias || 'Anonymous'}</span>
               <span className="text-xs text-muted-foreground">·</span>
               <span className="text-xs text-muted-foreground">
                 {formatTime(post.created_at)}
               </span>
+              {isPending && (
+                <span className="text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-500 rounded">
+                  Pending
+                </span>
+              )}
             </div>
             
             <p className="text-sm mb-3 whitespace-pre-wrap break-words">{post.content}</p>
             
             {post.images && post.images.length > 0 && (
               <div className="mb-3 rounded-xl overflow-hidden border border-border">
-                {post.images.map((img, idx) => (
+                {post.images.map((img: string, idx: number) => (
                   <img
                     key={idx}
                     src={img}
@@ -62,26 +134,46 @@ export const PostCard = ({ post, isNew = false }: PostCardProps) => {
             )}
             
             {/* Actions */}
-            <div className="flex items-center justify-between max-w-md mt-2">
-              <button className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors group">
+            <div className="flex items-center gap-6 mt-2">
+              <button 
+                onClick={handleOpenThread}
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors group"
+                aria-label="View thread"
+              >
                 <MessageCircle className="h-4 w-4" />
-                <span className="text-xs">0</span>
+                {post.reply_count > 0 && (
+                  <span className="text-xs">{post.reply_count}</span>
+                )}
               </button>
-              <button className="flex items-center gap-1.5 text-muted-foreground hover:text-green-500 transition-colors group">
-                <Repeat2 className="h-4 w-4" />
-                <span className="text-xs">0</span>
-              </button>
-              <button className="flex items-center gap-1.5 text-muted-foreground hover:text-red-500 transition-colors group">
+              
+              <button 
+                onClick={() => handleReaction('like')}
+                disabled={reacting || isPending}
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-red-500 transition-colors group disabled:opacity-50"
+                aria-label="Like"
+              >
                 <ThumbsUp className="h-4 w-4" />
-                <span className="text-xs">{post.reactions.like}</span>
+                <span className="text-xs">{reactions.like || 0}</span>
               </button>
-              <button className="flex items-center gap-1.5 text-muted-foreground hover:text-yellow-500 transition-colors group">
+              
+              <button 
+                onClick={() => handleReaction('lol')}
+                disabled={reacting || isPending}
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-yellow-500 transition-colors group disabled:opacity-50"
+                aria-label="Laugh"
+              >
                 <Laugh className="h-4 w-4" />
-                <span className="text-xs">{post.reactions.lol}</span>
+                <span className="text-xs">{reactions.lol || 0}</span>
               </button>
-              <button className="flex items-center gap-1.5 text-muted-foreground hover:text-orange-500 transition-colors group">
+              
+              <button 
+                onClick={() => handleReaction('angry')}
+                disabled={reacting || isPending}
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-orange-500 transition-colors group disabled:opacity-50"
+                aria-label="Angry"
+              >
                 <Angry className="h-4 w-4" />
-                <span className="text-xs">{post.reactions.angry}</span>
+                <span className="text-xs">{reactions.angry || 0}</span>
               </button>
             </div>
           </div>

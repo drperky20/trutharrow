@@ -18,7 +18,7 @@ export default function AdminPosts() {
   const fetchPosts = async () => {
     const { data } = await supabase
       .from('posts')
-      .select('*, profiles(alias)')
+      .select('*')
       .order('created_at', { ascending: false });
     setPosts(data || []);
   };
@@ -41,7 +41,10 @@ export default function AdminPosts() {
           <div key={post.id} className="bg-card border border-border rounded-lg p-6">
             <div className="flex justify-between items-start mb-3">
               <div>
-                <span className="text-sm font-mono text-muted-foreground">{post.profiles?.alias}</span>
+                <span className="text-sm font-mono font-semibold">{post.alias || 'Anonymous'}</span>
+                {post.parent_id && (
+                  <p className="text-xs text-muted-foreground mt-1">↳ Reply in thread</p>
+                )}
                 <div className="flex gap-2 mt-1">
                   <span className={`text-xs px-2 py-1 rounded ${
                     post.status === 'approved' ? 'bg-green-500/20 text-green-500' :
@@ -50,8 +53,10 @@ export default function AdminPosts() {
                   }`}>
                     {post.status}
                   </span>
-                  <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded">{post.type}</span>
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {new Date(post.created_at).toLocaleString()}
+                </p>
               </div>
               {post.status === 'pending' && (
                 <div className="flex gap-2">
@@ -64,7 +69,19 @@ export default function AdminPosts() {
                 </div>
               )}
             </div>
-            <p className="text-sm">{post.content}</p>
+            <p className="text-sm whitespace-pre-wrap">{post.content}</p>
+            {post.images && post.images.length > 0 && (
+              <div className="mt-3 flex gap-2 flex-wrap">
+                {post.images.map((img: string, idx: number) => (
+                  <img 
+                    key={idx} 
+                    src={img} 
+                    alt="attachment" 
+                    className="h-24 w-24 object-cover rounded border border-border"
+                  />
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>

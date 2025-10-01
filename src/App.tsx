@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Issues from "./pages/Issues";
 import IssueDetail from "./pages/IssueDetail";
 import Feed from "./pages/Feed";
+import ThreadView from "./pages/ThreadView";
 import Receipts from "./pages/Receipts";
 import Submit from "./pages/Submit";
 import About from "./pages/About";
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="/issues" element={<Issues />} />
               <Route path="/issues/:slug" element={<IssueDetail />} />
               <Route path="/feed" element={<Feed />} />
+              <Route path="/feed/:postId" element={<ThreadView />} />
               <Route path="/receipts" element={<Receipts />} />
               <Route path="/submit" element={<Submit />} />
               <Route path="/about" element={<About />} />
