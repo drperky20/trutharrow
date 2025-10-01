@@ -6,7 +6,6 @@ import { IssueCard } from '@/components/IssueCard';
 import { AlertBox } from '@/components/AlertBox';
 import { supabase } from '@/integrations/supabase/client';
 import { HeroSection } from '@/components/home/HeroSection';
-import { HowWeWorkSection } from '@/components/home/HowWeWorkSection';
 import { PollSection } from '@/components/home/PollSection';
 import { useOptimizedQuery } from '@/hooks/useOptimizedQuery';
 
@@ -94,7 +93,6 @@ export default function Index() {
   return (
     <div className="min-h-screen">
       <HeroSection />
-      <HowWeWorkSection />
       
       {banners && banners.length > 0 && (
         <div className="container px-4 py-6">

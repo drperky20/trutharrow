@@ -64,6 +64,15 @@ export const HeroSection = () => {
               Drop Your Homework
             </Button>
           </Link>
+          <Link to="/about">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="font-bold text-base min-h-[44px] px-6"
+            >
+              Read the Yearbook
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
