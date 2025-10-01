@@ -130,6 +130,41 @@ export type Database = {
         }
         Relationships: []
       }
+      poll_votes: {
+        Row: {
+          created_at: string | null
+          fingerprint: string | null
+          id: string
+          option_index: number
+          poll_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          fingerprint?: string | null
+          id?: string
+          option_index: number
+          poll_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          fingerprint?: string | null
+          id?: string
+          option_index?: number
+          poll_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_votes_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       polls: {
         Row: {
           active: boolean | null
@@ -156,6 +191,41 @@ export type Database = {
           results?: Json | null
         }
         Relationships: []
+      }
+      post_reactions: {
+        Row: {
+          created_at: string | null
+          fingerprint: string | null
+          id: string
+          post_id: string
+          reaction_type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          fingerprint?: string | null
+          id?: string
+          post_id: string
+          reaction_type: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          fingerprint?: string | null
+          id?: string
+          post_id?: string
+          reaction_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       posts: {
         Row: {
@@ -333,6 +403,24 @@ export type Database = {
       increment_reaction: {
         Args: { p_kind: string; p_post_id: string }
         Returns: undefined
+      }
+      increment_reaction_safe: {
+        Args: {
+          p_fingerprint?: string
+          p_kind: string
+          p_post_id: string
+          p_user_id?: string
+        }
+        Returns: Json
+      }
+      vote_on_poll_safe: {
+        Args: {
+          p_fingerprint?: string
+          p_option_index: number
+          p_poll_id: string
+          p_user_id?: string
+        }
+        Returns: Json
       }
     }
     Enums: {

@@ -6,6 +6,9 @@ import { IssueCard } from '@/components/IssueCard';
 import { AlertBox } from '@/components/AlertBox';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { getFingerprint } from '@/lib/fingerprint';
 import heroBanner from '@/assets/hero-banner.jpg';
 
 const headlines = [
@@ -15,12 +18,16 @@ const headlines = [
 ];
 
 export default function Index() {
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [currentHeadline, setCurrentHeadline] = useState(0);
   const [posts, setPosts] = useState<any[]>([]);
   const [issues, setIssues] = useState<any[]>([]);
   const [poll, setPoll] = useState<any>(null);
   const [banners, setBanners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [voting, setVoting] = useState(false);
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,6 +39,12 @@ export default function Index() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (poll) {
+      checkIfVoted();
+    }
+  }, [poll, user]);
 
   const fetchData = async () => {
     const [postsData, issuesData, pollsData, bannersData] = await Promise.all([
@@ -48,12 +61,54 @@ export default function Index() {
     setLoading(false);
   };
 
-  const handleVote = async (option: string) => {
+  const checkIfVoted = async () => {
     if (!poll) return;
     
-    const updatedResults = { ...poll.results, [option]: (poll.results[option] || 0) + 1 };
-    await supabase.from('polls').update({ results: updatedResults }).eq('id', poll.id);
+    const fingerprint = getFingerprint();
+    const { data } = await supabase
+      .from('poll_votes')
+      .select('id')
+      .eq('poll_id', poll.id)
+      .or(user ? `user_id.eq.${user.id}` : `fingerprint.eq.${fingerprint}`)
+      .maybeSingle();
+    
+    setHasVoted(!!data);
+  };
+
+  const handleVote = async (option: string, optionIndex: number) => {
+    if (!poll || voting || hasVoted) return;
+    
+    setVoting(true);
+    const fingerprint = getFingerprint();
+    
+    // Optimistic update
+    const updatedResults = { ...poll.results, [optionIndex]: (poll.results[optionIndex] || 0) + 1 };
     setPoll({ ...poll, results: updatedResults });
+    setHasVoted(true);
+    
+    const { data, error } = await supabase.rpc('vote_on_poll_safe', {
+      p_poll_id: poll.id,
+      p_option_index: optionIndex,
+      p_user_id: user?.id || null,
+      p_fingerprint: user ? null : fingerprint
+    });
+    
+    const result = data as { success: boolean; message?: string } | null;
+    
+    if (error || !result?.success) {
+      // Revert on error
+      const revertedResults = { ...poll.results, [optionIndex]: Math.max((poll.results[optionIndex] || 0) - 1, 0) };
+      setPoll({ ...poll, results: revertedResults });
+      setHasVoted(false);
+      
+      toast({
+        title: "Already voted",
+        description: "You've already voted on this poll.",
+        variant: "destructive",
+      });
+    }
+    
+    setVoting(false);
   };
 
   if (loading) {
@@ -167,18 +222,19 @@ export default function Index() {
           <div className="bg-card border border-border rounded-lg p-6 max-w-2xl">
             <h3 className="text-xl font-bold mb-6">{poll.question}</h3>
             <div className="space-y-4">
-              {poll.options.map((option: string) => {
-                const count = poll.results[option] || 0;
+              {poll.options.map((option: string, index: number) => {
+                const count = poll.results[index] || 0;
                 const percentage = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
                 
                 return (
                   <button
                     key={option}
-                    onClick={() => handleVote(option)}
-                    className="w-full text-left group"
+                    onClick={() => handleVote(option, index)}
+                    disabled={hasVoted || voting}
+                    className="w-full text-left group disabled:cursor-not-allowed"
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium group-hover:text-primary transition-colors">
+                      <span className="font-medium group-hover:text-primary transition-colors group-disabled:opacity-50">
                         {option}
                       </span>
                       <span className="text-sm text-muted-foreground">
@@ -190,6 +246,11 @@ export default function Index() {
                 );
               })}
             </div>
+            {hasVoted && (
+              <p className="text-xs text-muted-foreground mt-2">
+                ✓ You've already voted on this poll
+              </p>
+            )}
             <p className="text-xs text-muted-foreground mt-4">
               Total votes: {totalVotes}
             </p>

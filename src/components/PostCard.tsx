@@ -1,12 +1,13 @@
 import { ThumbsUp, Laugh, Angry, MessageCircle, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AliasAvatar } from '@/components/AliasAvatar';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { getFingerprint } from '@/lib/fingerprint';
 
 interface PostCardProps {
   post: any;
@@ -18,11 +19,29 @@ interface PostCardProps {
 
 export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0, onDelete }: PostCardProps) => {
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const { toast } = useToast();
   const [reactions, setReactions] = useState(post.reactions || { like: 0, lol: 0, angry: 0 });
   const [reacting, setReacting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [userReactions, setUserReactions] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    checkUserReactions();
+  }, [post.id, user]);
+
+  const checkUserReactions = async () => {
+    const fingerprint = getFingerprint();
+    const { data } = await supabase
+      .from('post_reactions')
+      .select('reaction_type')
+      .eq('post_id', post.id)
+      .or(user ? `user_id.eq.${user.id}` : `fingerprint.eq.${fingerprint}`);
+    
+    if (data) {
+      setUserReactions(new Set(data.map(r => r.reaction_type)));
+    }
+  };
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -40,7 +59,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
   };
 
   const handleReaction = async (kind: 'like' | 'lol' | 'angry') => {
-    if (reacting) return;
+    if (reacting || userReactions.has(kind)) return;
     setReacting(true);
 
     // Optimistic update
@@ -48,18 +67,37 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
       ...prev,
       [kind]: (prev[kind] || 0) + 1
     }));
+    setUserReactions(prev => new Set([...prev, kind]));
 
-    const { error } = await supabase.rpc('increment_reaction', {
+    const fingerprint = getFingerprint();
+    const { data, error } = await supabase.rpc('increment_reaction_safe', {
       p_post_id: post.id,
-      p_kind: kind
+      p_kind: kind,
+      p_user_id: user?.id || null,
+      p_fingerprint: user ? null : fingerprint
     });
 
-    if (error) {
+    const result = data as { success: boolean; message?: string } | null;
+
+    if (error || !result?.success) {
       // Revert on error
       setReactions(prev => ({
         ...prev,
         [kind]: Math.max((prev[kind] || 0) - 1, 0)
       }));
+      setUserReactions(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(kind);
+        return newSet;
+      });
+      
+      if (result?.message) {
+        toast({
+          title: "Already reacted",
+          description: "You've already reacted to this post with that reaction.",
+          variant: "destructive",
+        });
+      }
     }
 
     setReacting(false);
@@ -193,11 +231,14 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                   e.stopPropagation();
                   handleReaction('like');
                 }}
-                disabled={reacting || isPending}
-                className="flex items-center gap-1.5 text-muted-foreground hover:text-red-500 transition-colors group disabled:opacity-50"
+                disabled={reacting || isPending || userReactions.has('like')}
+                className={cn(
+                  "flex items-center gap-1.5 text-muted-foreground hover:text-red-500 transition-colors group disabled:opacity-50",
+                  userReactions.has('like') && "text-red-500"
+                )}
                 aria-label="Like"
               >
-                <ThumbsUp className="h-4 w-4" />
+                <ThumbsUp className={cn("h-4 w-4", userReactions.has('like') && "fill-current")} />
                 <span className="text-xs">{reactions.like || 0}</span>
               </button>
               
@@ -206,11 +247,14 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                   e.stopPropagation();
                   handleReaction('lol');
                 }}
-                disabled={reacting || isPending}
-                className="flex items-center gap-1.5 text-muted-foreground hover:text-yellow-500 transition-colors group disabled:opacity-50"
+                disabled={reacting || isPending || userReactions.has('lol')}
+                className={cn(
+                  "flex items-center gap-1.5 text-muted-foreground hover:text-yellow-500 transition-colors group disabled:opacity-50",
+                  userReactions.has('lol') && "text-yellow-500"
+                )}
                 aria-label="Laugh"
               >
-                <Laugh className="h-4 w-4" />
+                <Laugh className={cn("h-4 w-4", userReactions.has('lol') && "fill-current")} />
                 <span className="text-xs">{reactions.lol || 0}</span>
               </button>
               
@@ -219,11 +263,14 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                   e.stopPropagation();
                   handleReaction('angry');
                 }}
-                disabled={reacting || isPending}
-                className="flex items-center gap-1.5 text-muted-foreground hover:text-orange-500 transition-colors group disabled:opacity-50"
+                disabled={reacting || isPending || userReactions.has('angry')}
+                className={cn(
+                  "flex items-center gap-1.5 text-muted-foreground hover:text-orange-500 transition-colors group disabled:opacity-50",
+                  userReactions.has('angry') && "text-orange-500"
+                )}
                 aria-label="Angry"
               >
-                <Angry className="h-4 w-4" />
+                <Angry className={cn("h-4 w-4", userReactions.has('angry') && "fill-current")} />
                 <span className="text-xs">{reactions.angry || 0}</span>
               </button>
             </div>
