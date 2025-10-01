@@ -8,44 +8,45 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Broken Arrow Tigers - Black & Gold Color System */
     --background: 0 0% 6%;
     --background-soft: 0 0% 8%;
-    --foreground: 0 0% 95%;
+    --foreground: 45 100% 95%;
 
     --card: 0 0% 9%;
-    --card-foreground: 0 0% 95%;
+    --card-foreground: 45 100% 95%;
 
     --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 95%;
+    --popover-foreground: 45 100% 95%;
 
-    --primary: 20 100% 50%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 45 90% 55%;
+    --primary-foreground: 0 0% 5%;
 
     --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary-foreground: 45 100% 95%;
 
-    --muted: 0 0% 71%;
-    --muted-foreground: 0 0% 71%;
+    --muted: 0 0% 25%;
+    --muted-foreground: 45 20% 70%;
 
-    --accent: 20 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 45 85% 50%;
+    --accent-foreground: 0 0% 5%;
 
     --destructive: 0 100% 62%;
     --destructive-foreground: 0 0% 98%;
 
     --success: 145 63% 49%;
 
-    --alert: 52 100% 51%;
-    --alert-foreground: 0 0% 0%;
+    --alert: 45 100% 60%;
+    --alert-foreground: 0 0% 5%;
 
-    --border: 0 0% 15%;
+    --border: 45 30% 20%;
     --input: 0 0% 15%;
-    --ring: 20 100% 50%;
+    --ring: 45 90% 55%;
 
     --radius: 1.125rem;
 
-    --glow-orange: 0 0 20px rgba(255, 106, 0, 0.45);
-    --glow-yellow: 0 0 18px rgba(255, 227, 2, 0.55);
+    --glow-gold: 0 0 25px rgba(212, 175, 55, 0.5);
+    --glow-tiger: 0 0 30px rgba(212, 175, 55, 0.6);
   }
 }
 
@@ -127,12 +128,12 @@ All colors MUST be HSL.
     100% { background-position: 200% 50%; }
   }
 
-  .glow-orange {
-    box-shadow: var(--glow-orange);
+  .glow-gold {
+    box-shadow: var(--glow-gold);
   }
 
-  .glow-yellow {
-    box-shadow: var(--glow-yellow);
+  .glow-tiger {
+    box-shadow: var(--glow-tiger);
   }
 
   .hover-lift {
@@ -155,7 +156,7 @@ All colors MUST be HSL.
   /* Touch-friendly tap highlight */
   @media (hover: none) and (pointer: coarse) {
     * {
-      -webkit-tap-highlight-color: rgba(255, 106, 0, 0.1);
+      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.1);
     }
   }
 

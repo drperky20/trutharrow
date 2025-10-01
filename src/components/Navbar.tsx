@@ -8,17 +8,23 @@ export const Navbar = () => {
   const { user, isAdmin, signOut } = useAuth();
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-      <div className="container px-4">
-        <div className="flex items-center justify-between h-16 gap-2">
-          {/* Logo - Always visible */}
-          <Link 
-            to="/" 
-            className="text-lg md:text-2xl font-black hover:text-primary transition-colors relative group flex-shrink-0"
-          >
-            TruthArrow
-            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary via-alert to-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-          </Link>
+    <>
+      {/* School Branding Banner */}
+      <div className="bg-gradient-to-r from-primary via-accent to-primary text-primary-foreground py-2 px-4 text-center font-bold text-sm md:text-base">
+        🐯 Broken Arrow Public Schools - Tiger Family Truth Platform
+      </div>
+      
+      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-primary/30">
+        <div className="container px-4">
+          <div className="flex items-center justify-between h-16 gap-2">
+            {/* Logo - Always visible */}
+            <Link 
+              to="/" 
+              className="text-lg md:text-2xl font-black hover:text-primary transition-colors relative group flex-shrink-0 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
+            >
+              TruthArrow
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary via-accent to-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+            </Link>
 
           {/* Center Links - Desktop only */}
           <div className="hidden md:flex items-center gap-3 lg:gap-4">
@@ -102,5 +108,6 @@ export const Navbar = () => {
         </div>
       </div>
     </nav>
+    </>
   );
 };
