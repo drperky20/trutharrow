@@ -1,12 +1,14 @@
+import { Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { PostCard } from '@/components/PostCard';
-import { IssueCard } from '@/components/IssueCard';
-import { AlertBox } from '@/components/AlertBox';
 import { supabase } from '@/integrations/supabase/client';
 import { HeroSection } from '@/components/home/HeroSection';
-import { PollSection } from '@/components/home/PollSection';
 import { useOptimizedQuery } from '@/hooks/useOptimizedQuery';
+
+const PostCard = lazy(() => import('@/components/PostCard'));
+const IssueCard = lazy(() => import('@/components/IssueCard'));
+const AlertBox = lazy(() => import('@/components/AlertBox'));
+const PollSection = lazy(() => import('@/components/home/PollSection'));
 
 export default function Index() {
   const { data: posts, loading: postsLoading } = useOptimizedQuery({

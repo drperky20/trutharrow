@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import heroBanner from '@/assets/hero-banner.jpg';
+import heroBannerWebp from '@/assets/hero-banner.webp';
 
 const headlines = [
   'Truth doesn\'t graduate.',
@@ -22,13 +23,18 @@ export const HeroSection = () => {
   return (
     <section className="relative overflow-hidden border-b border-primary/30">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background z-[1]" />
-      <img
-        src={heroBanner}
-        alt="Broken Arrow Public Schools campus"
-        className="absolute inset-0 w-full h-full object-cover opacity-20"
-        loading="eager"
-        sizes="100vw"
-      />
+      <picture className="absolute inset-0 block">
+        <source srcSet={heroBannerWebp} type="image/webp" />
+        <source srcSet={heroBanner} type="image/jpeg" />
+        <img
+          src={heroBanner}
+          alt="Broken Arrow Public Schools campus"
+          className="w-full h-full object-cover opacity-20"
+          loading="eager"
+          sizes="100vw"
+          fetchPriority="high"
+        />
+      </picture>
       <div className="relative z-[2] container px-4 py-20 md:py-32">
         <div className="inline-block bg-primary/20 border-2 border-primary px-4 py-2 rounded-lg mb-4">
           <p className="text-primary font-black text-sm md:text-base">
