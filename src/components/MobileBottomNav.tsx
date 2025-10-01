@@ -15,9 +15,10 @@ const NavItemLink = ({ item, isActive }: NavItemLinkProps) => {
     <Link
       to={path}
       className={cn(
-        "flex flex-col items-center justify-center gap-1.5 px-3 py-2 min-w-[60px] min-h-[64px] transition-all rounded-xl relative flex-1",
+        "flex flex-col items-center justify-center gap-1 px-1.5 py-2 min-h-[64px] transition-all rounded-xl relative",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         "active:scale-95",
+        "max-w-[80px]",
         isPrimary && !isActive && "text-primary",
         isActive 
           ? 'text-primary font-semibold' 
@@ -31,14 +32,22 @@ const NavItemLink = ({ item, isActive }: NavItemLinkProps) => {
         isActive && "scale-110"
       )} />
       <span className={cn(
-        "text-xs leading-normal whitespace-nowrap",
+        "text-[10px] leading-tight text-center px-0.5 max-w-full overflow-hidden text-ellipsis",
+        "break-words hyphens-auto",
         isActive ? "font-bold" : "font-medium"
-      )}>
+      )}
+      style={{
+        display: '-webkit-box',
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical',
+        wordBreak: 'break-word',
+        overflowWrap: 'break-word',
+      }}>
         {label}
       </span>
       {isActive && (
         <div 
-          className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-10 h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60 rounded-full motion-reduce:transition-none" 
+          className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60 rounded-full motion-reduce:transition-none" 
           aria-hidden="true"
         />
       )}
@@ -70,7 +79,7 @@ export const MobileBottomNav = () => {
         paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))',
       }}
     >
-      <div className="flex items-center justify-around pt-2 px-2">
+      <div className="flex items-stretch justify-evenly gap-0.5 pt-2 px-1">
         {visibleNavItems.map((item) => (
           <NavItemLink 
             key={item.path} 
