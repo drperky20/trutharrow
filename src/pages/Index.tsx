@@ -5,10 +5,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { HeroSection } from '@/components/home/HeroSection';
 import { useOptimizedQuery } from '@/hooks/useOptimizedQuery';
 
-const PostCard = lazy(() => import('@/components/PostCard'));
-const IssueCard = lazy(() => import('@/components/IssueCard'));
-const AlertBox = lazy(() => import('@/components/AlertBox'));
-const PollSection = lazy(() => import('@/components/home/PollSection'));
+const PostCard = lazy(() => import('@/components/PostCard').then(m => ({ default: m.PostCard })));
+const IssueCard = lazy(() => import('@/components/IssueCard').then(m => ({ default: m.IssueCard })));
+const AlertBox = lazy(() => import('@/components/AlertBox').then(m => ({ default: m.AlertBox })));
+const PollSection = lazy(() => import('@/components/home/PollSection').then(m => ({ default: m.PollSection })));
 
 export default function Index() {
   const { data: posts, loading: postsLoading } = useOptimizedQuery({
