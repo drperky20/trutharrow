@@ -6,27 +6,67 @@
     <title>TruthArrow - Broken Arrow Schools Watchdog</title>
     <meta name="description" content="TruthArrow is a student-run accountability watchdog for Broken Arrow Public Schools. Access verified evidence, track institutional issues, and promote transparency in education.">
     <meta name="author" content="TruthArrow" />
+    
+    <!-- DNS Prefetch for faster external resource loading -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
+    <!-- Preconnect to font resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Preload critical fonts to prevent layout shift -->
-    <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2" crossorigin>
-    <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-
     
+    <!-- Preload critical hero image -->
+    <link rel="preload" as="image" href="/src/assets/hero-banner.jpg" fetchpriority="high">
+    
+    <!-- Load fonts with display=swap to prevent FOIT and reduce CLS -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    </noscript>
+    
+    <!-- Preload main module script -->
+    <link rel="modulepreload" href="/src/main.tsx">
     
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/hNbqQbr58SRWEESzySV6DxpyeXX2/social-images/social-1759289331840-Screenshot 2025-09-30 at 10.25.19 PM.png">
-
+    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/hNbqQbr58SRWEESzySV6DxpyeXX2/social-images/social-1759289331840-Screenshot 2025-09-30 at 10.25.19 PM.png">
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/hNbqQbr58SRWEESzySV6DxpyeXX2/social-images/social-1759289331840-Screenshot 2025-09-30 at 10.25.19 PM.png">
+    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/hNbqQbr58SRWEESzySV6DxpyeXX2/social-images/social-1759289331840-Screenshot 2025-09-30 at 10.25.19 PM.png">
     <meta property="og:title" content="TruthArrow - Broken Arrow Schools Watchdog">
-  <meta name="twitter:title" content="TruthArrow - Broken Arrow Schools Watchdog">
-  <meta property="og:description" content="TruthArrow is a student-run accountability watchdog for Broken Arrow Public Schools. Access verified evidence, track institutional issues, and promote transparency in education.">
-  <meta name="twitter:description" content="TruthArrow is a student-run accountability watchdog for Broken Arrow Public Schools. Access verified evidence, track institutional issues, and promote transparency in education.">
-  <link rel="icon" type="image/x-icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/hNbqQbr58SRWEESzySV6DxpyeXX2/uploads/1759289323413-ChatGPT Image Sep 30, 2025, 10_26_32 PM.png">
-</head>
+    <meta name="twitter:title" content="TruthArrow - Broken Arrow Schools Watchdog">
+    <meta property="og:description" content="TruthArrow is a student-run accountability watchdog for Broken Arrow Public Schools. Access verified evidence, track institutional issues, and promote transparency in education.">
+    <meta name="twitter:description" content="TruthArrow is a student-run accountability watchdog for Broken Arrow Public Schools. Access verified evidence, track institutional issues, and promote transparency in education.">
+    <link rel="icon" type="image/x-icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/hNbqQbr58SRWEESzySV6DxpyeXX2/uploads/1759289323413-ChatGPT Image Sep 30, 2025, 10_26_32 PM.png">
+    
+    <!-- Inline critical CSS for instant rendering -->
+    <style>
+      /* Prevent layout shift with font loading */
+      body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+      
+      /* Reserve space for hero to prevent CLS */
+      #root {
+        min-height: 100vh;
+      }
+      
+      /* Loading state styles */
+      .loading-skeleton {
+        background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+      }
+      
+      @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+    </style>
+  </head>
 
   <body>
     <div id="root"></div>

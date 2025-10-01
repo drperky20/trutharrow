@@ -7,6 +7,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { HeroSection } from '@/components/home/HeroSection';
 import { PollSection } from '@/components/home/PollSection';
 import { useOptimizedQuery } from '@/hooks/useOptimizedQuery';
+import { TweetSkeleton } from '@/components/TweetSkeleton';
+import { IssueCardSkeleton } from '@/components/IssueCardSkeleton';
 
 export default function Index() {
   const { data: posts, loading: postsLoading } = useOptimizedQuery({
@@ -74,14 +76,6 @@ export default function Index() {
   });
 
   const loading = postsLoading || issuesLoading;
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
   
   return (
     <div className="min-h-screen">
@@ -95,36 +89,52 @@ export default function Index() {
         </div>
       )}
       
-      {posts && posts.length > 0 && (
-        <section className="container px-4 py-12">
-          <h2 className="text-3xl font-black mb-6">Bell Ringers</h2>
+      <section className="container px-4 py-12">
+        <h2 className="text-3xl font-black mb-6">Bell Ringers</h2>
+        {postsLoading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post, idx) => (
-              <PostCard 
-                key={post.id} 
-                post={post} 
-                isNew={idx < 2}
-              />
+            {Array.from({ length: 9 }).map((_, i) => (
+              <div key={i} className="bg-card/80 border border-border rounded-lg overflow-hidden">
+                <TweetSkeleton />
+              </div>
             ))}
           </div>
-          <div className="mt-6 text-center">
-            <Link to="/feed">
-              <Button variant="outline">See All Posts</Button>
-            </Link>
-          </div>
-        </section>
-      )}
+        ) : posts && posts.length > 0 ? (
+          <>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {posts.map((post, idx) => (
+                <PostCard 
+                  key={post.id} 
+                  post={post} 
+                  isNew={idx < 2}
+                />
+              ))}
+            </div>
+            <div className="mt-6 text-center">
+              <Link to="/feed">
+                <Button variant="outline">See All Posts</Button>
+              </Link>
+            </div>
+          </>
+        ) : null}
+      </section>
       
-      {issues && issues.length > 0 && (
-        <section className="container px-4 py-12">
-          <h2 className="text-3xl font-black mb-6">Detention Board</h2>
+      <section className="container px-4 py-12">
+        <h2 className="text-3xl font-black mb-6">Detention Board</h2>
+        {issuesLoading ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <IssueCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : issues && issues.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {issues.map((issue: any) => (
               <IssueCard key={issue.id} issue={issue} />
             ))}
           </div>
-        </section>
-      )}
+        ) : null}
+      </section>
       
       {poll && <PollSection poll={poll} />}
     </div>

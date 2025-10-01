@@ -205,6 +205,10 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                     src={img}
                     alt="Post attachment"
                     className="w-full object-cover max-h-96"
+                    loading="lazy"
+                    decoding="async"
+                    width="600"
+                    height="400"
                   />
                 ))}
               </div>
