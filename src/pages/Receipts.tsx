@@ -35,7 +35,6 @@ export default function Receipts() {
     const { data: evidenceData } = await supabase
       .from('evidence')
       .select('*')
-      .eq('status', 'approved')
       .order('date_of_doc', { ascending: false });
 
     // Then fetch associated issues separately if needed
