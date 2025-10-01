@@ -7,6 +7,7 @@ import { AliasAvatar } from '@/components/AliasAvatar';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { getFingerprint } from '@/lib/fingerprint';
 
 interface PostCardProps {
@@ -25,9 +26,11 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
   const [reacting, setReacting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [userReactions, setUserReactions] = useState<Set<string>>(new Set());
+  const [isPostAuthorAdmin, setIsPostAuthorAdmin] = useState(false);
 
   useEffect(() => {
     checkUserReactions();
+    checkIfAuthorIsAdmin();
   }, [post.id, user]);
 
   const checkUserReactions = async () => {
@@ -41,6 +44,22 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
     if (data) {
       setUserReactions(new Set(data.map(r => r.reaction_type)));
     }
+  };
+
+  const checkIfAuthorIsAdmin = async () => {
+    if (!post.user_id) {
+      setIsPostAuthorAdmin(false);
+      return;
+    }
+
+    const { data } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', post.user_id)
+      .eq('role', 'admin')
+      .maybeSingle();
+    
+    setIsPostAuthorAdmin(!!data);
   };
 
   const formatTime = (dateString: string) => {
@@ -170,6 +189,11 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="font-bold text-sm truncate">{post.alias || 'Anonymous'}</span>
+              {isPostAuthorAdmin && (
+                <Badge variant="secondary" className="text-xs px-2 py-0 h-5">
+                  Admin
+                </Badge>
+              )}
               <span className="text-xs text-muted-foreground">·</span>
               <span className="text-xs text-muted-foreground">
                 {formatTime(post.created_at)}
