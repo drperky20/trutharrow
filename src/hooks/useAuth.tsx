@@ -29,9 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          setTimeout(() => {
-            checkAdminStatus(session.user.id);
-          }, 0);
+          checkAdminStatus(session.user.id);
         } else {
           setIsAdmin(false);
         }

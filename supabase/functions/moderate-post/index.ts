@@ -1,13 +1,15 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const corsHeaders = {
+const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+} as const;
+
+const JSON_HEADERS = { ...CORS_HEADERS, "Content-Type": "application/json" } as const;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: CORS_HEADERS });
   }
 
   try {
@@ -16,7 +18,7 @@ serve(async (req) => {
     if (!content || typeof content !== 'string') {
       return new Response(
         JSON.stringify({ error: "Content is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 400, headers: JSON_HEADERS }
       );
     }
 
@@ -75,14 +77,14 @@ Respond with JSON only:
       if (response.status === 429) {
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 429, headers: JSON_HEADERS }
         );
       }
       
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: "AI service temporarily unavailable." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 402, headers: JSON_HEADERS }
         );
       }
       
@@ -96,7 +98,7 @@ Respond with JSON only:
 
     return new Response(
       JSON.stringify(moderationResult),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: JSON_HEADERS }
     );
 
   } catch (error) {
@@ -108,7 +110,7 @@ Respond with JSON only:
         approved: true,
         reason: null
       }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: JSON_HEADERS }
     );
   }
 });

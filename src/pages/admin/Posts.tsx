@@ -13,6 +13,59 @@ export default function AdminPosts() {
 
   useEffect(() => {
     fetchPosts();
+
+    // Set up real-time subscription for all posts (admin view)
+    const channel = supabase
+      .channel('posts-admin')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'posts',
+        },
+        (payload) => {
+          const newPost = payload.new;
+          setPosts((curr) => [newPost, ...curr]);
+          
+          // Show notification for pending posts
+          if (newPost.status === 'pending') {
+            toast({
+              title: 'New post pending review',
+              description: `From ${newPost.alias || 'Anonymous'}`,
+            });
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'posts',
+        },
+        (payload) => {
+          const updated = payload.new;
+          setPosts((curr) => curr.map((p) => (p.id === updated.id ? updated : p)));
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'posts',
+        },
+        (payload) => {
+          const deleted = payload.old;
+          setPosts((curr) => curr.filter((p) => p.id !== deleted.id));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchPosts = async () => {
@@ -24,9 +77,18 @@ export default function AdminPosts() {
   };
 
   const updateStatus = async (id: string, status: string) => {
-    await supabase.from('posts').update({ status }).eq('id', id);
-    toast({ title: `Post ${status}` });
-    fetchPosts();
+    const { error } = await supabase.from('posts').update({ status }).eq('id', id);
+    
+    if (error) {
+      toast({ 
+        title: 'Error', 
+        description: 'Failed to update post status',
+        variant: 'destructive'
+      });
+    } else {
+      toast({ title: `Post ${status}` });
+      // Real-time subscription will handle the state update
+    }
   };
 
   if (loading) return <div>Loading...</div>;

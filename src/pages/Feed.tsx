@@ -16,6 +16,63 @@ export default function Feed() {
 
   useEffect(() => {
     fetchPosts();
+
+    // Set up real-time subscription for approved posts
+    const channel = supabase
+      .channel('posts-feed')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'posts',
+          filter: 'status=eq.approved',
+        },
+        (payload) => {
+          const newPost = payload.new;
+          // Only add root posts (no parent_id) to feed
+          if (!newPost.parent_id) {
+            setPosts((curr) => [newPost, ...curr]);
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'posts',
+        },
+        (payload) => {
+          const updated = payload.new;
+          const old = payload.old;
+
+          if (updated.status === 'approved' && !updated.parent_id) {
+            // Post was approved (possibly was pending before)
+            setPosts((curr) => {
+              const exists = curr.find((p) => p.id === updated.id);
+              if (exists) {
+                // Update existing post
+                return curr.map((p) => (p.id === updated.id ? updated : p));
+              } else {
+                // Newly approved post, add to feed
+                return [updated, ...curr];
+              }
+            });
+          } else if (old.status === 'approved' && updated.status !== 'approved') {
+            // Post was removed or rejected, remove from feed
+            setPosts((curr) => curr.filter((p) => p.id !== updated.id));
+          } else if (updated.status === 'approved' && !updated.parent_id) {
+            // Content update on approved post
+            setPosts((curr) => curr.map((p) => (p.id === updated.id ? updated : p)));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [mode]);
 
   const fetchPosts = async () => {
@@ -110,7 +167,11 @@ export default function Feed() {
         ) : (
           <div>
             {posts.map(post => (
-              <PostCard key={post.id} post={post} />
+              <PostCard 
+                key={post.id} 
+                post={post} 
+                onDelete={() => setPosts(prev => prev.filter(p => p.id !== post.id))}
+              />
             ))}
           </div>
         )}

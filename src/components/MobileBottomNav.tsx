@@ -7,8 +7,8 @@ export const MobileBottomNav = () => {
   const location = useLocation();
   const { isAdmin } = useAuth();
 
-  // Don't show on admin pages or auth
-  if (location.pathname.startsWith('/admin') || location.pathname === '/auth') {
+  // Don't show on auth page only
+  if (location.pathname === '/auth') {
     return null;
   }
 
@@ -34,7 +34,7 @@ export const MobileBottomNav = () => {
               key={path}
               to={path}
               className={cn(
-                "flex flex-col items-center justify-center gap-1 px-3 py-2 min-w-[64px] min-h-[64px] transition-all rounded-xl relative",
+                "flex flex-col items-center justify-center gap-1 px-2 py-2 min-w-[56px] min-h-[64px] transition-all rounded-xl relative flex-1",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 "active:scale-95",
                 isPrimary && !isActive && "text-primary",
@@ -46,11 +46,11 @@ export const MobileBottomNav = () => {
               aria-current={isActive ? 'page' : undefined}
             >
               <Icon className={cn(
-                "h-6 w-6 transition-transform motion-reduce:transition-none",
+                "h-6 w-6 transition-transform motion-reduce:transition-none flex-shrink-0",
                 isActive && "scale-110"
               )} />
               <span className={cn(
-                "text-xs leading-tight",
+                "text-xs leading-tight whitespace-nowrap",
                 isActive ? "font-bold" : "font-medium"
               )}>
                 {label}

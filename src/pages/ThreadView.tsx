@@ -23,7 +23,68 @@ export default function ThreadView() {
   useEffect(() => {
     if (postId) {
       fetchThread();
+
+      // Set up real-time subscription for replies in this thread
+      const channel = supabase
+        .channel(`thread-${postId}`)
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'posts',
+            filter: `parent_id=eq.${postId}`,
+          },
+          (payload) => {
+            const newReply = payload.new;
+            if (newReply.status === 'approved') {
+              setReplies((curr) => [...curr, newReply]);
+            }
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'posts',
+          },
+          (payload) => {
+            const updated = payload.new;
+            const old = payload.old;
+
+            // Update replies if this is a reply in current thread
+            if (updated.parent_id === postId || updated.thread_id === (rootPost?.thread_id || rootPost?.id)) {
+              if (updated.status === 'approved') {
+                setReplies((curr) => {
+                  const exists = curr.find((r) => r.id === updated.id);
+                  if (exists) {
+                    return curr.map((r) => (r.id === updated.id ? updated : r));
+                  } else if (old.status === 'pending') {
+                    // Newly approved reply
+                    return [...curr, updated];
+                  }
+                  return curr;
+                });
+              } else if (old.status === 'approved' && updated.status !== 'approved') {
+                // Reply removed or rejected
+                setReplies((curr) => curr.filter((r) => r.id !== updated.id));
+              }
+            }
+
+            // Update root post if it's the one being updated
+            if (updated.id === postId) {
+              setRootPost(updated);
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
   const fetchThread = async () => {
@@ -94,6 +155,7 @@ export default function ThreadView() {
                 post={post} 
                 level={level}
                 showReplyLine={level > 0}
+                onDelete={() => setReplies(prev => prev.filter(p => p.id !== post.id))}
               />
               {children.length > 0 && renderThread(children, maxLevel)}
             </>
@@ -169,7 +231,11 @@ export default function ThreadView() {
 
         {/* Root Post */}
         <div className="border-b-4 border-border">
-          <PostCard post={rootPost} level={0} />
+          <PostCard 
+            post={rootPost} 
+            level={0}
+            onDelete={() => navigate('/feed')}
+          />
         </div>
 
         {/* Reply composer */}

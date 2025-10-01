@@ -13,9 +13,10 @@ interface PostCardProps {
   isNew?: boolean;
   showReplyLine?: boolean;
   level?: number;
+  onDelete?: () => void;
 }
 
-export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0 }: PostCardProps) => {
+export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0, onDelete }: PostCardProps) => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const { toast } = useToast();
@@ -90,8 +91,12 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
         description: "The post has been removed.",
       });
 
-      // Reload the page to refresh the feed
-      window.location.reload();
+      // Call the onDelete callback if provided, otherwise fallback to reload
+      if (onDelete) {
+        onDelete();
+      } else {
+        window.location.reload();
+      }
     } catch (error) {
       console.error('Delete error:', error);
       toast({

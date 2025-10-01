@@ -124,7 +124,12 @@ export default function Index() {
           <h2 className="text-3xl font-black mb-6">Bell Ringers</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post, idx) => (
-              <PostCard key={post.id} post={post} isNew={idx < 2} />
+              <PostCard 
+                key={post.id} 
+                post={post} 
+                isNew={idx < 2}
+                onDelete={() => setPosts(prev => prev.filter(p => p.id !== post.id))}
+              />
             ))}
           </div>
           <div className="mt-6 text-center">
