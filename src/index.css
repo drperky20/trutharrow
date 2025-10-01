@@ -51,13 +51,32 @@ All colors MUST be HSL.
 }
 
 @layer base {
+  /* Size-adjusted fallback fonts to prevent layout shift */
+  @font-face {
+    font-family: 'Inter Fallback';
+    src: local('Arial');
+    size-adjust: 107%;
+    ascent-override: 90%;
+    descent-override: 22%;
+    line-gap-override: 0%;
+  }
+
+  @font-face {
+    font-family: 'JetBrains Mono Fallback';
+    src: local('Courier New');
+    size-adjust: 95%;
+    ascent-override: 85%;
+    descent-override: 20%;
+    line-gap-override: 0%;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', 'Inter Fallback', system-ui, -apple-system, sans-serif;
     /* Safe area support for notched devices */
     padding-top: env(safe-area-inset-top);
     padding-left: env(safe-area-inset-left);
@@ -65,11 +84,11 @@ All colors MUST be HSL.
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', 'Inter Fallback', system-ui, -apple-system, sans-serif;
   }
 
   .font-mono {
-    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-family: 'JetBrains Mono', 'JetBrains Mono Fallback', 'Courier New', monospace;
   }
 }
 
