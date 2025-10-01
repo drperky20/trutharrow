@@ -24,7 +24,6 @@ export default function ThreadView() {
     if (postId) {
       fetchThread();
 
-      // Set up real-time subscription for replies in this thread
       const channel = supabase
         .channel(`thread-${postId}`)
         .on(
@@ -53,26 +52,21 @@ export default function ThreadView() {
             const updated = payload.new;
             const old = payload.old;
 
-            // Update replies if this is a reply in current thread
             if (updated.parent_id === postId || updated.thread_id === (rootPost?.thread_id || rootPost?.id)) {
               if (updated.status === 'approved') {
                 setReplies((curr) => {
                   const exists = curr.find((r) => r.id === updated.id);
-                  if (exists) {
-                    return curr.map((r) => (r.id === updated.id ? updated : r));
-                  } else if (old.status === 'pending') {
-                    // Newly approved reply
-                    return [...curr, updated];
-                  }
-                  return curr;
+                  return exists
+                    ? curr.map((r) => (r.id === updated.id ? updated : r))
+                    : old.status === 'pending'
+                    ? [...curr, updated]
+                    : curr;
                 });
               } else if (old.status === 'approved' && updated.status !== 'approved') {
-                // Reply removed or rejected
                 setReplies((curr) => curr.filter((r) => r.id !== updated.id));
               }
             }
 
-            // Update root post if it's the one being updated
             if (updated.id === postId) {
               setRootPost(updated);
             }
@@ -96,7 +90,7 @@ export default function ThreadView() {
       .select('*')
       .eq('id', postId)
       .eq('status', 'approved')
-      .single();
+      .maybeSingle();
 
     if (!root) {
       setLoading(false);

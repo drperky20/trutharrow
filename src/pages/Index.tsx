@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { PostCard } from '@/components/PostCard';
@@ -74,12 +73,6 @@ export default function Index() {
     staleTime: 60000,
   });
 
-  const [localPosts, setLocalPosts] = useState(posts || []);
-
-  useEffect(() => {
-    if (posts) setLocalPosts(posts);
-  }, [posts]);
-
   const loading = postsLoading || issuesLoading;
 
   if (loading) {
@@ -102,16 +95,15 @@ export default function Index() {
         </div>
       )}
       
-      {localPosts && localPosts.length > 0 && (
+      {posts && posts.length > 0 && (
         <section className="container px-4 py-12">
           <h2 className="text-3xl font-black mb-6">Bell Ringers</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {localPosts.map((post, idx) => (
+            {posts.map((post, idx) => (
               <PostCard 
                 key={post.id} 
                 post={post} 
                 isNew={idx < 2}
-                onDelete={() => setLocalPosts(prev => prev.filter(p => p.id !== post.id))}
               />
             ))}
           </div>

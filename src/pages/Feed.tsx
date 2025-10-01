@@ -17,7 +17,6 @@ export default function Feed() {
   useEffect(() => {
     fetchPosts();
 
-    // Set up real-time subscription for approved posts
     const channel = supabase
       .channel('posts-feed')
       .on(
@@ -30,7 +29,6 @@ export default function Feed() {
         },
         (payload) => {
           const newPost = payload.new;
-          // Only add root posts (no parent_id) to feed
           if (!newPost.parent_id) {
             setPosts((curr) => [newPost, ...curr]);
           }
@@ -48,23 +46,14 @@ export default function Feed() {
           const old = payload.old;
 
           if (updated.status === 'approved' && !updated.parent_id) {
-            // Post was approved (possibly was pending before)
             setPosts((curr) => {
               const exists = curr.find((p) => p.id === updated.id);
-              if (exists) {
-                // Update existing post
-                return curr.map((p) => (p.id === updated.id ? updated : p));
-              } else {
-                // Newly approved post, add to feed
-                return [updated, ...curr];
-              }
+              return exists
+                ? curr.map((p) => (p.id === updated.id ? updated : p))
+                : [updated, ...curr];
             });
           } else if (old.status === 'approved' && updated.status !== 'approved') {
-            // Post was removed or rejected, remove from feed
             setPosts((curr) => curr.filter((p) => p.id !== updated.id));
-          } else if (updated.status === 'approved' && !updated.parent_id) {
-            // Content update on approved post
-            setPosts((curr) => curr.map((p) => (p.id === updated.id ? updated : p)));
           }
         }
       )
