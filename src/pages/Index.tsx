@@ -70,26 +70,38 @@ export default function Index() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden border-b border-border">
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `url(${heroBanner})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background z-[1]" />
+        <img
+          src={heroBanner}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
+          loading="eager"
+          sizes="100vw"
         />
-        <div className="relative container px-4 py-20 md:py-32">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 max-w-4xl">
+        <div className="relative z-[2] container px-4 py-20 md:py-32">
+          <h1 
+            className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 max-w-4xl"
+            style={{
+              textShadow: '0 2px 8px rgba(0,0,0,0.8)'
+            }}
+          >
             {headlines[currentHeadline]}
           </h1>
           <div className="flex flex-wrap gap-4">
             <Link to="/issues">
-              <Button size="lg" className="font-bold text-base">
+              <Button 
+                size="lg" 
+                className="font-bold text-base min-h-[44px] px-6"
+              >
                 See the Issues
               </Button>
             </Link>
             <Link to="/submit">
-              <Button size="lg" variant="outline" className="font-bold text-base">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="font-bold text-base min-h-[44px] px-6"
+              >
                 Drop Your Homework
               </Button>
             </Link>

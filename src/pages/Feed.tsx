@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { PostCard } from '@/components/PostCard';
 import { ComposeBox } from '@/components/ComposeBox';
 import { TweetSkeletonList } from '@/components/TweetSkeleton';
+import { SegmentedControl } from '@/components/SegmentedControl';
 import { supabase } from '@/integrations/supabase/client';
-import { cn } from '@/lib/utils';
 
 type FeedMode = 'for-you' | 'latest';
 
@@ -66,38 +66,15 @@ export default function Feed() {
           
           {/* Segmented control tabs */}
           <div className="px-4 py-2">
-            <div className="inline-flex rounded-full bg-card/60 border border-border p-1 w-full max-w-xs">
-              <button
-                onClick={() => setMode('for-you')}
-                className={cn(
-                  "flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-all relative",
-                  mode === 'for-you' 
-                    ? 'text-foreground' 
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-                aria-label="Switch to For You feed"
-              >
-                For You
-                {mode === 'for-you' && (
-                  <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-t animate-in fade-in slide-in-from-bottom-1" />
-                )}
-              </button>
-              <button
-                onClick={() => setMode('latest')}
-                className={cn(
-                  "flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-all relative",
-                  mode === 'latest' 
-                    ? 'text-foreground' 
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-                aria-label="Switch to Latest feed"
-              >
-                Latest
-                {mode === 'latest' && (
-                  <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-t animate-in fade-in slide-in-from-bottom-1" />
-                )}
-              </button>
-            </div>
+            <SegmentedControl
+              value={mode}
+              onValueChange={(val) => setMode(val as FeedMode)}
+              items={[
+                { id: 'for-you', label: 'For You' },
+                { id: 'latest', label: 'Latest' },
+              ]}
+              className="w-full max-w-xs"
+            />
           </div>
         </div>
         
