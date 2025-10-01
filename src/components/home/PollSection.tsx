@@ -78,10 +78,8 @@ export const PollSection = ({ poll }: PollSectionProps) => {
   const totalVotes = Object.values(currentPoll.results as Record<string, number>).reduce((a, b) => a + b, 0);
 
   return (
-    <section className="container px-4 py-12">
-      <h2 className="text-3xl font-black mb-6">Poll of the Week</h2>
-      <div className="bg-card border border-border rounded-lg p-6 max-w-2xl">
-        <h3 className="text-xl font-bold mb-6">{currentPoll.question}</h3>
+    <div className="bg-card border border-border rounded-lg p-6">
+      <h3 className="text-xl font-bold mb-6">{currentPoll.question}</h3>
         <div className="space-y-4">
           {currentPoll.options.map((option: string, index: number) => {
             const count = currentPoll.results[index] || 0;
@@ -112,10 +110,9 @@ export const PollSection = ({ poll }: PollSectionProps) => {
             ✓ You've already voted on this poll
           </p>
         )}
-        <p className="text-xs text-muted-foreground mt-4">
-          Total votes: {totalVotes}
-        </p>
-      </div>
-    </section>
+      <p className="text-xs text-muted-foreground mt-4">
+        Total votes: {totalVotes}
+      </p>
+    </div>
   );
 };

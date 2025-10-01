@@ -41,18 +41,17 @@ export default function Index() {
     staleTime: 120000,
   });
 
-  const { data: poll } = useOptimizedQuery({
-    queryKey: 'home-poll',
+  const { data: polls } = useOptimizedQuery({
+    queryKey: 'home-polls',
     queryFn: async () => {
       const { data, error } = await supabase
         .from('polls')
         .select('*')
         .eq('active', true)
-        .limit(1)
-        .maybeSingle();
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data || [];
     },
     staleTime: 300000,
   });
@@ -126,7 +125,16 @@ export default function Index() {
         </section>
       )}
       
-      {poll && <PollSection poll={poll} />}
+      {polls && polls.length > 0 && (
+        <section className="container px-4 py-12">
+          <h2 className="text-3xl font-black mb-6">Polls</h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            {polls.map((poll) => (
+              <PollSection key={poll.id} poll={poll} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
