@@ -7,8 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { HeroSection } from '@/components/home/HeroSection';
 import { PollSection } from '@/components/home/PollSection';
 import { useOptimizedQuery } from '@/hooks/useOptimizedQuery';
-import { TweetSkeleton } from '@/components/TweetSkeleton';
-import { IssueCardSkeleton } from '@/components/IssueCardSkeleton';
+import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 
 export default function Index() {
   const { data: posts, loading: postsLoading } = useOptimizedQuery({
@@ -93,11 +92,7 @@ export default function Index() {
         <h2 className="text-3xl font-black mb-6">Bell Ringers</h2>
         {postsLoading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className="bg-card/80 border border-border rounded-lg overflow-hidden">
-                <TweetSkeleton />
-              </div>
-            ))}
+            <LoadingSkeleton type="post" count={9} />
           </div>
         ) : posts && posts.length > 0 ? (
           <>
@@ -123,9 +118,7 @@ export default function Index() {
         <h2 className="text-3xl font-black mb-6">Detention Board</h2>
         {issuesLoading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <IssueCardSkeleton key={i} />
-            ))}
+            <LoadingSkeleton type="issue" count={3} />
           </div>
         ) : issues && issues.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
