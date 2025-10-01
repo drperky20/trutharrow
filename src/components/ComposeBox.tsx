@@ -50,28 +50,62 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
     }
 
     setLoading(true);
-    const { error } = await supabase.from('posts').insert({
-      alias: alias.trim(),
-      content: content.trim(),
-      parent_id: parentId || null,
-      user_id: user?.id || null,
-      type: 'assignment',
-    });
 
-    if (error) {
+    try {
+      // Run AI moderation check
+      const { data: moderationData, error: moderationError } = await supabase.functions.invoke('moderate-post', {
+        body: { content: content.trim() }
+      });
+
+      if (moderationError) {
+        console.error('Moderation error:', moderationError);
+        // Fail open: allow post if moderation service fails
+        toast({
+          title: "Moderation check failed",
+          description: "Posting anyway. Our team will review it.",
+        });
+      } else if (moderationData && !moderationData.approved) {
+        // Post was rejected by moderation
+        toast({
+          title: "Post blocked",
+          description: moderationData.reason || "Your post violates our community guidelines.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Post passed moderation or moderation failed (fail open)
+      const { error } = await supabase.from('posts').insert({
+        alias: alias.trim(),
+        content: content.trim(),
+        parent_id: parentId || null,
+        user_id: user?.id || null,
+        type: 'assignment',
+      });
+
+      if (error) {
+        toast({
+          title: "Error posting",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Posted!",
+          description: "Your post is pending admin review.",
+        });
+        setContent('');
+        setIsFocused(false);
+        onPost?.();
+      }
+    } catch (error) {
+      console.error('Submit error:', error);
       toast({
-        title: "Error posting",
-        description: error.message,
+        title: "Error",
+        description: "Failed to submit post. Please try again.",
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Posted!",
-        description: "Your post is pending review.",
-      });
-      setContent('');
-      setIsFocused(false);
-      onPost?.();
     }
 
     setLoading(false);
