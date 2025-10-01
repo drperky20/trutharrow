@@ -1,6 +1,6 @@
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate, Link } from 'react-router-dom';
-import { FileText, MessageSquare, Image, Bell, TrendingUp, Quote } from 'lucide-react';
+import { FileText, MessageSquare, Image, Bell, TrendingUp, Quote, Inbox } from 'lucide-react';
 
 export default function AdminDashboard() {
   const { isAdmin, loading } = useAuth();
@@ -9,6 +9,7 @@ export default function AdminDashboard() {
   if (!isAdmin) return <Navigate to="/auth" replace />;
 
   const sections = [
+    { title: 'Submissions', icon: Inbox, href: '/admin/submissions', desc: 'Review homework submissions' },
     { title: 'Issues', icon: FileText, href: '/admin/issues', desc: 'Manage detention board' },
     { title: 'Posts', icon: MessageSquare, href: '/admin/posts', desc: 'Moderate cafeteria posts' },
     { title: 'Evidence', icon: Image, href: '/admin/evidence', desc: 'Manage receipts' },

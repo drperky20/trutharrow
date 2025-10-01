@@ -5,8 +5,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import { Upload } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { getFingerprint } from '@/lib/fingerprint';
 
 export default function Submit() {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     what: '',
@@ -14,23 +18,50 @@ export default function Submit() {
     verify: '',
     contact: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
-    toast({
-      title: 'Your homework is in.',
-      description: 'We\'ll grade it soon and follow up if we need clarification.',
-      className: 'bg-alert text-alert-foreground border-alert',
-    });
-    
-    setFormData({
-      title: '',
-      what: '',
-      when: '',
-      verify: '',
-      contact: '',
-    });
+    try {
+      const fingerprint = await getFingerprint();
+      
+      const { error } = await supabase.from('submissions').insert({
+        title: formData.title,
+        what: formData.what,
+        when_where: formData.when || null,
+        verify: formData.verify,
+        contact: formData.contact || null,
+        user_id: user?.id || null,
+        fingerprint: !user ? fingerprint : null,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Your homework is in.',
+        description: "We'll grade it soon and follow up if we need clarification.",
+        className: 'bg-alert text-alert-foreground border-alert',
+      });
+      
+      setFormData({
+        title: '',
+        what: '',
+        when: '',
+        verify: '',
+        contact: '',
+      });
+    } catch (error) {
+      console.error('Submission error:', error);
+      toast({
+        title: 'Submission failed',
+        description: 'Please try again later.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   return (
@@ -122,8 +153,8 @@ export default function Submit() {
           </p>
         </div>
         
-        <Button type="submit" size="lg" className="w-full font-bold">
-          Submit Anonymously
+        <Button type="submit" size="lg" className="w-full font-bold" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit Anonymously'}
         </Button>
       </form>
       

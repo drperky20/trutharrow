@@ -367,6 +367,57 @@ export type Database = {
         }
         Relationships: []
       }
+      submissions: {
+        Row: {
+          admin_notes: string | null
+          contact: string | null
+          created_at: string | null
+          evidence_urls: string[] | null
+          fingerprint: string | null
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["submission_status"]
+          title: string
+          user_id: string | null
+          verify: string
+          what: string
+          when_where: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          contact?: string | null
+          created_at?: string | null
+          evidence_urls?: string[] | null
+          fingerprint?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          title: string
+          user_id?: string | null
+          verify: string
+          what: string
+          when_where?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          contact?: string | null
+          created_at?: string | null
+          evidence_urls?: string[] | null
+          fingerprint?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          title?: string
+          user_id?: string | null
+          verify?: string
+          what?: string
+          when_where?: string | null
+        }
+        Relationships: []
+      }
       ticker_quotes: {
         Row: {
           approved: boolean | null
@@ -514,6 +565,7 @@ export type Database = {
       evidence_type: "pdf" | "image" | "url"
       post_type: "assignment" | "detention-slip" | "pop-quiz" | "announcement"
       severity_type: "info" | "alert" | "win"
+      submission_status: "pending" | "approved" | "rejected" | "published"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -646,6 +698,7 @@ export const Constants = {
       evidence_type: ["pdf", "image", "url"],
       post_type: ["assignment", "detention-slip", "pop-quiz", "announcement"],
       severity_type: ["info", "alert", "win"],
+      submission_status: ["pending", "approved", "rejected", "published"],
     },
   },
 } as const

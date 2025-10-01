@@ -26,6 +26,7 @@ import AdminEvidence from "./pages/admin/Evidence";
 import AdminBanners from "./pages/admin/Banners";
 import AdminPolls from "./pages/admin/Polls";
 import AdminTicker from "./pages/admin/Ticker";
+import AdminSubmissions from "./pages/admin/Submissions";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -74,6 +75,7 @@ const App = () => (
                   <Route path="/admin/banners" element={<AdminBanners />} />
                   <Route path="/admin/polls" element={<AdminPolls />} />
                   <Route path="/admin/ticker" element={<AdminTicker />} />
+                  <Route path="/admin/submissions" element={<AdminSubmissions />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 <Footer />
