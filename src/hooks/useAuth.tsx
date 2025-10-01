@@ -78,11 +78,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       password,
     });
 
-    // Track failed login attempts
+    // Track failed login attempts using secure function
     if (error) {
-      await supabase.from('failed_login_attempts').insert({
-        email,
-        attempted_at: new Date().toISOString()
+      await supabase.rpc('record_failed_login_attempt', {
+        p_email: email,
+        p_fingerprint: null
       });
     }
 

@@ -494,6 +494,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      record_failed_login_attempt: {
+        Args: { p_email: string; p_fingerprint?: string }
+        Returns: Json
+      }
       vote_on_poll_safe: {
         Args: {
           p_fingerprint?: string
