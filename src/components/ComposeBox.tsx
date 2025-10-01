@@ -262,9 +262,14 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
         </div>
       </div>
 
-      {/* Mobile sticky footer */}
+      {/* Mobile sticky footer - positioned above bottom nav */}
       {isFocused && (
-        <div className="md:hidden fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur px-4 py-3 flex items-center justify-between z-50 safe-area-bottom">
+        <div 
+          className="md:hidden fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur-md px-4 py-3 flex items-center justify-between z-40"
+          style={{
+            paddingBottom: 'calc(0.75rem + max(0.75rem, env(safe-area-inset-bottom)) + 64px)',
+          }}
+        >
           <span className={cn(
             "text-xs font-mono transition-colors",
             isAtLimit ? "text-destructive" : isNearLimit ? "text-yellow-500" : "text-muted-foreground"
@@ -275,7 +280,7 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
             onClick={handleSubmit}
             disabled={!canPost}
             size="sm"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 min-h-[44px] px-6"
           >
             {loading ? 'Posting...' : parentId ? 'Reply' : 'Post'}
           </Button>

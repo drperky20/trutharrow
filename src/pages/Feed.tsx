@@ -68,19 +68,19 @@ export default function Feed() {
         pullDistance={pullDistance}
         shouldTrigger={shouldTrigger}
       />
-    <div className="min-h-screen">
-      <div className="max-w-2xl mx-auto border-x border-border min-h-screen">
+    <div className="min-h-dvh md:min-h-screen pb-20 md:pb-0">
+      <div className="max-w-2xl mx-auto md:border-x border-border min-h-dvh md:min-h-screen">
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border">
+        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border">
           <div className="px-4 py-3">
-            <h1 className="text-xl font-black">Cafeteria</h1>
-            <p className="text-muted-foreground text-xs">
+            <h1 className="text-xl md:text-2xl font-black">Cafeteria</h1>
+            <p className="text-muted-foreground text-xs md:text-sm">
               The real tea, straight from students.
             </p>
           </div>
           
           {/* Segmented control tabs */}
-          <div className="px-4 py-2">
+          <div className="px-4 py-3">
             <SegmentedControl
               value={mode}
               onValueChange={(val) => setMode(val as FeedMode)}

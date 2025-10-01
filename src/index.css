@@ -179,6 +179,15 @@ All colors MUST be HSL.
     padding-bottom: calc(5rem + env(safe-area-inset-bottom));
   }
 
+  /* Safe area utilities */
+  .safe-area-bottom {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .safe-area-top {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+
   @media (min-width: 768px) {
     .mobile-nav-padding {
       padding-bottom: 0;

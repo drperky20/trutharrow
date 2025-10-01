@@ -17,14 +17,14 @@ export const MobileBottomNav = () => {
 
   return (
     <nav 
-      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur border-t border-border"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border"
       role="navigation"
       aria-label="Primary navigation"
       style={{
         paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))',
       }}
     >
-      <div className="flex items-center justify-around pt-2">
+      <div className="flex items-center justify-around pt-2 px-2">
         {visibleNavItems.map(({ path, icon: Icon, label, isPrimary }) => {
           const isActive = location.pathname === path || 
                           (path !== '/' && location.pathname.startsWith(path));
@@ -34,28 +34,32 @@ export const MobileBottomNav = () => {
               key={path}
               to={path}
               className={cn(
-                "flex flex-col items-center justify-center gap-1 px-3 py-2 min-w-[64px] min-h-[56px] transition-all rounded-xl relative",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                "flex flex-col items-center justify-center gap-1 px-3 py-2 min-w-[64px] min-h-[64px] transition-all rounded-xl relative",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                "active:scale-95",
                 isPrimary && !isActive && "text-primary",
                 isActive 
                   ? 'text-primary font-semibold' 
-                  : !isPrimary && 'text-muted-foreground hover:text-foreground active:scale-95'
+                  : !isPrimary && 'text-muted-foreground hover:text-foreground'
               )}
               aria-label={label}
               aria-current={isActive ? 'page' : undefined}
             >
               <Icon className={cn(
-                "h-6 w-6 transition-transform",
+                "h-6 w-6 transition-transform motion-reduce:transition-none",
                 isActive && "scale-110"
               )} />
               <span className={cn(
-                "text-xs",
+                "text-xs leading-tight",
                 isActive ? "font-bold" : "font-medium"
               )}>
                 {label}
               </span>
               {isActive && (
-                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-full" />
+                <div 
+                  className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-10 h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60 rounded-full motion-reduce:transition-none" 
+                  aria-hidden="true"
+                />
               )}
             </Link>
           );

@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { Search, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { MobileDrawer } from './MobileDrawer';
 import { navItems } from '@/config/navConfig';
 
 export const Navbar = () => {
@@ -12,7 +11,7 @@ export const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Logo - Always visible */}
           <Link 
             to="/" 
             className="text-2xl font-black hover:text-primary transition-colors relative group"
@@ -40,38 +39,48 @@ export const Navbar = () => {
               })}
           </div>
 
-          {/* Right Side */}
-          <div className="flex items-center gap-3">
-            {/* Desktop actions */}
+          {/* Right Side - Desktop only */}
+          <div className="hidden md:flex items-center gap-3">
             {user ? (
               <>
-                <Link to="/submit" className="hidden md:block">
+                <Link to="/submit">
                   <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                     Submit
                   </Button>
                 </Link>
                 <button
                   onClick={() => signOut()}
-                  className="hidden md:block p-2 hover:bg-accent rounded-md transition-colors"
+                  className="p-2 hover:bg-accent rounded-md transition-colors"
                   title="Sign out"
+                  aria-label="Sign out"
                 >
                   <LogOut className="h-5 w-5" />
                 </button>
               </>
             ) : (
-              <Link to="/auth" className="hidden md:block">
+              <Link to="/auth">
                 <Button variant="outline">Sign In</Button>
               </Link>
             )}
-            <Link to="/search" className="hidden md:block">
-              <button className="p-2 hover:bg-accent rounded-md transition-colors">
+            <Link to="/search">
+              <button 
+                className="p-2 hover:bg-accent rounded-md transition-colors"
+                aria-label="Search"
+              >
                 <Search className="h-5 w-5" />
               </button>
             </Link>
-            
-            {/* Mobile drawer menu */}
-            <MobileDrawer />
           </div>
+
+          {/* Mobile: Search icon only */}
+          <Link to="/search" className="md:hidden">
+            <button 
+              className="p-2 hover:bg-accent rounded-md transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label="Search"
+            >
+              <Search className="h-5 w-5" />
+            </button>
+          </Link>
         </div>
       </div>
     </nav>
