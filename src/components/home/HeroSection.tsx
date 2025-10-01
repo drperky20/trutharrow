@@ -20,17 +20,13 @@ export const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative overflow-hidden border-b border-primary/30 min-h-[400px] md:min-h-[500px]">
+    <section className="relative overflow-hidden border-b border-primary/30">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background z-[1]" />
       <img
         src={heroBanner}
         alt="Broken Arrow Public Schools campus"
         className="absolute inset-0 w-full h-full object-cover opacity-20"
         loading="eager"
-        fetchpriority="high"
-        decoding="async"
-        width="1920"
-        height="500"
         sizes="100vw"
       />
       <div className="relative z-[2] container px-4 py-20 md:py-32">
