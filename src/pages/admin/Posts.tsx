@@ -2,6 +2,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuditLog } from '@/hooks/useAuditLog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Check, X } from 'lucide-react';
@@ -9,6 +10,7 @@ import { Check, X } from 'lucide-react';
 export default function AdminPosts() {
   const { isAdmin, loading } = useAuth();
   const { toast } = useToast();
+  const { logAction } = useAuditLog();
   const [posts, setPosts] = useState<any[]>([]);
 
   useEffect(() => {
@@ -77,6 +79,7 @@ export default function AdminPosts() {
   };
 
   const updateStatus = async (id: string, status: string) => {
+    const oldPost = posts.find(p => p.id === id);
     const { error } = await supabase.from('posts').update({ status }).eq('id', id);
     
     if (error) {
@@ -86,6 +89,15 @@ export default function AdminPosts() {
         variant: 'destructive'
       });
     } else {
+      // Log the moderation action
+      await logAction(
+        `Post ${status}`,
+        'posts',
+        id,
+        { status: oldPost?.status },
+        { status }
+      );
+      
       toast({ title: `Post ${status}` });
       // Real-time subscription will handle the state update
     }

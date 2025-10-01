@@ -60,10 +60,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signIn = async (email: string, password: string) => {
+    // Check if account is locked
+    const { data: isLocked } = await supabase.rpc('is_account_locked', {
+      p_email: email
+    });
+
+    if (isLocked) {
+      return { 
+        error: { 
+          message: 'Account temporarily locked due to multiple failed login attempts. Please try again in 15 minutes.' 
+        } 
+      };
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+    // Track failed login attempts
+    if (error) {
+      await supabase.from('failed_login_attempts').insert({
+        email,
+        attempted_at: new Date().toISOString()
+      });
+    }
+
     return { error };
   };
 

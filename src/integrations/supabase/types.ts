@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          ip_address: string | null
+          new_data: Json | null
+          old_data: Json | null
+          record_id: string | null
+          table_name: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          table_name?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          table_name?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       banners: {
         Row: {
           active: boolean | null
@@ -93,6 +132,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      failed_login_attempts: {
+        Row: {
+          attempted_at: string | null
+          email: string
+          fingerprint: string | null
+          id: string
+          ip_address: string | null
+        }
+        Insert: {
+          attempted_at?: string | null
+          email: string
+          fingerprint?: string | null
+          id?: string
+          ip_address?: string | null
+        }
+        Update: {
+          attempted_at?: string | null
+          email?: string
+          fingerprint?: string | null
+          id?: string
+          ip_address?: string | null
+        }
+        Relationships: []
       }
       issues: {
         Row: {
@@ -389,6 +452,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_old_failed_attempts: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       generate_alias: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -412,6 +479,20 @@ export type Database = {
           p_user_id?: string
         }
         Returns: Json
+      }
+      is_account_locked: {
+        Args: { p_email: string }
+        Returns: boolean
+      }
+      log_audit_event: {
+        Args: {
+          p_action: string
+          p_new_data?: Json
+          p_old_data?: Json
+          p_record_id?: string
+          p_table_name?: string
+        }
+        Returns: undefined
       }
       vote_on_poll_safe: {
         Args: {
