@@ -32,53 +32,53 @@ export default function About() {
       <section className="mb-12">
         <h2 className="text-3xl font-black mb-6">How It Works</h2>
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="bg-card border border-border rounded-lg p-6">
+          <div className="bg-card border border-border rounded-lg p-6 transition-all hover:border-primary/50">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-lg bg-primary/10">
                 <Eye className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="font-bold">Verification First</h3>
+              <h3 className="font-bold text-base">Verification First</h3>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Every submission is verified through multiple sources before publication. We check
               documents, corroborate accounts, and ensure accuracy.
             </p>
           </div>
           
-          <div className="bg-card border border-border rounded-lg p-6">
+          <div className="bg-card border border-border rounded-lg p-6 transition-all hover:border-primary/50">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-lg bg-primary/10">
                 <Lock className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="font-bold">Source Protection</h3>
+              <h3 className="font-bold text-base">Source Protection</h3>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Anonymous submissions are truly anonymous. We don't log IPs, don't require accounts,
               and use encrypted channels for sensitive communications.
             </p>
           </div>
           
-          <div className="bg-card border border-border rounded-lg p-6">
+          <div className="bg-card border border-border rounded-lg p-6 transition-all hover:border-primary/50">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-lg bg-primary/10">
                 <Shield className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="font-bold">Editorial Standards</h3>
+              <h3 className="font-bold text-base">Editorial Standards</h3>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               We follow journalistic ethics: verify before publishing, protect sources, correct
               errors promptly, and provide context. Every claim is backed by documentation.
             </p>
           </div>
           
-          <div className="bg-card border border-border rounded-lg p-6">
+          <div className="bg-card border border-border rounded-lg p-6 transition-all hover:border-primary/50">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-lg bg-primary/10">
                 <MessageSquare className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="font-bold">Transparency</h3>
+              <h3 className="font-bold text-base">Transparency</h3>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               We publish our methodology, note when information is redacted, and explain our
               grading system. If we get something wrong, we correct it publicly.
             </p>
@@ -147,28 +147,28 @@ export default function About() {
       <section className="mb-12">
         <h2 className="text-3xl font-black mb-4">How to Redact Sensitive Info</h2>
         <div className="bg-card border border-border rounded-lg p-6">
-          <p className="mb-4 text-sm text-muted-foreground">
+          <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
             Before submitting documents, remove:
           </p>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-start gap-2">
-              <span className="text-primary mt-1">•</span>
-              <span>Student names (unless you're referencing yourself and want to be identified)</span>
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            <li className="flex items-start gap-3">
+              <span className="text-primary mt-0.5 flex-shrink-0">•</span>
+              <span className="leading-relaxed">Student names (unless you're referencing yourself and want to be identified)</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary mt-1">•</span>
-              <span>Staff names (unless they're public officials in their official capacity)</span>
+            <li className="flex items-start gap-3">
+              <span className="text-primary mt-0.5 flex-shrink-0">•</span>
+              <span className="leading-relaxed">Staff names (unless they're public officials in their official capacity)</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary mt-1">•</span>
-              <span>ID numbers, addresses, phone numbers, email addresses</span>
+            <li className="flex items-start gap-3">
+              <span className="text-primary mt-0.5 flex-shrink-0">•</span>
+              <span className="leading-relaxed">ID numbers, addresses, phone numbers, email addresses</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary mt-1">•</span>
-              <span>Any medical, disciplinary, or other private information about individuals</span>
+            <li className="flex items-start gap-3">
+              <span className="text-primary mt-0.5 flex-shrink-0">•</span>
+              <span className="leading-relaxed">Any medical, disciplinary, or other private information about individuals</span>
             </li>
           </ul>
-          <p className="mt-4 text-sm text-muted-foreground">
+          <p className="mt-5 text-sm text-muted-foreground leading-relaxed">
             Use a black marker or digital redaction tool. If you're unsure, submit it anyway and
             note what you think should be redacted — we'll handle it.
           </p>

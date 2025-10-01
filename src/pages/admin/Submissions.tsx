@@ -94,13 +94,14 @@ export default function AdminSubmissions() {
     <div className="container px-4 py-12">
       <h1 className="text-3xl font-black mb-8">Review Submissions</h1>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-8">
         {(['pending', 'approved', 'rejected', 'published', 'all'] as const).map((status) => (
           <Button
             key={status}
             variant={filter === status ? 'default' : 'outline'}
             onClick={() => setFilter(status)}
             size="sm"
+            className="transition-all"
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </Button>

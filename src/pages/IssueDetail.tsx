@@ -90,22 +90,22 @@ export default function IssueDetail() {
         </div>
         
         <div className="bg-alert/10 border border-alert/30 rounded-lg p-6">
-          <h3 className="font-bold mb-3 flex items-center gap-2">
+          <h3 className="font-bold mb-4 flex items-center gap-2 text-base">
             <AlertCircle className="h-5 w-5" />
             What this means for students
           </h3>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-start gap-2">
-              <span className="text-alert mt-1">•</span>
-              <span>Direct impact on learning environment and resource availability</span>
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            <li className="flex items-start gap-3">
+              <span className="text-alert mt-0.5 flex-shrink-0">•</span>
+              <span className="leading-relaxed">Direct impact on learning environment and resource availability</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-alert mt-1">•</span>
-              <span>Patterns of accountability gaps that affect student voice</span>
+            <li className="flex items-start gap-3">
+              <span className="text-alert mt-0.5 flex-shrink-0">•</span>
+              <span className="leading-relaxed">Patterns of accountability gaps that affect student voice</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-alert mt-1">•</span>
-              <span>Ongoing issues requiring sustained community attention</span>
+            <li className="flex items-start gap-3">
+              <span className="text-alert mt-0.5 flex-shrink-0">•</span>
+              <span className="leading-relaxed">Ongoing issues requiring sustained community attention</span>
             </li>
           </ul>
         </div>
