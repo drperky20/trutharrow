@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { PostCard } from '@/components/PostCard';
 import { ComposeBox } from '@/components/ComposeBox';
+import { TweetSkeletonList } from '@/components/TweetSkeleton';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 type FeedMode = 'for-you' | 'latest';
 
@@ -51,14 +52,6 @@ export default function Feed() {
     fetchPosts();
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen">
       <div className="max-w-2xl mx-auto border-x border-border min-h-screen">
@@ -71,50 +64,56 @@ export default function Feed() {
             </p>
           </div>
           
-          {/* Feed mode toggle */}
-          <div className="flex border-b border-border">
-            <button
-              onClick={() => setMode('for-you')}
-              className={`flex-1 py-3 text-sm font-semibold transition-colors relative ${
-                mode === 'for-you' 
-                  ? 'text-foreground' 
-                  : 'text-muted-foreground hover:bg-muted/50'
-              }`}
-            >
-              For You
-              {mode === 'for-you' && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t" />
-              )}
-            </button>
-            <button
-              onClick={() => setMode('latest')}
-              className={`flex-1 py-3 text-sm font-semibold transition-colors relative ${
-                mode === 'latest' 
-                  ? 'text-foreground' 
-                  : 'text-muted-foreground hover:bg-muted/50'
-              }`}
-            >
-              Latest
-              {mode === 'latest' && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t" />
-              )}
-            </button>
+          {/* Segmented control tabs */}
+          <div className="px-4 py-2">
+            <div className="inline-flex rounded-full bg-card/60 border border-border p-1 w-full max-w-xs">
+              <button
+                onClick={() => setMode('for-you')}
+                className={cn(
+                  "flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-all relative",
+                  mode === 'for-you' 
+                    ? 'text-foreground' 
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+                aria-label="Switch to For You feed"
+              >
+                For You
+                {mode === 'for-you' && (
+                  <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-t animate-in fade-in slide-in-from-bottom-1" />
+                )}
+              </button>
+              <button
+                onClick={() => setMode('latest')}
+                className={cn(
+                  "flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-all relative",
+                  mode === 'latest' 
+                    ? 'text-foreground' 
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+                aria-label="Switch to Latest feed"
+              >
+                Latest
+                {mode === 'latest' && (
+                  <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-t animate-in fade-in slide-in-from-bottom-1" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
         
-        {/* Compose Box - Always visible */}
-        <div className="border-b border-border">
+        {/* Compose Box */}
+        <div className="border-b border-border p-4">
           <ComposeBox onPost={handleNewPost} />
         </div>
         
         {/* Posts Feed */}
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <p className="text-muted-foreground">Loading...</p>
-          </div>
+          <TweetSkeletonList count={5} />
         ) : posts.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">No posts yet. Be the first to post!</p>
+          <div className="text-center py-16 px-4">
+            <p className="text-lg font-semibold mb-2">It's quiet… 👀</p>
+            <p className="text-muted-foreground mb-6">Be the first to spill (respectfully).</p>
+            <TweetSkeletonList count={3} />
           </div>
         ) : (
           <div>

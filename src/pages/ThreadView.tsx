@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { PostCard } from '@/components/PostCard';
 import { ComposeBox } from '@/components/ComposeBox';
+import { TweetSkeletonList } from '@/components/TweetSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 
@@ -18,7 +19,6 @@ export default function ThreadView() {
   const [rootPost, setRootPost] = useState<any>(null);
   const [replies, setReplies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showReplyBox, setShowReplyBox] = useState(false);
 
   useEffect(() => {
     if (postId) {
@@ -114,14 +114,21 @@ export default function ThreadView() {
   };
 
   const handleNewReply = () => {
-    setShowReplyBox(false);
     fetchThread();
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Loading thread...</p>
+      <div className="min-h-screen">
+        <div className="max-w-2xl mx-auto border-x border-border min-h-screen">
+          <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border px-4 py-3 flex items-center gap-3">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/feed')}>
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-xl font-black">Thread</h1>
+          </div>
+          <TweetSkeletonList count={3} />
+        </div>
       </div>
     );
   }
@@ -165,25 +172,14 @@ export default function ThreadView() {
           <PostCard post={rootPost} level={0} />
         </div>
 
-        {/* Reply Composer */}
-        <div className="border-b border-border">
-          {showReplyBox ? (
-            <ComposeBox 
-              parentId={rootPost.id}
-              onPost={handleNewReply}
-              placeholder="Post your reply..."
-            />
-          ) : (
-            <div className="p-4">
-              <Button
-                onClick={() => setShowReplyBox(true)}
-                variant="outline"
-                className="w-full"
-              >
-                Reply to this post
-              </Button>
-            </div>
-          )}
+        {/* Reply composer */}
+        <div className="border-b border-border p-4">
+          <ComposeBox 
+            onPost={handleNewReply} 
+            parentId={rootPost.id}
+            placeholder="Post your reply..."
+            compact
+          />
         </div>
 
         {/* Replies Thread */}

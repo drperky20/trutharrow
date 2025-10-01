@@ -1,40 +1,49 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useAlias } from '@/hooks/useAlias';
+import { AliasAvatar } from '@/components/AliasAvatar';
+import { Pencil } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ComposeBoxProps {
   onPost?: () => void;
   parentId?: string;
   placeholder?: string;
+  compact?: boolean;
 }
 
-const ALIAS_STORAGE_KEY = 'trutharrow:lastAlias';
-
-export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? 👀" }: ComposeBoxProps) => {
+export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? 👀", compact = false }: ComposeBoxProps) => {
   const [content, setContent] = useState('');
-  const [alias, setAlias] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [editingAlias, setEditingAlias] = useState(false);
+  const [tempAlias, setTempAlias] = useState('');
+  const { alias, setAlias } = useAlias();
   const { user } = useAuth();
   const { toast } = useToast();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const maxLength = 500;
 
-  // Load last used alias from localStorage
-  useEffect(() => {
-    const savedAlias = localStorage.getItem(ALIAS_STORAGE_KEY);
-    if (savedAlias) {
-      setAlias(savedAlias);
-    }
-  }, []);
-
   const handleSubmit = async () => {
-    if (!content.trim() || !alias.trim()) {
+    if (!content.trim()) {
       toast({
-        title: "Missing fields",
-        description: "Please provide both an alias and content.",
+        title: "Empty post",
+        description: "Please write something to post.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!alias.trim()) {
+      toast({
+        title: "Alias required",
+        description: "Please set your alias before posting.",
         variant: "destructive",
       });
       return;
@@ -56,56 +65,179 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? �
         variant: "destructive",
       });
     } else {
-      // Save alias for next time
-      localStorage.setItem(ALIAS_STORAGE_KEY, alias.trim());
-      
       toast({
-        title: "Post submitted!",
+        title: "Posted!",
         description: "Your post is pending review.",
       });
       setContent('');
+      setIsFocused(false);
       onPost?.();
     }
 
     setLoading(false);
   };
 
+  const handleSaveAlias = () => {
+    if (tempAlias.trim()) {
+      setAlias(tempAlias.trim());
+      setEditingAlias(false);
+      toast({
+        title: "Alias saved",
+        description: `You'll post as "${tempAlias.trim()}"`,
+      });
+    }
+  };
+
+  const openAliasEditor = () => {
+    setTempAlias(alias);
+    setEditingAlias(true);
+  };
+
+  const charsLeft = maxLength - content.length;
+  const isNearLimit = charsLeft < 50;
+  const isAtLimit = charsLeft <= 0;
+  const canPost = content.trim().length > 0 && alias.trim().length > 0 && !loading;
+
   return (
-    <div className="bg-card border border-border rounded-lg p-4">
-      <div className="flex gap-3">
-        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-          <span className="text-sm font-mono">{alias ? alias[0].toUpperCase() : '?'}</span>
-        </div>
-        <div className="flex-1 space-y-3">
-          <Input
-            placeholder="Your alias (e.g., Student-2025)"
-            value={alias}
-            onChange={(e) => setAlias(e.target.value.slice(0, 30))}
-            className="border-0 focus-visible:ring-0 bg-transparent px-0 placeholder:text-muted-foreground/60"
-          />
-          <Textarea
-            placeholder={placeholder}
-            value={content}
-            onChange={(e) => setContent(e.target.value.slice(0, maxLength))}
-            className="min-h-[100px] resize-none border-0 focus-visible:ring-0 bg-transparent p-0"
-          />
-          <div className="flex items-center justify-between pt-3 border-t border-border">
-            <span className={`text-xs font-mono ${
-              content.length > maxLength - 50 ? 'text-alert' : 'text-muted-foreground'
-            }`}>
-              {content.length}/{maxLength}
-            </span>
-            <Button 
-              onClick={handleSubmit}
-              disabled={!content.trim() || !alias.trim() || loading}
-              size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              {loading ? 'Posting...' : parentId ? 'Reply' : 'Post'}
-            </Button>
+    <>
+      <div className={cn(
+        "bg-card/80 border border-border rounded-2xl transition-all",
+        compact ? "p-3" : "p-4",
+        isFocused && "ring-2 ring-primary/20"
+      )}>
+        <div className="flex gap-3">
+          <AliasAvatar alias={alias} />
+          
+          <div className="flex-1 space-y-3">
+            {/* Alias chip */}
+            <div className="flex items-center gap-2">
+              {alias ? (
+                <Popover open={editingAlias} onOpenChange={setEditingAlias}>
+                  <PopoverTrigger asChild>
+                    <button
+                      onClick={openAliasEditor}
+                      className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1 text-sm hover:bg-muted/80 transition-colors"
+                    >
+                      <span className="font-medium">{alias}</span>
+                      <Pencil className="h-3 w-3 opacity-60" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80" align="start">
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium">Your alias</label>
+                        <Input
+                          value={tempAlias}
+                          onChange={(e) => setTempAlias(e.target.value.slice(0, 30))}
+                          placeholder="e.g., Student-2025"
+                          className="mt-1.5"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSaveAlias();
+                            if (e.key === 'Escape') setEditingAlias(false);
+                          }}
+                          autoFocus
+                        />
+                      </div>
+                      <Button onClick={handleSaveAlias} size="sm" className="w-full">
+                        Save
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              ) : (
+                <Popover open={editingAlias} onOpenChange={setEditingAlias}>
+                  <PopoverTrigger asChild>
+                    <button
+                      onClick={openAliasEditor}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Set your alias →
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80" align="start">
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium">Your alias</label>
+                        <Input
+                          value={tempAlias}
+                          onChange={(e) => setTempAlias(e.target.value.slice(0, 30))}
+                          placeholder="e.g., Student-2025"
+                          className="mt-1.5"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSaveAlias();
+                            if (e.key === 'Escape') setEditingAlias(false);
+                          }}
+                          autoFocus
+                        />
+                      </div>
+                      <Button onClick={handleSaveAlias} size="sm" className="w-full">
+                        Save
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
+            </div>
+
+            {/* Content textarea */}
+            <Textarea
+              ref={textareaRef}
+              placeholder={placeholder}
+              value={content}
+              onChange={(e) => setContent(e.target.value.slice(0, maxLength))}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              className={cn(
+                "resize-none border-0 focus-visible:ring-0 bg-transparent p-0 transition-all",
+                isFocused ? "min-h-[120px]" : "min-h-[84px]"
+              )}
+            />
+
+            {/* Safety hint */}
+            <p className="text-xs text-muted-foreground">
+              Be kind. No PII. Receipts &gt; rumors.
+            </p>
+
+            {/* Desktop actions */}
+            <div className="hidden md:flex items-center justify-between pt-3 border-t border-border">
+              <span className={cn(
+                "text-xs font-mono transition-colors",
+                isAtLimit ? "text-destructive" : isNearLimit ? "text-yellow-500" : "text-muted-foreground"
+              )}>
+                {content.length}/{maxLength}
+              </span>
+              <Button 
+                onClick={handleSubmit}
+                disabled={!canPost}
+                size="sm"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+              >
+                {loading ? 'Posting...' : parentId ? 'Reply' : 'Post'}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Mobile sticky footer */}
+      {isFocused && (
+        <div className="md:hidden fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur px-4 py-3 flex items-center justify-between z-50 safe-area-bottom">
+          <span className={cn(
+            "text-xs font-mono transition-colors",
+            isAtLimit ? "text-destructive" : isNearLimit ? "text-yellow-500" : "text-muted-foreground"
+          )}>
+            {content.length}/{maxLength}
+          </span>
+          <Button 
+            onClick={handleSubmit}
+            disabled={!canPost}
+            size="sm"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          >
+            {loading ? 'Posting...' : parentId ? 'Reply' : 'Post'}
+          </Button>
+        </div>
+      )}
+    </>
   );
 };

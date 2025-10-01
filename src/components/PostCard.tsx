@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AliasAvatar } from '@/components/AliasAvatar';
 
 interface PostCardProps {
   post: any;
@@ -61,28 +62,16 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
     navigate(`/feed/${post.thread_id || post.id}`);
   };
 
-  const getAvatarColor = (alias: string) => {
-    const colors = [
-      'bg-blue-500/20',
-      'bg-green-500/20',
-      'bg-purple-500/20',
-      'bg-orange-500/20',
-      'bg-pink-500/20',
-      'bg-teal-500/20',
-    ];
-    const hash = alias.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return colors[hash % colors.length];
-  };
-
   const isPending = post.status === 'pending';
 
   return (
     <div
       className={cn(
-        'relative bg-card border-b border-border hover:bg-card/50 transition-all',
+        'relative bg-card/80 border-b border-border hover:bg-card/90 transition-all cursor-pointer',
         isNew && 'pop-in',
         level > 0 && 'ml-12'
       )}
+      onClick={handleOpenThread}
     >
       {/* Reply line connector */}
       {showReplyLine && level > 0 && (
@@ -91,17 +80,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
 
       <div className="p-4">
         <div className="flex gap-3">
-          {/* Avatar */}
-          <div 
-            className={cn(
-              'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
-              getAvatarColor(post.alias)
-            )}
-          >
-            <span className="text-sm font-mono font-semibold">
-              {post.alias?.[0]?.toUpperCase() || '?'}
-            </span>
-          </div>
+          <AliasAvatar alias={post.alias || 'Anonymous'} />
           
           {/* Content */}
           <div className="flex-1 min-w-0">
@@ -136,7 +115,10 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
             {/* Actions */}
             <div className="flex items-center gap-6 mt-2">
               <button 
-                onClick={handleOpenThread}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpenThread();
+                }}
                 className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors group"
                 aria-label="View thread"
               >
@@ -147,7 +129,10 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
               </button>
               
               <button 
-                onClick={() => handleReaction('like')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleReaction('like');
+                }}
                 disabled={reacting || isPending}
                 className="flex items-center gap-1.5 text-muted-foreground hover:text-red-500 transition-colors group disabled:opacity-50"
                 aria-label="Like"
@@ -157,7 +142,10 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
               </button>
               
               <button 
-                onClick={() => handleReaction('lol')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleReaction('lol');
+                }}
                 disabled={reacting || isPending}
                 className="flex items-center gap-1.5 text-muted-foreground hover:text-yellow-500 transition-colors group disabled:opacity-50"
                 aria-label="Laugh"
@@ -167,7 +155,10 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
               </button>
               
               <button 
-                onClick={() => handleReaction('angry')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleReaction('angry');
+                }}
                 disabled={reacting || isPending}
                 className="flex items-center gap-1.5 text-muted-foreground hover:text-orange-500 transition-colors group disabled:opacity-50"
                 aria-label="Angry"
