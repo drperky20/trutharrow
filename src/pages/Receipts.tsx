@@ -4,6 +4,8 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { EvidenceCardSkeletonList } from '@/components/EvidenceCardSkeleton';
 import { SegmentedControl } from '@/components/SegmentedControl';
+import { PullToRefreshIndicator } from '@/components/PullToRefresh';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 
@@ -97,8 +99,20 @@ export default function Receipts() {
     }
   };
 
+  const { isPulling, isRefreshing, pullDistance, shouldTrigger } = usePullToRefresh({
+    onRefresh: async () => {
+      await fetchData();
+    },
+  });
   
   return (
+    <>
+      <PullToRefreshIndicator
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        shouldTrigger={shouldTrigger}
+      />
     <div className="min-h-screen">
       <div className="container px-4 py-8 md:py-12">
         <div className="mb-6 md:mb-8">
@@ -278,5 +292,6 @@ export default function Receipts() {
         )}
       </div>
     </div>
+    </>
   );
 }

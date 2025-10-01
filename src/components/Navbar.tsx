@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Search, LogOut, Shield } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { MobileDrawer } from './MobileDrawer';
 
 export const Navbar = () => {
   const { user, isAdmin, signOut } = useAuth();
@@ -43,31 +44,35 @@ export const Navbar = () => {
 
           {/* Right Side */}
           <div className="flex items-center gap-3">
+            {/* Desktop actions */}
             {user ? (
               <>
-                <Link to="/submit">
+                <Link to="/submit" className="hidden md:block">
                   <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                     Submit
                   </Button>
                 </Link>
                 <button
                   onClick={() => signOut()}
-                  className="p-2 hover:bg-accent rounded-md transition-colors"
+                  className="hidden md:block p-2 hover:bg-accent rounded-md transition-colors"
                   title="Sign out"
                 >
                   <LogOut className="h-5 w-5" />
                 </button>
               </>
             ) : (
-              <Link to="/auth">
+              <Link to="/auth" className="hidden md:block">
                 <Button variant="outline">Sign In</Button>
               </Link>
             )}
-            <Link to="/search">
+            <Link to="/search" className="hidden md:block">
               <button className="p-2 hover:bg-accent rounded-md transition-colors">
                 <Search className="h-5 w-5" />
               </button>
             </Link>
+            
+            {/* Mobile drawer menu */}
+            <MobileDrawer />
           </div>
         </div>
       </div>

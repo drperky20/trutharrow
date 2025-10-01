@@ -3,6 +3,8 @@ import { PostCard } from '@/components/PostCard';
 import { ComposeBox } from '@/components/ComposeBox';
 import { TweetSkeletonList } from '@/components/TweetSkeleton';
 import { SegmentedControl } from '@/components/SegmentedControl';
+import { PullToRefreshIndicator } from '@/components/PullToRefresh';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { supabase } from '@/integrations/supabase/client';
 
 type FeedMode = 'for-you' | 'latest';
@@ -52,7 +54,20 @@ export default function Feed() {
     fetchPosts();
   };
 
+  const { isPulling, isRefreshing, pullDistance, shouldTrigger } = usePullToRefresh({
+    onRefresh: async () => {
+      await fetchPosts();
+    },
+  });
+
   return (
+    <>
+      <PullToRefreshIndicator
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        shouldTrigger={shouldTrigger}
+      />
     <div className="min-h-screen">
       <div className="max-w-2xl mx-auto border-x border-border min-h-screen">
         {/* Header */}
@@ -101,5 +116,6 @@ export default function Feed() {
         )}
       </div>
     </div>
+    </>
   );
 }

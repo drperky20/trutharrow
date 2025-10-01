@@ -4,6 +4,8 @@ import { IssueCardSkeletonList } from '@/components/IssueCardSkeleton';
 import { Input } from '@/components/ui/input';
 import { Search, SortDesc } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { PullToRefreshIndicator } from '@/components/PullToRefresh';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 
@@ -49,8 +51,20 @@ export default function Issues() {
       return new Date(b.last_updated).getTime() - new Date(a.last_updated).getTime();
     });
 
+  const { isPulling, isRefreshing, pullDistance, shouldTrigger } = usePullToRefresh({
+    onRefresh: async () => {
+      await fetchIssues();
+    },
+  });
   
   return (
+    <>
+      <PullToRefreshIndicator
+        isPulling={isPulling}
+        isRefreshing={isRefreshing}
+        pullDistance={pullDistance}
+        shouldTrigger={shouldTrigger}
+      />
     <div className="min-h-screen">
       <div className="container px-4 py-8 md:py-12">
         <div className="mb-6 md:mb-8">
@@ -160,5 +174,6 @@ export default function Issues() {
         )}
       </div>
     </div>
+    </>
   );
 }
