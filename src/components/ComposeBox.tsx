@@ -52,58 +52,49 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
     setLoading(true);
 
     try {
-      // Run AI moderation check
-      const { data: moderationData, error: moderationError } = await supabase.functions.invoke('moderate-post', {
+      // Call new content moderation service
+      const { data: modResult, error: modError } = await supabase.functions.invoke('content-moderation', {
         body: { content: content.trim() }
       });
 
-      let postStatus = 'approved'; // Default to approved for immediate posting
-      
-      if (moderationError) {
-        console.error('Moderation error:', moderationError);
-        // Fail open: allow post if moderation service fails
-        toast({
-          title: "Moderation check failed",
-          description: "Posting anyway. Our team will review it.",
-        });
-      } else if (moderationData && !moderationData.approved) {
-        // Post was rejected by AI - send to admin review
-        postStatus = 'pending';
-        toast({
-          title: "Post flagged for review",
-          description: moderationData.reason || "Your post has been flagged and will be reviewed by admins.",
-          variant: "default",
-        });
-      }
+      // Determine post status: approved (live immediately) or pending (admin review)
+      const shouldApprove = modError || !modResult ? true : modResult.shouldApprove;
+      const finalStatus = shouldApprove ? 'approved' : 'pending';
 
-      // Insert post with appropriate status
-      const { error } = await supabase.from('posts').insert({
+      console.log('[ComposeBox] Moderation result:', { shouldApprove, finalStatus, modResult });
+
+      // Insert post into database
+      const { error: insertError } = await supabase.from('posts').insert({
         alias: alias.trim(),
         content: content.trim(),
         parent_id: parentId || null,
         user_id: user?.id || null,
         type: 'assignment',
-        status: postStatus,
+        status: finalStatus,
       });
 
-      if (error) {
+      if (insertError) {
+        console.error('[ComposeBox] Insert error:', insertError);
         toast({
           title: "Error posting",
-          description: error.message,
+          description: insertError.message,
           variant: "destructive",
         });
       } else {
-        if (postStatus === 'approved') {
+        // Success - show appropriate message
+        if (finalStatus === 'approved') {
           toast({
-            title: "Posted!",
-            description: "Your post is live.",
+            title: "Posted! ðŸŽ‰",
+            description: "Your post is live on the feed.",
           });
         } else {
           toast({
-            title: "Submitted for review",
-            description: "Admins will review your post shortly.",
+            title: "Flagged for review",
+            description: modResult?.flagReason || "Admins will review your post.",
+            variant: "default",
           });
         }
+        
         setContent('');
         setIsFocused(false);
         onPost?.();

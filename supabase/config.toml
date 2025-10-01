@@ -1,1 +1,4 @@
 project_id = "zdtocwgzrqkwwfkfvsmt"
+
+[functions.content-moderation]
+verify_jwt = false
