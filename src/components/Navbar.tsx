@@ -72,15 +72,27 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          {/* Mobile: Search icon only */}
-          <Link to="/search" className="md:hidden">
-            <button 
-              className="p-2 hover:bg-accent rounded-md transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-              aria-label="Search"
-            >
-              <Search className="h-5 w-5" />
-            </button>
-          </Link>
+          {/* Mobile: Sign out and Search icons */}
+          <div className="md:hidden flex items-center gap-1">
+            {user && (
+              <button
+                onClick={() => signOut()}
+                className="p-2 hover:bg-accent rounded-md transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                title="Sign out"
+                aria-label="Sign out"
+              >
+                <LogOut className="h-5 w-5" />
+              </button>
+            )}
+            <Link to="/search">
+              <button 
+                className="p-2 hover:bg-accent rounded-md transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                aria-label="Search"
+              >
+                <Search className="h-5 w-5" />
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     </nav>
