@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { Search, LogOut, Shield } from 'lucide-react';
+import { Search, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { MobileDrawer } from './MobileDrawer';
+import { navItems } from '@/config/navConfig';
 
 export const Navbar = () => {
   const { user, isAdmin, signOut } = useAuth();
@@ -20,26 +21,23 @@ export const Navbar = () => {
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary via-alert to-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
           </Link>
 
-          {/* Center Links */}
+          {/* Center Links - Desktop only */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
-              Front Office
-            </Link>
-            <Link to="/issues" className="text-sm font-medium hover:text-primary transition-colors">
-              Detention Board
-            </Link>
-            <Link to="/feed" className="text-sm font-medium hover:text-primary transition-colors">
-              Cafeteria
-            </Link>
-            <Link to="/receipts" className="text-sm font-medium hover:text-primary transition-colors">
-              Receipts
-            </Link>
-            {isAdmin && (
-              <Link to="/admin" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
-                <Shield className="h-4 w-4" />
-                Admin
-              </Link>
-            )}
+            {navItems
+              .filter(item => !item.isPrimary && (!item.requiresAdmin || isAdmin))
+              .map(item => {
+                const Icon = item.icon;
+                return (
+                  <Link 
+                    key={item.id}
+                    to={item.path} 
+                    className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1"
+                  >
+                    {item.requiresAdmin && <Icon className="h-4 w-4" />}
+                    {item.label}
+                  </Link>
+                );
+              })}
           </div>
 
           {/* Right Side */}
