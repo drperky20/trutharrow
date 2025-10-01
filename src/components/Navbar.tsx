@@ -21,7 +21,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Center Links - Desktop only */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-3 lg:gap-4">
             {navItems
               .filter(item => !item.isPrimary && (!item.requiresAdmin || isAdmin))
               .map(item => {
@@ -30,21 +30,21 @@ export const Navbar = () => {
                   <Link 
                     key={item.id}
                     to={item.path} 
-                    className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1"
+                    className="text-xs lg:text-sm font-medium hover:text-primary transition-colors flex items-center gap-1"
                   >
-                    {item.requiresAdmin && <Icon className="h-4 w-4" />}
-                    {item.label}
+                    {item.requiresAdmin && <Icon className="h-4 w-4 flex-shrink-0" />}
+                    <span className="whitespace-nowrap">{item.label}</span>
                   </Link>
                 );
               })}
           </div>
 
           {/* Right Side - Desktop only */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
             {user ? (
               <>
                 <Link to="/submit">
-                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs lg:text-sm">
                     Submit
                   </Button>
                 </Link>
@@ -54,12 +54,12 @@ export const Navbar = () => {
                   title="Sign out"
                   aria-label="Sign out"
                 >
-                  <LogOut className="h-5 w-5" />
+                  <LogOut className="h-4 w-4" />
                 </button>
               </>
             ) : (
               <Link to="/auth">
-                <Button variant="outline">Sign In</Button>
+                <Button size="sm" variant="outline" className="text-xs lg:text-sm">Sign In</Button>
               </Link>
             )}
             <Link to="/search">
@@ -67,7 +67,7 @@ export const Navbar = () => {
                 className="p-2 hover:bg-accent rounded-md transition-colors"
                 aria-label="Search"
               >
-                <Search className="h-5 w-5" />
+                <Search className="h-4 w-4" />
               </button>
             </Link>
           </div>
