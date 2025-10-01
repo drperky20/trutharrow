@@ -28,6 +28,7 @@ const AdminEvidence = lazy(() => import("./pages/admin/Evidence"));
 const AdminBanners = lazy(() => import("./pages/admin/Banners"));
 const AdminPolls = lazy(() => import("./pages/admin/Polls"));
 const AdminTicker = lazy(() => import("./pages/admin/Ticker"));
+const AdminHeadlines = lazy(() => import("./pages/admin/Headlines"));
 const AdminSubmissions = lazy(() => import("./pages/admin/Submissions"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -84,6 +85,7 @@ const App = () => (
                     <Route path="/admin/banners" element={<AdminBanners />} />
                     <Route path="/admin/polls" element={<AdminPolls />} />
                     <Route path="/admin/ticker" element={<AdminTicker />} />
+                    <Route path="/admin/headlines" element={<AdminHeadlines />} />
                     <Route path="/admin/submissions" element={<AdminSubmissions />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

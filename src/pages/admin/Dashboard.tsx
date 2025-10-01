@@ -14,6 +14,7 @@ export default function AdminDashboard() {
     { title: 'Posts', icon: MessageSquare, href: '/admin/posts', desc: 'Moderate cafeteria posts' },
     { title: 'Evidence', icon: Image, href: '/admin/evidence', desc: 'Manage receipts' },
     { title: 'Banners', icon: Bell, href: '/admin/banners', desc: 'Edit front office banners' },
+    { title: 'Headlines', icon: Quote, href: '/admin/headlines', desc: 'Manage hero headlines' },
     { title: 'Polls', icon: TrendingUp, href: '/admin/polls', desc: 'Create polls' },
     { title: 'Ticker', icon: Quote, href: '/admin/ticker', desc: 'Manage ticker quotes' },
   ];

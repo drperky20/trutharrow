@@ -1,17 +1,38 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 import heroBanner from '@/assets/hero-banner.jpg';
 import heroBannerWebp from '@/assets/hero-banner.webp';
-const headlines = ['Truth doesn\'t graduate.', 'Detention for bad behavior: issued.', 'Tonight\'s homework: read the receipts.'];
+
 export const HeroSection = () => {
+  const [headlines, setHeadlines] = useState<string[]>([]);
   const [currentHeadline, setCurrentHeadline] = useState(0);
+
   useEffect(() => {
+    const fetchHeadlines = async () => {
+      const { data } = await supabase
+        .from('hero_headlines')
+        .select('text')
+        .eq('active', true)
+        .order('display_order');
+      
+      if (data && data.length > 0) {
+        setHeadlines(data.map(h => h.text));
+      }
+    };
+    
+    fetchHeadlines();
+  }, []);
+
+  useEffect(() => {
+    if (headlines.length === 0) return;
+    
     const interval = setInterval(() => {
       setCurrentHeadline(prev => (prev + 1) % headlines.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [headlines.length]);
   return <section className="relative overflow-hidden border-b border-primary/30">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background z-[1]" />
       <picture className="absolute inset-0 block">
@@ -24,7 +45,7 @@ export const HeroSection = () => {
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 max-w-4xl bg-gradient-to-r from-primary via-foreground to-primary bg-clip-text text-transparent" style={{
         textShadow: '0 2px 8px rgba(0,0,0,0.8)'
       }}>
-          {headlines[currentHeadline]}
+          {headlines.length > 0 ? headlines[currentHeadline] : 'Loading...'}
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl">
           The official truth and accountability platform for Broken Arrow Public Schools students, staff, and families.
