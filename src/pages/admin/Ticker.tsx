@@ -1,52 +1,69 @@
-import { useState } from 'react';
-import { AdminLayout } from '@/components/admin/AdminLayout';
-import { useAdminCRUD } from '@/hooks/useAdminCRUD';
+import { useAuth } from '@/hooks/useAuth';
+import { Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 import { Trash2, Check, X } from 'lucide-react';
 
-interface TickerQuote {
-  id: string;
-  text: string;
-  source_label: string;
-  approved: boolean;
-}
-
 export default function AdminTicker() {
-  const { items: quotes, loading, create, update, remove } = useAdminCRUD<TickerQuote>({
-    table: 'ticker_quotes',
-  });
-  
+  const { isAdmin, loading } = useAuth();
+  const { toast } = useToast();
+  const [quotes, setQuotes] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     text: '',
     source_label: 'student',
   });
 
+  useEffect(() => {
+    fetchQuotes();
+  }, []);
+
+  const fetchQuotes = async () => {
+    const { data } = await supabase
+      .from('ticker_quotes')
+      .select('*')
+      .order('created_at', { ascending: false });
+    setQuotes(data || []);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await create({ ...formData, approved: true });
-    if (success) {
+
+    const { error } = await supabase.from('ticker_quotes').insert({
+      ...formData,
+      approved: true,
+    });
+    
+    if (!error) {
+      toast({ title: "Quote created!" });
       setFormData({ text: '', source_label: 'student' });
+      fetchQuotes();
     }
   };
 
   const handleDelete = async (id: string) => {
     if (confirm('Delete this quote?')) {
-      await remove(id);
+      await supabase.from('ticker_quotes').delete().eq('id', id);
+      toast({ title: "Quote deleted" });
+      fetchQuotes();
     }
   };
 
   const toggleApproved = async (id: string, approved: boolean) => {
-    await update(id, { approved: !approved });
+    await supabase.from('ticker_quotes').update({ approved: !approved }).eq('id', id);
+    fetchQuotes();
   };
 
-  if (loading && quotes.length === 0) {
-    return <AdminLayout title="Manage Ticker Quotes"><p>Loading...</p></AdminLayout>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (!isAdmin) return <Navigate to="/auth" replace />;
 
   return (
-    <AdminLayout title="Manage Ticker Quotes">
+    <div className="container px-4 py-12">
+      <h1 className="text-3xl font-black mb-8">Manage Ticker Quotes</h1>
+
       <div className="grid lg:grid-cols-2 gap-8">
         <div className="bg-card border border-border rounded-lg p-6">
           <h2 className="text-xl font-bold mb-4">Create Quote</h2>
@@ -105,6 +122,6 @@ export default function AdminTicker() {
           ))}
         </div>
       </div>
-    </AdminLayout>
+    </div>
   );
 }

@@ -27,7 +27,7 @@ export const HeroSection = () => {
         alt="Broken Arrow Public Schools campus"
         className="absolute inset-0 w-full h-full object-cover opacity-20"
         loading="eager"
-        fetchPriority="high"
+        fetchpriority="high"
         decoding="async"
         width="1920"
         height="500"

@@ -1,44 +1,69 @@
-import { useState } from 'react';
-import { AdminLayout } from '@/components/admin/AdminLayout';
-import { useAdminCRUD } from '@/hooks/useAdminCRUD';
+import { useAuth } from '@/hooks/useAuth';
+import { Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 import { Trash2, Edit } from 'lucide-react';
 
-interface Banner {
-  id: string;
-  title: string;
-  url: string;
-  severity: 'info' | 'alert' | 'win';
-  active: boolean;
-}
-
 export default function AdminBanners() {
-  const { items: banners, loading, create, update, remove } = useAdminCRUD<Banner>({
-    table: 'banners',
-  });
-  
+  const { isAdmin, loading } = useAuth();
+  const { toast } = useToast();
+  const [banners, setBanners] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Omit<Banner, 'id'>>({
+  const [formData, setFormData] = useState<{
+    title: string;
+    url: string;
+    severity: 'info' | 'alert' | 'win';
+    active: boolean;
+  }>({
     title: '',
     url: '',
     severity: 'info',
     active: true,
   });
 
+  useEffect(() => {
+    fetchBanners();
+  }, []);
+
+  const fetchBanners = async () => {
+    const { data } = await supabase
+      .from('banners')
+      .select('*')
+      .order('created_at', { ascending: false });
+    setBanners(data || []);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = isEditing
-      ? await update(isEditing, formData)
-      : await create(formData);
-    
-    if (success) {
-      resetForm();
+
+    if (isEditing) {
+      const { error } = await supabase
+        .from('banners')
+        .update(formData)
+        .eq('id', isEditing);
+      
+      if (!error) {
+        toast({ title: "Banner updated!" });
+        setIsEditing(null);
+        resetForm();
+        fetchBanners();
+      }
+    } else {
+      const { error } = await supabase.from('banners').insert(formData);
+      
+      if (!error) {
+        toast({ title: "Banner created!" });
+        resetForm();
+        fetchBanners();
+      }
     }
   };
 
-  const handleEdit = (banner: Banner) => {
+  const handleEdit = (banner: any) => {
     setIsEditing(banner.id);
     setFormData({
       title: banner.title,
@@ -50,12 +75,15 @@ export default function AdminBanners() {
 
   const handleDelete = async (id: string) => {
     if (confirm('Delete this banner?')) {
-      await remove(id);
+      await supabase.from('banners').delete().eq('id', id);
+      toast({ title: "Banner deleted" });
+      fetchBanners();
     }
   };
 
   const toggleActive = async (id: string, active: boolean) => {
-    await update(id, { active: !active });
+    await supabase.from('banners').update({ active: !active }).eq('id', id);
+    fetchBanners();
   };
 
   const resetForm = () => {
@@ -63,12 +91,13 @@ export default function AdminBanners() {
     setIsEditing(null);
   };
 
-  if (loading && banners.length === 0) {
-    return <AdminLayout title="Manage Banners"><p>Loading...</p></AdminLayout>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (!isAdmin) return <Navigate to="/auth" replace />;
 
   return (
-    <AdminLayout title="Manage Banners">
+    <div className="container px-4 py-12">
+      <h1 className="text-3xl font-black mb-8">Manage Banners</h1>
+
       <div className="grid lg:grid-cols-2 gap-8">
         <div className="bg-card border border-border rounded-lg p-6">
           <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Banner' : 'Create Banner'}</h2>
@@ -135,6 +164,6 @@ export default function AdminBanners() {
           ))}
         </div>
       </div>
-    </AdminLayout>
+    </div>
   );
 }
