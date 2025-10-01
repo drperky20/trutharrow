@@ -15,7 +15,7 @@ const NavItemLink = ({ item, isActive }: NavItemLinkProps) => {
     <Link
       to={path}
       className={cn(
-        "flex flex-col items-center justify-center gap-1 px-2 py-2 min-w-[56px] min-h-[64px] transition-all rounded-xl relative flex-1",
+        "flex flex-col items-center justify-center gap-1.5 px-3 py-2 min-w-[60px] min-h-[64px] transition-all rounded-xl relative flex-1",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         "active:scale-95",
         isPrimary && !isActive && "text-primary",
@@ -31,7 +31,7 @@ const NavItemLink = ({ item, isActive }: NavItemLinkProps) => {
         isActive && "scale-110"
       )} />
       <span className={cn(
-        "text-xs leading-tight whitespace-nowrap",
+        "text-xs leading-normal whitespace-nowrap",
         isActive ? "font-bold" : "font-medium"
       )}>
         {label}
