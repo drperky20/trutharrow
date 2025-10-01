@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FileImage, FileText, Link as LinkIcon, X } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { EvidenceCardSkeletonList } from '@/components/EvidenceCardSkeleton';
+import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { PullToRefreshIndicator } from '@/components/PullToRefresh';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
@@ -194,7 +194,7 @@ export default function Receipts() {
         {/* Evidence Grid */}
         {loading ? (
           <div className="grid gap-4 md:grid-cols-2">
-            <EvidenceCardSkeletonList count={6} />
+            <LoadingSkeleton type="evidence" count={6} />
           </div>
         ) : filteredEvidence.length === 0 ? (
           <div className="text-center py-16 px-4">

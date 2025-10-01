@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { PostCard } from '@/components/PostCard';
 import { ComposeBox } from '@/components/ComposeBox';
-import { TweetSkeletonList } from '@/components/TweetSkeleton';
+import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 
@@ -183,7 +183,7 @@ export default function ThreadView() {
             </Button>
             <h1 className="text-xl font-black">Thread</h1>
           </div>
-          <TweetSkeletonList count={3} />
+          <LoadingSkeleton type="post" count={3} />
         </div>
       </div>
     );

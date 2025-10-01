@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { IssueCard } from '@/components/IssueCard';
-import { IssueCardSkeletonList } from '@/components/IssueCardSkeleton';
+import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { Input } from '@/components/ui/input';
 import { Search, SortDesc } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -145,7 +145,7 @@ export default function Issues() {
         {/* Issues Grid */}
         {loading ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <IssueCardSkeletonList count={6} />
+            <LoadingSkeleton type="issue" count={6} />
           </div>
         ) : filteredIssues.length === 0 ? (
           <div className="text-center py-16 px-4">

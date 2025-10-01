@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PostCard } from '@/components/PostCard';
 import { ComposeBox } from '@/components/ComposeBox';
-import { TweetSkeletonList } from '@/components/TweetSkeleton';
+import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { PullToRefreshIndicator } from '@/components/PullToRefresh';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
@@ -146,12 +146,12 @@ export default function Feed() {
         
         {/* Posts Feed */}
         {loading ? (
-          <TweetSkeletonList count={5} />
+          <LoadingSkeleton type="post" count={5} />
         ) : posts.length === 0 ? (
           <div className="text-center py-16 px-4">
             <p className="text-lg font-semibold mb-2">It's quiet… 👀</p>
             <p className="text-muted-foreground mb-6">Be the first to spill (respectfully).</p>
-            <TweetSkeletonList count={3} />
+            <LoadingSkeleton type="post" count={3} />
           </div>
         ) : (
           <div>

@@ -28,16 +28,17 @@ export const useAdminCRUD = <T extends { id: string }>({
   const fetchItems = useCallback(async () => {
     setLoading(true);
     try {
+      // @ts-expect-error - Dynamic table name
       let query = supabase.from(table).select('*');
       
       if (orderBy) {
-        query = query.order(orderBy.column, { ascending: orderBy.ascending ?? false });
+        query = query.order(orderBy.column as any, { ascending: orderBy.ascending ?? false });
       }
       
       const { data, error } = await query;
       
       if (error) throw error;
-      setItems((data as T[]) || []);
+      setItems((data as any as T[]) || []);
     } catch (error) {
       console.error(`Error fetching ${table}:`, error);
       toast({
@@ -94,11 +95,12 @@ export const useAdminCRUD = <T extends { id: string }>({
 
   const create = async (data: Partial<T>) => {
     try {
-      const { error } = await supabase.from(table).insert(data);
+      // @ts-expect-error - Dynamic table name
+      const { error } = await supabase.from(table).insert(data as any);
       
       if (error) throw error;
       
-      await logAction(`Created ${table} record`, table, undefined, null, data);
+      await logAction(`Created ${table} record`, table as any, undefined, null, data as any);
       
       toast({ title: 'Success', description: 'Record created successfully' });
       
@@ -120,11 +122,12 @@ export const useAdminCRUD = <T extends { id: string }>({
     try {
       const oldRecord = items.find((item) => item.id === id);
       
-      const { error } = await supabase.from(table).update(data).eq('id', id);
+      // @ts-expect-error - Dynamic table name
+      const { error } = await supabase.from(table).update(data as any).eq('id', id);
       
       if (error) throw error;
       
-      await logAction(`Updated ${table} record`, table, id, oldRecord, data);
+      await logAction(`Updated ${table} record`, table as any, id, oldRecord as any, data as any);
       
       toast({ title: 'Success', description: 'Record updated successfully' });
       
@@ -144,11 +147,12 @@ export const useAdminCRUD = <T extends { id: string }>({
 
   const remove = async (id: string) => {
     try {
+      // @ts-expect-error - Dynamic table name
       const { error } = await supabase.from(table).delete().eq('id', id);
       
       if (error) throw error;
       
-      await logAction(`Deleted ${table} record`, table, id, null, null);
+      await logAction(`Deleted ${table} record`, table as any, id, null, null);
       
       toast({ title: 'Success', description: 'Record deleted successfully' });
       
