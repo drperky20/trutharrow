@@ -82,18 +82,19 @@ export default function Submit() {
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="title">Title *</Label>
+          <Label htmlFor="title" className="text-sm font-medium">Title *</Label>
           <Input
             id="title"
             placeholder="Brief summary of the issue"
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             required
+            className="transition-all"
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="what">What happened? *</Label>
+          <Label htmlFor="what" className="text-sm font-medium">What happened? *</Label>
           <Textarea
             id="what"
             placeholder="Describe the situation in detail. Include any relevant context."
@@ -101,22 +102,24 @@ export default function Submit() {
             onChange={(e) => setFormData({ ...formData, what: e.target.value })}
             rows={6}
             required
+            className="transition-all"
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="when">When and where?</Label>
+          <Label htmlFor="when" className="text-sm font-medium">When and where?</Label>
           <Input
             id="when"
             placeholder="Date, time, location"
             value={formData.when}
             onChange={(e) => setFormData({ ...formData, when: e.target.value })}
+            className="transition-all"
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="evidence">Evidence (optional)</Label>
-          <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
+          <Label htmlFor="evidence" className="text-sm font-medium">Evidence (optional)</Label>
+          <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-all cursor-pointer">
             <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
             <p className="text-sm text-muted-foreground mb-1">
               Click to upload or drag and drop
@@ -128,7 +131,7 @@ export default function Submit() {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="verify">How can we verify this? *</Label>
+          <Label htmlFor="verify" className="text-sm font-medium">How can we verify this? *</Label>
           <Textarea
             id="verify"
             placeholder="Who else knows? Are there documents? Where can we look?"
@@ -136,35 +139,37 @@ export default function Submit() {
             onChange={(e) => setFormData({ ...formData, verify: e.target.value })}
             rows={3}
             required
+            className="transition-all"
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="contact">Contact (optional)</Label>
+          <Label htmlFor="contact" className="text-sm font-medium">Contact (optional)</Label>
           <Input
             id="contact"
             type="email"
             placeholder="Email or Signal number (only for clarification)"
             value={formData.contact}
             onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+            className="transition-all"
           />
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground mt-1.5">
             We'll only reach out if we need to verify details. This is never published.
           </p>
         </div>
         
-        <Button type="submit" size="lg" className="w-full font-bold" disabled={isSubmitting}>
+        <Button type="submit" size="lg" className="w-full font-bold transition-all" disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'Submit Anonymously'}
         </Button>
       </form>
       
-      <div className="mt-8 p-6 bg-card border border-border rounded-lg">
-        <h3 className="font-bold mb-3">What happens next?</h3>
-        <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
-          <li>We review your submission and verify the information</li>
-          <li>If we need clarification, we'll reach out (only if you provided contact)</li>
-          <li>Once verified, we publish it to the appropriate section</li>
-          <li>You can track it on the site under your auto-generated alias</li>
+      <div className="mt-10 p-6 bg-card border border-border rounded-lg">
+        <h3 className="font-bold mb-4">What happens next?</h3>
+        <ol className="space-y-3 text-sm text-muted-foreground list-decimal list-inside">
+          <li className="leading-relaxed">We review your submission and verify the information</li>
+          <li className="leading-relaxed">If we need clarification, we'll reach out (only if you provided contact)</li>
+          <li className="leading-relaxed">Once verified, we publish it to the appropriate section</li>
+          <li className="leading-relaxed">You can track it on the site under your auto-generated alias</li>
         </ol>
       </div>
     </div>

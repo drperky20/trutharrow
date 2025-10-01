@@ -233,8 +233,8 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
               {/* Character counter - shows when typing */}
               {content.length > 0 && (
                 <span className={cn(
-                  "text-[10px] font-mono transition-colors px-1.5 py-0.5 rounded-md bg-background/80",
-                  isAtLimit ? "text-destructive" : isNearLimit ? "text-yellow-500" : "text-muted-foreground"
+                  "text-xs font-mono transition-colors px-2 py-1 rounded-md bg-background/90 backdrop-blur-sm border",
+                  isAtLimit ? "text-destructive border-destructive/30" : isNearLimit ? "text-yellow-500 border-yellow-500/30" : "text-muted-foreground border-border"
                 )}>
                   {content.length}/{maxLength}
                 </span>
