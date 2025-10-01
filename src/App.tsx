@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Navbar } from "./components/Navbar";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { RainbowBanner } from "./components/RainbowBanner";
@@ -39,44 +40,46 @@ const queryClient = new QueryClient({
 });
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <div className="min-h-screen bg-background text-foreground">
-            <Navbar />
-            <RainbowBanner />
-            <div className="mobile-nav-padding">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/issues" element={<Issues />} />
-                <Route path="/issues/:slug" element={<IssueDetail />} />
-                <Route path="/feed" element={<Feed />} />
-                <Route path="/feed/:postId" element={<ThreadView />} />
-                <Route path="/receipts" element={<Receipts />} />
-                <Route path="/submit" element={<Submit />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/admin/issues" element={<AdminIssues />} />
-                <Route path="/admin/posts" element={<AdminPosts />} />
-                <Route path="/admin/evidence" element={<AdminEvidence />} />
-                <Route path="/admin/banners" element={<AdminBanners />} />
-                <Route path="/admin/polls" element={<AdminPolls />} />
-                <Route path="/admin/ticker" element={<AdminTicker />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <Footer />
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
+            <div className="min-h-screen bg-background text-foreground">
+              <Navbar />
+              <RainbowBanner />
+              <div className="mobile-nav-padding">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/issues" element={<Issues />} />
+                  <Route path="/issues/:slug" element={<IssueDetail />} />
+                  <Route path="/feed" element={<Feed />} />
+                  <Route path="/feed/:postId" element={<ThreadView />} />
+                  <Route path="/receipts" element={<Receipts />} />
+                  <Route path="/submit" element={<Submit />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/search" element={<Search />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/admin/issues" element={<AdminIssues />} />
+                  <Route path="/admin/posts" element={<AdminPosts />} />
+                  <Route path="/admin/evidence" element={<AdminEvidence />} />
+                  <Route path="/admin/banners" element={<AdminBanners />} />
+                  <Route path="/admin/polls" element={<AdminPolls />} />
+                  <Route path="/admin/ticker" element={<AdminTicker />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+                <Footer />
+              </div>
+              <MobileBottomNav />
             </div>
-            <MobileBottomNav />
-          </div>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
