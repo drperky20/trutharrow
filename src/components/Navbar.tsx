@@ -72,9 +72,9 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          {/* Mobile: Sign out and Search icons */}
+          {/* Mobile: Auth and Search icons */}
           <div className="md:hidden flex items-center gap-1">
-            {user && (
+            {user ? (
               <button
                 onClick={() => signOut()}
                 className="p-2 hover:bg-accent rounded-md transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
@@ -83,6 +83,12 @@ export const Navbar = () => {
               >
                 <LogOut className="h-5 w-5" />
               </button>
+            ) : (
+              <Link to="/auth">
+                <Button size="sm" variant="outline" className="text-xs h-9">
+                  Sign In
+                </Button>
+              </Link>
             )}
             <Link to="/search">
               <button 
