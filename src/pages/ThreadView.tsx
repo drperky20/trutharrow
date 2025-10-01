@@ -211,8 +211,8 @@ export default function ThreadView() {
   const threadTree = buildThreadTree(replies);
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-2xl mx-auto border-x border-border min-h-screen">
+    <div className="min-h-dvh md:min-h-screen pb-20 md:pb-0">
+      <div className="max-w-2xl mx-auto md:border-x border-border min-h-dvh md:min-h-screen">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border px-4 py-3">
           <div className="flex items-center gap-4">

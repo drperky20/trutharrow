@@ -133,87 +133,87 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
   const canPost = content.trim().length > 0 && alias.trim().length > 0 && !loading;
 
   return (
-    <>
-      <div className={cn(
-        "bg-card/80 border border-border rounded-2xl transition-all",
-        compact ? "p-3" : "p-4",
-        isFocused && "ring-2 ring-primary/20"
-      )}>
-        <div className="flex gap-3">
-          <AliasAvatar alias={alias} />
-          
-          <div className="flex-1 space-y-3">
-            {/* Alias chip */}
-            <div className="flex items-center gap-2">
-              {alias ? (
-                <Popover open={editingAlias} onOpenChange={setEditingAlias}>
-                  <PopoverTrigger asChild>
-                    <button
-                      onClick={openAliasEditor}
-                      className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1 text-sm hover:bg-muted/80 transition-colors"
-                    >
-                      <span className="font-medium">{alias}</span>
-                      <Pencil className="h-3 w-3 opacity-60" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80" align="start">
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-sm font-medium">Your alias</label>
-                        <Input
-                          value={tempAlias}
-                          onChange={(e) => setTempAlias(e.target.value.slice(0, 30))}
-                          placeholder="e.g., Student-2025"
-                          className="mt-1.5"
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleSaveAlias();
-                            if (e.key === 'Escape') setEditingAlias(false);
-                          }}
-                          autoFocus
-                        />
-                      </div>
-                      <Button onClick={handleSaveAlias} size="sm" className="w-full">
-                        Save
-                      </Button>
+    <div className={cn(
+      "bg-card/80 border border-border rounded-2xl transition-all",
+      compact ? "p-3" : "p-4",
+      isFocused && "ring-2 ring-primary/20"
+    )}>
+      <div className="flex gap-3">
+        <AliasAvatar alias={alias} />
+        
+        <div className="flex-1 space-y-3">
+          {/* Alias chip */}
+          <div className="flex items-center gap-2">
+            {alias ? (
+              <Popover open={editingAlias} onOpenChange={setEditingAlias}>
+                <PopoverTrigger asChild>
+                  <button
+                    onClick={openAliasEditor}
+                    className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1 text-sm hover:bg-muted/80 transition-colors"
+                  >
+                    <span className="font-medium">{alias}</span>
+                    <Pencil className="h-3 w-3 opacity-60" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80" align="start">
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium">Your alias</label>
+                      <Input
+                        value={tempAlias}
+                        onChange={(e) => setTempAlias(e.target.value.slice(0, 30))}
+                        placeholder="e.g., Student-2025"
+                        className="mt-1.5"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSaveAlias();
+                          if (e.key === 'Escape') setEditingAlias(false);
+                        }}
+                        autoFocus
+                      />
                     </div>
-                  </PopoverContent>
-                </Popover>
-              ) : (
-                <Popover open={editingAlias} onOpenChange={setEditingAlias}>
-                  <PopoverTrigger asChild>
-                    <button
-                      onClick={openAliasEditor}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      Set your alias â†’
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80" align="start">
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-sm font-medium">Your alias</label>
-                        <Input
-                          value={tempAlias}
-                          onChange={(e) => setTempAlias(e.target.value.slice(0, 30))}
-                          placeholder="e.g., Student-2025"
-                          className="mt-1.5"
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleSaveAlias();
-                            if (e.key === 'Escape') setEditingAlias(false);
-                          }}
-                          autoFocus
-                        />
-                      </div>
-                      <Button onClick={handleSaveAlias} size="sm" className="w-full">
-                        Save
-                      </Button>
+                    <Button onClick={handleSaveAlias} size="sm" className="w-full">
+                      Save
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <Popover open={editingAlias} onOpenChange={setEditingAlias}>
+                <PopoverTrigger asChild>
+                  <button
+                    onClick={openAliasEditor}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Set your alias â†’
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80" align="start">
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium">Your alias</label>
+                      <Input
+                        value={tempAlias}
+                        onChange={(e) => setTempAlias(e.target.value.slice(0, 30))}
+                        placeholder="e.g., Student-2025"
+                        className="mt-1.5"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSaveAlias();
+                          if (e.key === 'Escape') setEditingAlias(false);
+                        }}
+                        autoFocus
+                      />
                     </div>
-                  </PopoverContent>
-                </Popover>
-              )}
-            </div>
+                    <Button onClick={handleSaveAlias} size="sm" className="w-full">
+                      Save
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
 
-            {/* Content textarea */}
+          {/* Content textarea wrapper with integrated button */}
+          <div className="relative">
             <Textarea
               ref={textareaRef}
               placeholder={placeholder}
@@ -223,60 +223,46 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
               onBlur={() => setIsFocused(false)}
               className={cn(
                 "resize-none border-0 focus-visible:ring-0 bg-transparent p-0 pl-2 transition-all placeholder:font-bold",
-                isFocused ? "min-h-[120px]" : "min-h-[84px]"
+                isFocused ? "min-h-[120px]" : "min-h-[84px]",
+                "pr-20" // Make room for the button
               )}
             />
-
-            {/* Safety hint */}
-            <p className="text-xs text-muted-foreground">
-              Be kind. No PII. Receipts &gt; rumors.
-            </p>
-
-            {/* Desktop actions */}
-            <div className="hidden md:flex items-center justify-between pt-3 border-t border-border">
-              <span className={cn(
-                "text-xs font-mono transition-colors",
-                isAtLimit ? "text-destructive" : isNearLimit ? "text-yellow-500" : "text-muted-foreground"
-              )}>
-                {content.length}/{maxLength}
-              </span>
+            
+            {/* Post button positioned inside textarea - mobile optimized */}
+            <div className="absolute bottom-2 right-2 flex items-center gap-2">
+              {/* Character counter - shows when typing */}
+              {content.length > 0 && (
+                <span className={cn(
+                  "text-[10px] font-mono transition-colors px-1.5 py-0.5 rounded-md bg-background/80",
+                  isAtLimit ? "text-destructive" : isNearLimit ? "text-yellow-500" : "text-muted-foreground"
+                )}>
+                  {content.length}/{maxLength}
+                </span>
+              )}
+              
+              {/* Post button */}
               <Button 
                 onClick={handleSubmit}
                 disabled={!canPost}
                 size="sm"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+                className={cn(
+                  "bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50",
+                  "h-9 min-h-[36px] px-4 md:px-3 rounded-full font-semibold shadow-sm",
+                  "transition-all active:scale-95",
+                  "touch-manipulation" // Optimizes for touch
+                )}
               >
                 {loading ? 'Posting...' : parentId ? 'Reply' : 'Post'}
               </Button>
             </div>
           </div>
+
+          {/* Safety hint */}
+          <p className="text-xs text-muted-foreground">
+            Be kind. No PII. Receipts &gt; rumors.
+          </p>
         </div>
       </div>
-
-      {/* Mobile sticky footer - positioned above bottom nav */}
-      {isFocused && (
-        <div 
-          className="md:hidden fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur-md px-4 py-3 flex items-center justify-between z-40"
-          style={{
-            paddingBottom: 'calc(0.75rem + max(0.75rem, env(safe-area-inset-bottom)) + 64px)',
-          }}
-        >
-          <span className={cn(
-            "text-xs font-mono transition-colors",
-            isAtLimit ? "text-destructive" : isNearLimit ? "text-yellow-500" : "text-muted-foreground"
-          )}>
-            {content.length}/{maxLength}
-          </span>
-          <Button 
-            onClick={handleSubmit}
-            disabled={!canPost}
-            size="sm"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 min-h-[44px] px-6"
-          >
-            {loading ? 'Posting...' : parentId ? 'Reply' : 'Post'}
-          </Button>
-        </div>
-      )}
-    </>
+    </div>
   );
 };
