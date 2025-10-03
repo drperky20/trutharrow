@@ -47,6 +47,53 @@ All colors MUST be HSL.
 
     --glow-gold: 0 0 25px rgba(212, 175, 55, 0.5);
     --glow-tiger: 0 0 30px rgba(212, 175, 55, 0.6);
+
+    /* Skeuomorphic Design Tokens */
+    --shadow-light: 45 40% 65%;
+    --shadow-dark: 0 0% 2%;
+    --highlight: 45 100% 70%;
+    --surface-base: 0 0% 12%;
+    --surface-raised: 0 0% 14%;
+    --surface-inset: 0 0% 8%;
+    
+    /* Depth shadows for skeuomorphic effects */
+    --shadow-raised-sm: 
+      0 1px 2px hsl(var(--shadow-dark) / 0.4),
+      0 -1px 1px hsl(var(--shadow-light) / 0.1),
+      inset 0 1px 0 hsl(var(--shadow-light) / 0.15);
+    
+    --shadow-raised: 
+      0 2px 4px hsl(var(--shadow-dark) / 0.5),
+      0 4px 8px hsl(var(--shadow-dark) / 0.3),
+      0 -1px 2px hsl(var(--shadow-light) / 0.1),
+      inset 0 1px 0 hsl(var(--shadow-light) / 0.2);
+    
+    --shadow-raised-lg: 
+      0 4px 8px hsl(var(--shadow-dark) / 0.6),
+      0 8px 16px hsl(var(--shadow-dark) / 0.4),
+      0 -2px 3px hsl(var(--shadow-light) / 0.15),
+      inset 0 1px 0 hsl(var(--shadow-light) / 0.25);
+    
+    --shadow-inset: 
+      inset 0 2px 4px hsl(var(--shadow-dark) / 0.6),
+      inset 0 1px 2px hsl(var(--shadow-dark) / 0.4),
+      inset 0 -1px 0 hsl(var(--shadow-light) / 0.05);
+    
+    --shadow-pressed: 
+      inset 0 2px 4px hsl(var(--shadow-dark) / 0.7),
+      inset 0 4px 8px hsl(var(--shadow-dark) / 0.5),
+      inset 0 -1px 0 hsl(var(--shadow-light) / 0.08);
+
+    /* Subtle texture gradients */
+    --gradient-surface: linear-gradient(135deg, 
+      hsl(var(--surface-raised)) 0%, 
+      hsl(var(--surface-base)) 50%, 
+      hsl(var(--surface-inset)) 100%);
+    
+    --gradient-gold: linear-gradient(135deg, 
+      hsl(45 95% 65%) 0%, 
+      hsl(45 90% 55%) 50%, 
+      hsl(45 85% 45%) 100%);
   }
 }
 
@@ -171,6 +218,26 @@ All colors MUST be HSL.
 
   .hover-lift:hover {
     transform: translateY(-2px);
+  }
+
+  /* Skeuomorphic micro-interactions */
+  .skeu-surface {
+    background: var(--gradient-surface);
+    box-shadow: var(--shadow-raised);
+  }
+
+  .skeu-interactive {
+    will-change: transform, box-shadow;
+    transition: all 150ms ease-out;
+  }
+
+  .skeu-interactive:hover {
+    box-shadow: var(--shadow-raised-lg);
+  }
+
+  .skeu-interactive:active {
+    transform: translateY(1px);
+    box-shadow: var(--shadow-pressed);
   }
 
   /* Mobile-first utilities */

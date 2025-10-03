@@ -65,6 +65,17 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        'skeu-raised-sm': 'var(--shadow-raised-sm)',
+        'skeu-raised': 'var(--shadow-raised)',
+        'skeu-raised-lg': 'var(--shadow-raised-lg)',
+        'skeu-inset': 'var(--shadow-inset)',
+        'skeu-pressed': 'var(--shadow-pressed)',
+      },
+      backgroundImage: {
+        'gradient-surface': 'var(--gradient-surface)',
+        'gradient-gold': 'var(--gradient-gold)',
+      },
       keyframes: {
         "accordion-down": {
           from: {

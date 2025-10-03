@@ -5,15 +5,15 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-95 motion-reduce:active:scale-100",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 will-change-transform",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/80",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground active:bg-accent/80",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70",
-        ghost: "hover:bg-accent hover:text-accent-foreground active:bg-accent/80",
+        default: "bg-gradient-gold text-primary-foreground shadow-skeu-raised hover:shadow-skeu-raised-lg active:shadow-skeu-pressed active:translate-y-[1px]",
+        destructive: "bg-destructive text-destructive-foreground shadow-skeu-raised hover:shadow-skeu-raised-lg hover:bg-destructive/90 active:shadow-skeu-pressed active:translate-y-[1px]",
+        outline: "border border-input bg-gradient-surface shadow-skeu-raised-sm hover:shadow-skeu-raised hover:text-accent-foreground active:shadow-skeu-inset active:translate-y-[1px]",
+        secondary: "bg-gradient-surface text-secondary-foreground shadow-skeu-raised hover:shadow-skeu-raised-lg active:shadow-skeu-pressed active:translate-y-[1px]",
+        ghost: "hover:bg-gradient-surface hover:shadow-skeu-raised-sm hover:text-accent-foreground active:shadow-skeu-inset",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
