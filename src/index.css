@@ -8,81 +8,81 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Broken Arrow Tigers - Black & Gold Color System */
-    --background: 0 0% 6%;
-    --background-soft: 0 0% 8%;
-    --foreground: 45 100% 95%;
+    /* Light Mac-Inspired Color System */
+    --background: 210 40% 98%;
+    --background-soft: 210 40% 96%;
+    --foreground: 210 15% 15%;
 
-    --card: 0 0% 9%;
-    --card-foreground: 45 100% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 15% 15%;
 
-    --popover: 0 0% 9%;
-    --popover-foreground: 45 100% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 15% 15%;
 
-    --primary: 45 90% 55%;
-    --primary-foreground: 0 0% 5%;
+    --primary: 220 60% 56%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 45 100% 95%;
+    --secondary: 210 20% 90%;
+    --secondary-foreground: 210 15% 15%;
 
-    --muted: 0 0% 25%;
-    --muted-foreground: 45 20% 70%;
+    --muted: 210 15% 85%;
+    --muted-foreground: 210 15% 45%;
 
-    --accent: 45 85% 50%;
-    --accent-foreground: 0 0% 5%;
+    --accent: 220 50% 60%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 100% 62%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --success: 145 63% 49%;
+    --success: 140 60% 40%;
 
-    --alert: 45 100% 60%;
-    --alert-foreground: 0 0% 5%;
+    --alert: 35 90% 55%;
+    --alert-foreground: 0 0% 100%;
 
-    --border: 45 30% 20%;
-    --input: 0 0% 15%;
-    --ring: 45 90% 55%;
+    --border: 210 15% 80%;
+    --input: 0 0% 100%;
+    --ring: 220 60% 56%;
 
-    --radius: 1.125rem;
+    --radius: 0.75rem;
 
-    --glow-gold: 0 0 25px rgba(212, 175, 55, 0.5);
-    --glow-tiger: 0 0 30px rgba(212, 175, 55, 0.6);
+    --glow-gold: 0 0 15px rgba(100, 140, 200, 0.2);
+    --glow-tiger: 0 0 20px rgba(100, 140, 200, 0.25);
 
     /* Skeuomorphic Design Tokens */
-    --shadow-light: 45 40% 65%;
-    --shadow-dark: 0 0% 2%;
-    --highlight: 45 100% 70%;
-    --surface-base: 0 0% 12%;
-    --surface-raised: 0 0% 14%;
-    --surface-inset: 0 0% 8%;
+    --shadow-light: 0 0% 100%;
+    --shadow-dark: 210 30% 75%;
+    --highlight: 220 50% 95%;
+    --surface-base: 210 40% 96%;
+    --surface-raised: 210 35% 92%;
+    --surface-inset: 210 45% 98%;
     
-    /* Depth shadows for skeuomorphic effects */
+    /* Depth shadows for skeuomorphic effects - softer for light theme */
     --shadow-raised-sm: 
-      0 1px 2px hsl(var(--shadow-dark) / 0.4),
-      0 -1px 1px hsl(var(--shadow-light) / 0.1),
-      inset 0 1px 0 hsl(var(--shadow-light) / 0.15);
+      0 1px 2px hsl(var(--shadow-dark) / 0.12),
+      0 -1px 1px hsl(var(--shadow-light) / 0.5),
+      inset 0 1px 0 hsl(var(--shadow-light) / 0.8);
     
     --shadow-raised: 
-      0 2px 4px hsl(var(--shadow-dark) / 0.5),
-      0 4px 8px hsl(var(--shadow-dark) / 0.3),
-      0 -1px 2px hsl(var(--shadow-light) / 0.1),
-      inset 0 1px 0 hsl(var(--shadow-light) / 0.2);
+      0 2px 4px hsl(var(--shadow-dark) / 0.15),
+      0 4px 8px hsl(var(--shadow-dark) / 0.08),
+      0 -1px 2px hsl(var(--shadow-light) / 0.5),
+      inset 0 1px 0 hsl(var(--shadow-light) / 0.9);
     
     --shadow-raised-lg: 
-      0 4px 8px hsl(var(--shadow-dark) / 0.6),
-      0 8px 16px hsl(var(--shadow-dark) / 0.4),
-      0 -2px 3px hsl(var(--shadow-light) / 0.15),
-      inset 0 1px 0 hsl(var(--shadow-light) / 0.25);
+      0 4px 8px hsl(var(--shadow-dark) / 0.18),
+      0 8px 16px hsl(var(--shadow-dark) / 0.1),
+      0 -2px 3px hsl(var(--shadow-light) / 0.6),
+      inset 0 1px 0 hsl(var(--shadow-light) / 0.95);
     
     --shadow-inset: 
-      inset 0 2px 4px hsl(var(--shadow-dark) / 0.6),
-      inset 0 1px 2px hsl(var(--shadow-dark) / 0.4),
-      inset 0 -1px 0 hsl(var(--shadow-light) / 0.05);
+      inset 0 2px 4px hsl(var(--shadow-dark) / 0.15),
+      inset 0 1px 2px hsl(var(--shadow-dark) / 0.1),
+      inset 0 -1px 0 hsl(var(--shadow-light) / 0.3);
     
     --shadow-pressed: 
-      inset 0 2px 4px hsl(var(--shadow-dark) / 0.7),
-      inset 0 4px 8px hsl(var(--shadow-dark) / 0.5),
-      inset 0 -1px 0 hsl(var(--shadow-light) / 0.08);
+      inset 0 2px 4px hsl(var(--shadow-dark) / 0.2),
+      inset 0 4px 8px hsl(var(--shadow-dark) / 0.12),
+      inset 0 -1px 0 hsl(var(--shadow-light) / 0.4);
 
     /* Subtle texture gradients */
     --gradient-surface: linear-gradient(135deg, 
@@ -91,9 +91,9 @@ All colors MUST be HSL.
       hsl(var(--surface-inset)) 100%);
     
     --gradient-gold: linear-gradient(135deg, 
-      hsl(45 95% 65%) 0%, 
-      hsl(45 90% 55%) 50%, 
-      hsl(45 85% 45%) 100%);
+      hsl(220 65% 65%) 0%, 
+      hsl(220 60% 56%) 50%, 
+      hsl(220 55% 48%) 100%);
   }
 }
 
@@ -123,7 +123,11 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', 'Inter Fallback', system-ui, -apple-system, sans-serif;
+    font-family: 'Lucida Grande', 'Geneva', 'Verdana', sans-serif;
+    background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), transparent 70%),
+                      linear-gradient(180deg, hsl(210 50% 98%), hsl(210 50% 95%));
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     /* Safe area support for notched devices */
     padding-top: env(safe-area-inset-top);
     padding-left: env(safe-area-inset-left);
@@ -131,11 +135,13 @@ All colors MUST be HSL.
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', 'Inter Fallback', system-ui, -apple-system, sans-serif;
+    font-family: 'Lucida Grande', 'Geneva', 'Verdana', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.025em;
   }
 
   .font-mono {
-    font-family: 'JetBrains Mono', 'JetBrains Mono Fallback', 'Courier New', monospace;
+    font-family: 'Monaco', 'Courier New', monospace;
   }
 }
 
@@ -252,7 +258,7 @@ All colors MUST be HSL.
   /* Touch-friendly tap highlight */
   @media (hover: none) and (pointer: coarse) {
     * {
-      -webkit-tap-highlight-color: rgba(212, 175, 55, 0.1);
+      -webkit-tap-highlight-color: rgba(100, 140, 200, 0.1);
     }
   }
 
