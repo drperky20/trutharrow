@@ -13,7 +13,7 @@ export const Navbar = () => {
       {/* School Branding Banner */}
       
       
-      <nav className="sticky top-0 z-50 bg-card/85 backdrop-blur-md supports-[backdrop-filter]:bg-card/75 border-b border-border/50 shadow-skeu-raised">
+      <nav className="sticky top-0 z-50 bg-card/95 backdrop-blur-md supports-[backdrop-filter]:bg-card/90 border-b border-border shadow-skeu-raised">
         <div className="container px-4">
           <div className="flex items-center justify-between h-16 gap-2">
             {/* Logo - Always visible */}
