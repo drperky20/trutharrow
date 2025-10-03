@@ -9,10 +9,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-gold text-primary-foreground shadow-skeu-raised hover:shadow-skeu-raised-lg active:shadow-skeu-pressed active:translate-y-[1px]",
+        default: "bg-gradient-gold text-primary-foreground shadow-skeu-raised hover:shadow-skeu-raised-lg active:shadow-skeu-pressed active:translate-y-[1px] border border-primary/30",
         destructive: "bg-destructive text-destructive-foreground shadow-skeu-raised hover:shadow-skeu-raised-lg hover:bg-destructive/90 active:shadow-skeu-pressed active:translate-y-[1px]",
-        outline: "border border-input bg-gradient-surface shadow-skeu-raised-sm hover:shadow-skeu-raised hover:text-accent-foreground active:shadow-skeu-inset active:translate-y-[1px]",
-        secondary: "bg-gradient-surface text-secondary-foreground shadow-skeu-raised hover:shadow-skeu-raised-lg active:shadow-skeu-pressed active:translate-y-[1px]",
+        outline: "border-2 border-input bg-gradient-surface shadow-skeu-raised-sm hover:shadow-skeu-raised hover:border-primary/50 active:shadow-skeu-inset active:translate-y-[1px]",
+        secondary: "bg-gradient-surface text-secondary-foreground shadow-skeu-raised hover:shadow-skeu-raised-lg active:shadow-skeu-pressed active:translate-y-[1px] border border-border/50",
         ghost: "hover:bg-gradient-surface hover:shadow-skeu-raised-sm hover:text-accent-foreground active:shadow-skeu-inset",
         link: "text-primary underline-offset-4 hover:underline",
       },
