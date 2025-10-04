@@ -233,13 +233,15 @@ export default function ThreadView() {
         </div>
 
         {/* Reply composer */}
-        <div data-ta="composer" className="border-b border-aqua-border p-4">
-          <ComposeBox 
-            onPost={handleNewReply} 
-            parentId={rootPost.id}
-            placeholder="Post your reply..."
-            compact
-          />
+        <div className="border-b border-aqua-border p-4">
+          <div data-ta="composer" className="skeuo-card p-3">
+            <ComposeBox 
+              onPost={handleNewReply} 
+              parentId={rootPost.id}
+              placeholder="Post your reply..."
+              compact
+            />
+          </div>
         </div>
 
         {/* Replies Thread */}

@@ -64,7 +64,7 @@ export const SegmentedControl = ({ value, onValueChange, items, className }: Seg
       ref={containerRef}
       role="tablist"
       className={cn(
-        "inline-flex rounded-full bg-card/60 border border-border p-1 relative",
+        "inline-flex rounded-2xl bg-aquaGloss p-1 relative shadow-[inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_0_rgba(0,0,0,.25),0_10px_30px_rgba(42,118,255,.25)]",
         className
       )}
     >
@@ -82,11 +82,11 @@ export const SegmentedControl = ({ value, onValueChange, items, className }: Seg
             onClick={() => onValueChange(item.id)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={cn(
-              "flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-colors min-w-[100px]",
+              "flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition-all min-w-[100px] shadow-[inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_0_rgba(0,0,0,.25)]",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isActive 
-                ? 'text-foreground' 
-                : 'text-muted-foreground hover:text-foreground'
+                ? 'bg-white/90 text-black' 
+                : 'text-black/60 hover:text-black/80'
             )}
           >
             {item.label}
@@ -94,14 +94,7 @@ export const SegmentedControl = ({ value, onValueChange, items, className }: Seg
         );
       })}
       
-      {/* Animated rainbow underline */}
-      <div
-        className="absolute bottom-1 h-0.5 rounded-full bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 transition-all duration-300 ease-out motion-reduce:transition-none"
-        style={{
-          width: `${underlineStyle.width}px`,
-          transform: `translateX(${underlineStyle.left}px)`,
-        }}
-      />
+      {/* Hidden underline in aqua context (buttons have their own active state) */}
     </div>
   );
 };

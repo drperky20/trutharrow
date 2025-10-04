@@ -246,8 +246,8 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
                 disabled={!canPost}
                 size="sm"
                 className={cn(
-                  "bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50",
-                  "h-9 min-h-[36px] px-4 md:px-3 rounded-full font-semibold shadow-sm",
+                  "skeuo-cta disabled:opacity-50",
+                  "h-9 min-h-[36px] px-4 md:px-3 rounded-full font-semibold",
                   "transition-all active:scale-95",
                   "touch-manipulation" // Optimizes for touch
                 )}

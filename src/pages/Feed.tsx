@@ -142,8 +142,10 @@ export default function Feed() {
             </div>
             
             {/* Compose Box */}
-            <div data-ta="composer" className="border-b border-aqua-border p-4 bg-white/80">
-              <ComposeBox onPost={handleNewPost} />
+            <div className="border-b border-aqua-border p-4 bg-white/80">
+              <div data-ta="composer" className="skeuo-card p-3">
+                <ComposeBox onPost={handleNewPost} />
+              </div>
             </div>
             
             {/* Posts Feed */}
