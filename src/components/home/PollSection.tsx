@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Progress } from '@/components/ui/progress';
+import { AquaProgress } from '@/components/aqua/AquaProgress';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -100,7 +100,7 @@ export const PollSection = ({ poll }: PollSectionProps) => {
                     {count} votes ({percentage.toFixed(0)}%)
                   </span>
                 </div>
-                <Progress value={percentage} className="h-2" />
+                <AquaProgress value={percentage} />
               </button>
             );
           })}

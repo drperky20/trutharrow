@@ -10,6 +10,7 @@ import { Navbar } from "./components/Navbar";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { RainbowBanner } from "./components/RainbowBanner";
 import { Footer } from "./components/Footer";
+import { AquaDock } from "./components/aqua/AquaDock";
 
 const Index = lazy(() => import("./pages/Index"));
 const Issues = lazy(() => import("./pages/Issues"));
@@ -93,6 +94,7 @@ const App = () => (
                 <Footer />
               </div>
               <MobileBottomNav />
+              <AquaDock />
             </div>
           </AuthProvider>
         </BrowserRouter>

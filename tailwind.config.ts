@@ -55,6 +55,19 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        aqua: {
+          titlebar: {
+            light: '#edf2ff',
+            dark: '#c8d8ff',
+          },
+          chrome: '#e6ecf9',
+          stripe: '#f6f8ff',
+          blue: '#3b82f6',
+          blueDark: '#2563eb',
+          border: '#aab4d0',
+          bevel: '#ffffff',
+          shadow: 'rgba(0,0,0,0.18)',
+        },
       },
       fontFamily: {
         sans: ['Lucida Grande', 'Geneva', 'Verdana', 'sans-serif'],
@@ -64,6 +77,7 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        aqua: '18px',
       },
       boxShadow: {
         'skeu-raised-sm': 'var(--shadow-raised-sm)',
@@ -71,6 +85,8 @@ export default {
         'skeu-raised-lg': 'var(--shadow-raised-lg)',
         'skeu-inset': 'var(--shadow-inset)',
         'skeu-pressed': 'var(--shadow-pressed)',
+        aqua: '0 10px 24px rgba(0,0,0,.18)',
+        'aqua-inner': 'inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(0,0,0,.08)',
       },
       backgroundImage: {
         'gradient-surface': 'var(--gradient-surface)',

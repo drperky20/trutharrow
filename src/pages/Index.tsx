@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { HeroSection } from '@/components/home/HeroSection';
 import { WindowControls } from '@/components/WindowControls';
 import { useOptimizedQuery } from '@/hooks/useOptimizedQuery';
+import { AquaWindow } from '@/components/aqua/AquaWindow';
 const PostCard = lazy(() => import('@/components/PostCard').then(m => ({
   default: m.PostCard
 })));
@@ -96,44 +97,38 @@ export default function Index() {
       {banners && banners.length > 0}
       
       {posts && posts.length > 0 && <section className="container px-4 py-12">
-          <div className="rounded-lg shadow-skeu-raised bg-gradient-surface border border-border p-6 mb-8 transition-all duration-200">
-            <div className="flex items-center gap-3 mb-6">
-              <WindowControls />
-              <h2 className="text-3xl font-black">Bell Ringers</h2>
+          <AquaWindow title="Bell Ringers" className="mb-8">
+            <div className="p-6">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {posts.map((post, idx) => <PostCard key={post.id} post={post} isNew={idx < 2} />)}
+              </div>
+              <div className="mt-6 text-center">
+                <Link to="/feed">
+                  <Button variant="outline" className="skeu-interactive">See All Posts</Button>
+                </Link>
+              </div>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {posts.map((post, idx) => <PostCard key={post.id} post={post} isNew={idx < 2} />)}
-            </div>
-            <div className="mt-6 text-center">
-              <Link to="/feed">
-                <Button variant="outline" className="skeu-interactive">See All Posts</Button>
-              </Link>
-            </div>
-          </div>
+          </AquaWindow>
         </section>}
       
       {issues && issues.length > 0 && <section className="container px-4 py-12">
-          <div className="rounded-lg shadow-skeu-raised bg-gradient-surface border border-border p-6 mb-8 transition-all duration-200">
-            <div className="flex items-center gap-3 mb-6">
-              <WindowControls />
-              <h2 className="text-3xl font-black">Detention Board</h2>
+          <AquaWindow title="Detention Board" className="mb-8">
+            <div className="p-6">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {issues.map((issue: any) => <IssueCard key={issue.id} issue={issue} />)}
+              </div>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {issues.map((issue: any) => <IssueCard key={issue.id} issue={issue} />)}
-            </div>
-          </div>
+          </AquaWindow>
         </section>}
       
       {polls && polls.length > 0 && <section className="container px-4 py-12">
-          <div className="rounded-lg shadow-skeu-raised bg-gradient-surface border border-border p-6 mb-8 transition-all duration-200">
-            <div className="flex items-center gap-3 mb-6">
-              <WindowControls />
-              <h2 className="text-3xl font-black">Polls</h2>
+          <AquaWindow title="Polls" className="mb-8">
+            <div className="p-6">
+              <div className="grid gap-6 md:grid-cols-2">
+                {polls.map(poll => <PollSection key={poll.id} poll={poll} />)}
+              </div>
             </div>
-            <div className="grid gap-6 md:grid-cols-2">
-              {polls.map(poll => <PollSection key={poll.id} poll={poll} />)}
-            </div>
-          </div>
+          </AquaWindow>
         </section>}
     </div>;
 }

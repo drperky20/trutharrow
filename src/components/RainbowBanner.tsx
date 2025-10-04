@@ -47,7 +47,7 @@ export const RainbowBanner = () => {
   );
   
   return (
-    <div className="rainbow-gradient relative" style={{ contain: 'layout' }}>
+    <div className="rainbow-gradient relative border-y border-aqua-border" style={{ contain: 'layout' }}>
       {currentBanner.url ? (
         <Link to={currentBanner.url} className="block text-background hover:opacity-90 transition-opacity">
           {content}

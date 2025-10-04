@@ -170,7 +170,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
   return (
     <div
       className={cn(
-        'relative bg-gradient-surface border border-border rounded-xl cursor-pointer overflow-hidden shadow-skeu-raised hover:shadow-skeu-raised-lg active:shadow-skeu-pressed transition-all duration-200 ease-out',
+        'relative bg-gradient-to-b from-white to-[#eef2ff] border-2 border-[#aab4d0] rounded-2xl cursor-pointer overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,.12)] active:shadow-[0_1px_4px_rgba(0,0,0,.06)] transition-all duration-200 ease-out',
         isNew && 'pop-in',
         level > 0 && 'ml-12'
       )}
@@ -257,13 +257,12 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 }}
                 disabled={reacting || isPending || userReactions.has('like')}
                 className={cn(
-                  "flex items-center gap-1.5 text-muted-foreground hover:text-red-500 transition-colors group disabled:opacity-50",
-                  userReactions.has('like') && "text-red-500"
+                  "aqua-pressable rounded-full px-2 py-1 text-xs border border-[#aab4d0] bg-gradient-to-b from-white to-[#e6ecf9] hover:to-[#dfe6fb] disabled:opacity-50 transition-all",
+                  userReactions.has('like') && "to-red-100"
                 )}
                 aria-label="Like"
               >
-                <ThumbsUp className={cn("h-4 w-4", userReactions.has('like') && "fill-current")} />
-                <span className="text-xs">{reactions.like || 0}</span>
+                👍 {reactions.like || 0}
               </button>
               
               <button 
@@ -273,13 +272,12 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 }}
                 disabled={reacting || isPending || userReactions.has('lol')}
                 className={cn(
-                  "flex items-center gap-1.5 text-muted-foreground hover:text-yellow-500 transition-colors group disabled:opacity-50",
-                  userReactions.has('lol') && "text-yellow-500"
+                  "aqua-pressable rounded-full px-2 py-1 text-xs border border-[#aab4d0] bg-gradient-to-b from-white to-[#e6ecf9] hover:to-[#dfe6fb] disabled:opacity-50 transition-all",
+                  userReactions.has('lol') && "to-yellow-100"
                 )}
                 aria-label="Laugh"
               >
-                <Laugh className={cn("h-4 w-4", userReactions.has('lol') && "fill-current")} />
-                <span className="text-xs">{reactions.lol || 0}</span>
+                😂 {reactions.lol || 0}
               </button>
               
               <button 
@@ -289,13 +287,12 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 }}
                 disabled={reacting || isPending || userReactions.has('angry')}
                 className={cn(
-                  "flex items-center gap-1.5 text-muted-foreground hover:text-orange-500 transition-colors group disabled:opacity-50",
-                  userReactions.has('angry') && "text-orange-500"
+                  "aqua-pressable rounded-full px-2 py-1 text-xs border border-[#aab4d0] bg-gradient-to-b from-white to-[#e6ecf9] hover:to-[#dfe6fb] disabled:opacity-50 transition-all",
+                  userReactions.has('angry') && "to-orange-100"
                 )}
                 aria-label="Angry"
               >
-                <Angry className={cn("h-4 w-4", userReactions.has('angry') && "fill-current")} />
-                <span className="text-xs">{reactions.angry || 0}</span>
+                😠 {reactions.angry || 0}
               </button>
             </div>
           </div>

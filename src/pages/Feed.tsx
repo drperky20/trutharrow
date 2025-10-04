@@ -6,6 +6,7 @@ import { SegmentedControl } from '@/components/SegmentedControl';
 import { PullToRefreshIndicator } from '@/components/PullToRefresh';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { supabase } from '@/integrations/supabase/client';
+import { AquaWindow } from '@/components/aqua/AquaWindow';
 
 type FeedMode = 'for-you' | 'latest';
 
@@ -115,55 +116,58 @@ export default function Feed() {
         shouldTrigger={shouldTrigger}
       />
     <div className="min-h-dvh md:min-h-screen pb-20 md:pb-0">
-      <div className="max-w-2xl mx-auto md:border-x border-border md:shadow-skeu-raised min-h-dvh md:min-h-screen">
-        {/* Header */}
-        <div className="sticky top-0 z-10 bg-gradient-surface backdrop-blur-md border-b border-border shadow-skeu-raised-sm">
-          <div className="px-4 py-3">
-            <h1 className="text-xl md:text-2xl font-black">Cafeteria</h1>
-            <p className="text-muted-foreground text-xs md:text-sm">
-              The real tea, straight from students.
-            </p>
-          </div>
-          
-          {/* Segmented control tabs */}
-          <div className="px-4 py-3">
-            <SegmentedControl
-              value={mode}
-              onValueChange={(val) => setMode(val as FeedMode)}
-              items={[
-                { id: 'for-you', label: 'For You' },
-                { id: 'latest', label: 'Latest' },
-              ]}
-              className="w-full max-w-xs"
-            />
-          </div>
-        </div>
-        
-        {/* Compose Box */}
-        <div className="border-b border-border p-4 bg-gradient-surface">
-          <ComposeBox onPost={handleNewPost} />
-        </div>
-        
-        {/* Posts Feed */}
-        {loading ? (
-          <TweetSkeletonList count={5} />
-        ) : posts.length === 0 ? (
-          <div className="text-center py-16 px-4">
-            <p className="text-lg font-semibold mb-2">It's quiet… 👀</p>
-            <p className="text-muted-foreground mb-6">Be the first to spill (respectfully).</p>
-            <TweetSkeletonList count={3} />
-          </div>
-        ) : (
+      <div className="max-w-2xl mx-auto min-h-dvh md:min-h-screen">
+        <AquaWindow 
+          title="Cafeteria" 
+          className="min-h-dvh md:min-h-screen"
+        >
           <div>
-            {posts.map(post => (
-              <PostCard 
-                key={post.id} 
-                post={post} 
-                onDelete={() => setPosts(prev => prev.filter(p => p.id !== post.id))}
-              />
-            ))}
+            <div className="px-4 py-3 border-b border-aqua-border bg-white/80">
+              <p className="text-muted-foreground text-xs md:text-sm aqua-font">
+                The real tea, straight from students.
+              </p>
+              
+              {/* Segmented control tabs */}
+              <div className="py-3">
+                <SegmentedControl
+                  value={mode}
+                  onValueChange={(val) => setMode(val as FeedMode)}
+                  items={[
+                    { id: 'for-you', label: 'For You' },
+                    { id: 'latest', label: 'Latest' },
+                  ]}
+                  className="w-full max-w-xs"
+                />
+              </div>
+            </div>
+            
+            {/* Compose Box */}
+            <div className="border-b border-aqua-border p-4 bg-white/80">
+              <ComposeBox onPost={handleNewPost} />
+            </div>
+            
+            {/* Posts Feed */}
+            {loading ? (
+              <TweetSkeletonList count={5} />
+            ) : posts.length === 0 ? (
+              <div className="text-center py-16 px-4">
+                <p className="text-lg font-semibold mb-2 aqua-font">It's quiet… 👀</p>
+                <p className="text-muted-foreground mb-6 aqua-font">Be the first to spill (respectfully).</p>
+                <TweetSkeletonList count={3} />
+              </div>
+            ) : (
+              <div>
+                {posts.map(post => (
+                  <PostCard 
+                    key={post.id} 
+                    post={post} 
+                    onDelete={() => setPosts(prev => prev.filter(p => p.id !== post.id))}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </AquaWindow>
       </div>
     </div>
     </>
