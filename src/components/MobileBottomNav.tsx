@@ -1,5 +1,4 @@
 import { Link, useLocation } from 'react-router-dom';
-import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { navItems, type NavItem } from '@/config/navConfig';
 
@@ -9,48 +8,25 @@ interface NavItemLinkProps {
 }
 
 const NavItemLink = ({ item, isActive }: NavItemLinkProps) => {
-  const { path, icon: Icon, label, isPrimary } = item;
+  const { path, icon: Icon, label } = item;
   
   return (
     <Link
       to={path}
-      className={cn(
-        "flex flex-col items-center justify-center gap-1 px-1.5 py-2 min-h-[64px] transition-all rounded-xl relative",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-        "active:scale-95",
-        "max-w-[80px]",
-        isPrimary && !isActive && "text-primary",
-        isActive 
-          ? 'text-primary font-semibold' 
-          : !isPrimary && 'text-muted-foreground hover:text-foreground'
-      )}
+      className="flex flex-col items-center justify-center gap-1.5 min-w-[60px] active:scale-95 transition-transform"
       aria-label={label}
       aria-current={isActive ? 'page' : undefined}
     >
-      <Icon className={cn(
-        "h-6 w-6 transition-transform motion-reduce:transition-none flex-shrink-0",
-        isActive && "scale-110"
-      )} />
-      <span className={cn(
-        "text-[10px] leading-tight text-center px-0.5 max-w-full overflow-hidden text-ellipsis",
-        "break-words hyphens-auto",
-        isActive ? "font-bold" : "font-medium"
-      )}
-      style={{
-        display: '-webkit-box',
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: 'vertical',
-        wordBreak: 'break-word',
-        overflowWrap: 'break-word',
-      }}>
+      <div className="relative rounded-xl p-2.5 bg-gradient-to-b from-white/90 to-[#e8eef9]/90 
+                      border border-white/90 shadow-[0_2px_6px_rgba(0,0,0,.12),inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_1px_rgba(0,0,0,.06)]">
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-white/60 to-transparent" />
+        <Icon className="size-5 text-slate-700 relative z-10 drop-shadow-[0_1px_0_rgba(255,255,255,.9)]" 
+              aria-hidden 
+              strokeWidth={2.5} />
+      </div>
+      <span className="text-[9px] leading-tight text-center aqua-font font-medium text-slate-700 drop-shadow-sm max-w-[60px] overflow-hidden text-ellipsis">
         {label}
       </span>
-      {isActive && (
-        <div 
-          className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60 rounded-full motion-reduce:transition-none" 
-          aria-hidden="true"
-        />
-      )}
     </Link>
   );
 };
@@ -72,14 +48,14 @@ export const MobileBottomNav = () => {
 
   return (
     <nav 
-      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md bg-white/40 border-t border-white/60"
       role="navigation"
       aria-label="Primary navigation"
       style={{
         paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))',
       }}
     >
-      <div className="flex items-stretch justify-evenly gap-0.5 pt-2 px-1">
+      <div className="flex items-center justify-around gap-1 pt-3 px-2 pb-1">
         {visibleNavItems.map((item) => (
           <NavItemLink 
             key={item.path} 
