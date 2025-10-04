@@ -58,6 +58,13 @@ const App = () => (
         >
           <AuthProvider>
             <div className="min-h-screen bg-background text-foreground">
+              <div className="fixed top-4 left-4 z-50">
+                <div className="aqua-card px-4 py-2 shadow-[0_4px_12px_rgba(0,0,0,.15)]">
+                  <h1 className="aqua-font text-lg font-black text-primary drop-shadow-[0_1px_0_rgba(255,255,255,.9)]">
+                    TruthArrow
+                  </h1>
+                </div>
+              </div>
               <RainbowBanner />
               <div className="mobile-nav-padding">
                 <Suspense
