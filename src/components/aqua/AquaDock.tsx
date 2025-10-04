@@ -22,7 +22,8 @@ export const AquaDock = () => {
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40
                     backdrop-blur-md bg-white/40 border border-white/60
                     rounded-2xl px-4 py-2 shadow-[0_20px_40px_rgba(0,0,0,.18)]
-                    hidden md:block">
+                    hidden md:block"
+         data-avoid="critical">
       <nav className="flex gap-4 items-center">
         {items.map(({to,icon:Icon,label})=>(
           <NavLink 

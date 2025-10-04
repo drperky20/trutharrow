@@ -95,6 +95,7 @@ export const MobileBottomNav = () => {
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md bg-white/40 border-t border-white/60"
       role="navigation"
       aria-label="Primary navigation"
+      data-avoid="critical"
       style={{
         paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))',
       }}

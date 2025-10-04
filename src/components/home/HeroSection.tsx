@@ -51,7 +51,7 @@ export const HeroSection = () => {
         <p className="aqua-font text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl">
           The official truth and accountability platform for Broken Arrow Public Schools students, staff, and families.
         </p>
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-4" data-avoid="critical">
           <Link to="/issues">
             <Button size="lg" className="aqua-pressable font-bold text-base min-h-[44px] px-6 skeu-interactive">
               See the Issues
