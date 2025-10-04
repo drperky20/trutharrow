@@ -160,7 +160,7 @@ export const PostCard = ({
     }
   };
   const isPending = post.status === 'pending';
-  return <article data-ta="card" className={cn('relative bg-gradient-to-b from-white to-[#eef2ff] border border-[#aab4d0] rounded-3xl cursor-pointer overflow-hidden shadow-[0_4px_10px_rgba(0,0,0,.18)] hover:shadow-[0_2px_8px_rgba(0,0,0,.1)] active:shadow-[0_1px_3px_rgba(0,0,0,.05)] transition-all duration-200 ease-out ring-1 ring-white/20 ring-inset', 'skeuo-card', isNew && 'pop-in', level > 0 && 'ml-12')} onClick={handleOpenThread} style={{
+  return <article data-ta="card" className={cn('relative bg-gradient-to-b from-white to-[#eef2ff] border border-[#aab4d0] rounded-3xl cursor-pointer overflow-hidden shadow-[0_4px_10px_rgba(0,0,0,.18)] hover:shadow-[0_2px_8px_rgba(0,0,0,.1)] active:shadow-[0_1px_3px_rgba(0,0,0,.05)] transition-all duration-200 ease-out ring-1 ring-white/20 ring-inset', 'skeuo-card', isNew && 'pop-in')} onClick={handleOpenThread} style={{
     contentVisibility: 'auto',
     containIntrinsicSize: '200px'
   }}>
