@@ -5,16 +5,16 @@
 @layer components {
   /* Feed-scoped Ryos/iChat skeuo styles */
   .skeuo-card {
-    @apply rounded-3xl backdrop-blur bg-white/[0.06] border border-white/10 shadow-[0_1px_0_rgba(255,255,255,.25),0_12px_30px_rgba(0,0,0,.4)];
+    @apply rounded-3xl backdrop-blur bg-white/[0.06] border border-white/10 shadow-[0_1px_0_rgba(255,255,255,.15),0_6px_15px_rgba(0,0,0,.2)];
   }
   .skeuo-bubble {
-    @apply relative rounded-3xl px-4 py-3 bg-gradient-to-b from-white/[0.14] to-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,.35),0_8px_18px_rgba(0,0,0,.35)];
+    @apply relative rounded-3xl px-4 py-3 bg-gradient-to-b from-white/[0.14] to-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,.25),0_4px_10px_rgba(0,0,0,.2)];
   }
   .skeuo-reacts {
-    @apply mt-2 px-2 py-1 flex gap-2 items-center rounded-2xl bg-white/[0.08] backdrop-blur border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,.2),inset_0_-2px_6px_rgba(0,0,0,.45)] text-black/80;
+    @apply mt-2 px-2 py-1 flex gap-2 items-center rounded-2xl bg-white/[0.08] backdrop-blur border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,.15),inset_0_-2px_4px_rgba(0,0,0,.25)] text-black/80;
   }
   .skeuo-cta {
-    @apply bg-cta text-white rounded-xl px-4 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,.4),0_6px_18px_rgba(255,106,0,.45)] active:translate-y-px;
+    @apply bg-cta text-white rounded-xl px-4 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,.3),0_3px_10px_rgba(255,106,0,.3)] active:translate-y-px;
   }
 }
 
@@ -119,31 +119,31 @@ All colors MUST be HSL.
     
     /* Depth shadows for Aqua skeuomorphic effects */
     --shadow-raised-sm: 
-      0 1px 3px rgba(0, 100, 200, 0.15),
-      0 -1px 1px rgba(255, 255, 255, 0.8),
-      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      0 1px 2px rgba(0, 100, 200, 0.1),
+      0 -1px 1px rgba(255, 255, 255, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
     
     --shadow-raised: 
-      0 3px 8px rgba(0, 100, 200, 0.2),
-      0 6px 12px rgba(0, 100, 200, 0.12),
-      0 -1px 2px rgba(255, 255, 255, 0.8),
-      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      0 2px 5px rgba(0, 100, 200, 0.15),
+      0 4px 8px rgba(0, 100, 200, 0.08),
+      0 -1px 2px rgba(255, 255, 255, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.75);
     
     --shadow-raised-lg: 
-      0 6px 16px rgba(0, 100, 200, 0.25),
-      0 12px 24px rgba(0, 100, 200, 0.15),
-      0 -2px 4px rgba(255, 255, 255, 0.9),
-      inset 0 2px 0 rgba(255, 255, 255, 1);
+      0 4px 10px rgba(0, 100, 200, 0.18),
+      0 8px 16px rgba(0, 100, 200, 0.1),
+      0 -2px 4px rgba(255, 255, 255, 0.7),
+      inset 0 2px 0 rgba(255, 255, 255, 0.8);
     
     --shadow-inset: 
-      inset 0 2px 4px rgba(0, 100, 200, 0.15),
-      inset 0 1px 2px rgba(0, 100, 200, 0.1),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.5);
+      inset 0 2px 4px rgba(0, 100, 200, 0.1),
+      inset 0 1px 2px rgba(0, 100, 200, 0.08),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.4);
     
     --shadow-pressed: 
-      inset 0 2px 6px rgba(0, 100, 200, 0.25),
-      inset 0 4px 10px rgba(0, 100, 200, 0.15),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.6);
+      inset 0 2px 5px rgba(0, 100, 200, 0.18),
+      inset 0 3px 8px rgba(0, 100, 200, 0.1),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.5);
 
     /* Aqua glossy gradients - More opaque */
     --gradient-surface: linear-gradient(180deg, 

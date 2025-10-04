@@ -171,7 +171,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
     <article
       data-ta="card"
       className={cn(
-        'relative bg-gradient-to-b from-white to-[#eef2ff] border border-[#aab4d0] rounded-3xl cursor-pointer overflow-hidden shadow-[0_8px_18px_rgba(0,0,0,.35)] hover:shadow-[0_4px_12px_rgba(0,0,0,.12)] active:shadow-[0_1px_4px_rgba(0,0,0,.06)] transition-all duration-200 ease-out ring-1 ring-white/20 ring-inset',
+        'relative bg-gradient-to-b from-white to-[#eef2ff] border border-[#aab4d0] rounded-3xl cursor-pointer overflow-hidden shadow-[0_4px_10px_rgba(0,0,0,.18)] hover:shadow-[0_2px_8px_rgba(0,0,0,.1)] active:shadow-[0_1px_3px_rgba(0,0,0,.05)] transition-all duration-200 ease-out ring-1 ring-white/20 ring-inset',
         'skeuo-card',
         isNew && 'pop-in',
         level > 0 && 'ml-12'

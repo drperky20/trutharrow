@@ -134,9 +134,9 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
 
   return (
     <div className={cn(
-      "rounded-3xl backdrop-blur bg-white/6 border border-white/10 shadow-[0_1px_0_rgba(255,255,255,.25),0_12px_30px_rgba(0,0,0,.4)] ring-1 ring-white/20 ring-inset transition-all",
+      "rounded-3xl backdrop-blur bg-white/6 border border-white/10 shadow-[0_1px_0_rgba(255,255,255,.15),0_6px_15px_rgba(0,0,0,.2)] ring-1 ring-white/20 ring-inset transition-all",
       compact ? "p-3" : "p-4",
-      isFocused && "ring-2 ring-primary/20 shadow-[0_2px_0_rgba(255,255,255,.35),0_16px_40px_rgba(0,0,0,.5)]"
+      isFocused && "ring-2 ring-primary/20 shadow-[0_2px_0_rgba(255,255,255,.25),0_8px_20px_rgba(0,0,0,.25)]"
     )}>
       <div className="flex gap-3">
         <AliasAvatar alias={alias} />
@@ -245,9 +245,9 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
                 onClick={handleSubmit}
                 disabled={!canPost}
                 className={cn(
-                  "bg-[#FF6A00] text-white rounded-xl px-4 py-2 font-semibold",
-                  "shadow-[inset_0_1px_0_rgba(255,255,255,.4),0_6px_18px_rgba(255,106,0,.45)]",
-                  "active:translate-y-px disabled:opacity-50 transition-all",
+                "bg-[#FF6A00] text-white rounded-xl px-4 py-2 font-semibold",
+                "shadow-[inset_0_1px_0_rgba(255,255,255,.3),0_3px_10px_rgba(255,106,0,.3)]",
+                "active:translate-y-px disabled:opacity-50 transition-all",
                   "h-9 min-h-[36px] md:px-3",
                   "touch-manipulation focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70"
                 )}
