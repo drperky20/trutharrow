@@ -72,6 +72,7 @@ export default {
       fontFamily: {
         sans: ['Lucida Grande', 'Geneva', 'Verdana', 'sans-serif'],
         mono: ['Monaco', 'Courier New', 'monospace'],
+        righteous: ['Righteous', 'cursive', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
