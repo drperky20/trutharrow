@@ -16,7 +16,7 @@ export const FloatingProfileButton = () => {
     return (
       <Link
         to="/auth"
-        className="fixed top-4 right-4 z-[60] p-3 rounded-full bg-gradient-to-b from-white/90 to-[#e8eef9]/90 border-2 border-white/90 shadow-[0_4px_12px_rgba(0,0,0,.2),inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_1px_rgba(0,0,0,.08)] hover:scale-105 active:scale-95 transition-transform backdrop-blur-sm"
+        className="fixed top-4 right-4 z-30 md:static md:ml-auto md:z-auto p-3 rounded-full bg-gradient-to-b from-white/90 to-[#e8eef9]/90 border-2 border-white/90 shadow-[0_4px_12px_rgba(0,0,0,.2),inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_1px_rgba(0,0,0,.08)] hover:scale-105 active:scale-95 transition-transform backdrop-blur-sm"
         aria-label="Sign In"
       >
         <User className="size-5 text-slate-700 drop-shadow-[0_1px_0_rgba(255,255,255,.9)]" strokeWidth={2.5} />
@@ -28,7 +28,7 @@ export const FloatingProfileButton = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="fixed top-4 right-4 z-[60] p-3 rounded-full bg-gradient-to-b from-white/90 to-[#e8eef9]/90 border-2 border-white/90 shadow-[0_4px_12px_rgba(0,0,0,.2),inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_1px_rgba(0,0,0,.08)] hover:scale-105 active:scale-95 transition-transform backdrop-blur-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          className="fixed top-4 right-4 z-30 md:static md:ml-auto md:z-auto p-3 rounded-full bg-gradient-to-b from-white/90 to-[#e8eef9]/90 border-2 border-white/90 shadow-[0_4px_12px_rgba(0,0,0,.2),inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_1px_rgba(0,0,0,.08)] hover:scale-105 active:scale-95 transition-transform backdrop-blur-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           aria-label="Profile menu"
         >
           <User className="size-5 text-slate-700 drop-shadow-[0_1px_0_rgba(255,255,255,.9)]" strokeWidth={2.5} />

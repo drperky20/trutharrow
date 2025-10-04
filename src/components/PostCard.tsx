@@ -171,7 +171,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
     <article
       data-ta="card"
       className={cn(
-        'relative bg-gradient-to-b from-white to-[#eef2ff] border-2 border-[#aab4d0] rounded-3xl cursor-pointer overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,.12)] active:shadow-[0_1px_4px_rgba(0,0,0,.06)] transition-all duration-200 ease-out ring-1 ring-white/20 ring-inset',
+        'relative bg-gradient-to-b from-white to-[#eef2ff] border-2 border-[#aab4d0] rounded-3xl cursor-pointer overflow-hidden shadow-[0_8px_18px_rgba(0,0,0,.35)] hover:shadow-[0_4px_12px_rgba(0,0,0,.12)] active:shadow-[0_1px_4px_rgba(0,0,0,.06)] transition-all duration-200 ease-out ring-1 ring-white/20 ring-inset',
         'skeuo-card',
         isNew && 'pop-in',
         level > 0 && 'ml-12'
@@ -184,21 +184,21 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
         <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-border" />
       )}
 
-      <div className="p-4">
+      <div className="p-4 md:p-5">
         <div className="flex gap-3">
           <AliasAvatar alias={post.alias || 'Anonymous'} />
           
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-bold text-sm truncate">{post.alias || 'Anonymous'}</span>
+              <span className="font-bold text-[15px] md:text-base truncate">{post.alias || 'Anonymous'}</span>
               {isPostAuthorAdmin && (
                 <Badge variant="secondary" className="text-xs px-2 py-0 h-5">
                   Admin
                 </Badge>
               )}
-              <span className="text-xs text-muted-foreground">·</span>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-white/60">·</span>
+              <span className="text-xs text-white/60">
                 {formatTime(post.created_at)}
               </span>
               {isPending && (
@@ -212,7 +212,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="ml-auto rounded-xl min-h-10 min-w-10 p-2 flex items-center justify-center bg-white/6 hover:bg-red-500/20 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70"
+                  className="ml-auto rounded-xl min-h-10 min-w-10 p-2 flex items-center justify-center bg-white/6 hover:bg-red-500/20 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70 focus-visible:ring-2 ring-white/70"
                   aria-label="Delete post"
                 >
                   <Trash2 className="h-4 w-4 opacity-90" />
@@ -220,7 +220,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
               )}
             </div>
             
-            <div data-ta="message" className="skeuo-bubble mb-3">
+            <div data-ta="message" className="skeuo-bubble mb-3" style={{contentVisibility:'auto', containIntrinsicSize:'200px'}}>
               <p className="text-sm whitespace-pre-wrap break-words">{post.content}</p>
             </div>
             
@@ -238,13 +238,13 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
             )}
             
             {/* Actions */}
-            <div data-ta="reacts" className="rounded-2xl bg-[#0b0e13] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,.2),inset_0_-2px_6px_rgba(0,0,0,.45)] px-2 py-1 flex gap-2 items-center text-white/90 mt-2">
+            <div data-ta="reacts" className="skeuo-reacts">
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
                   handleOpenThread();
                 }}
-                className="rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70"
+                className="rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70 min-h-10 p-2"
                 aria-label="View thread"
               >
                 <MessageCircle className="h-4 w-4 opacity-90" />
@@ -260,7 +260,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 }}
                 disabled={reacting || isPending || userReactions.has('like')}
                 className={cn(
-                  "rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70",
+                  "rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70 min-h-10 p-2",
                   userReactions.has('like') && "bg-red-500/20"
                 )}
                 aria-label="Like"
@@ -276,7 +276,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 }}
                 disabled={reacting || isPending || userReactions.has('lol')}
                 className={cn(
-                  "rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70",
+                  "rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70 min-h-10 p-2",
                   userReactions.has('lol') && "bg-yellow-500/20"
                 )}
                 aria-label="Laugh"
@@ -292,7 +292,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 }}
                 disabled={reacting || isPending || userReactions.has('angry')}
                 className={cn(
-                  "rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70",
+                  "rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70 min-h-10 p-2",
                   userReactions.has('angry') && "bg-orange-500/20"
                 )}
                 aria-label="Angry"

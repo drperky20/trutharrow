@@ -156,7 +156,7 @@ export default function Feed() {
                 <TweetSkeletonList count={3} />
               </div>
             ) : (
-              <div>
+              <div className="space-y-4 md:space-y-5">
                 {posts.map(post => (
                   <PostCard 
                     key={post.id} 

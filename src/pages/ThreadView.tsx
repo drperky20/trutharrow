@@ -244,7 +244,7 @@ export default function ThreadView() {
 
         {/* Replies Thread */}
         {replies.length > 0 ? (
-          <div>
+          <div className="space-y-4 md:space-y-5">
             {renderThread(threadTree)}
           </div>
         ) : (
