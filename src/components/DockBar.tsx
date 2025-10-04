@@ -96,7 +96,7 @@ export default function DockBar() {
       </div>
 
       {/* DESKTOP: floating dock */}
-      <div className="hidden md:block pointer-events-auto rounded-2xl px-4 py-3 bg-white/80 dark:bg-[#1a1a1a]/90 backdrop-blur-xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_20px_40px_rgba(0,0,0,0.35)] border-2 border-white/50 dark:border-white/10">
+      <div className="hidden md:block pointer-events-auto rounded-2xl px-4 py-1.5 bg-white/80 dark:bg-[#1a1a1a]/90 backdrop-blur-xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_20px_40px_rgba(0,0,0,0.35)] border-2 border-white/50 dark:border-white/10">
         <ul className="flex items-end gap-2">
           {visibleItems.map(item => {
             const active = pathname === item.to || pathname.startsWith(item.to + "/");
@@ -104,12 +104,12 @@ export default function DockBar() {
               <li key={item.key}>
                 <Link
                   to={item.to}
-                  className="flex flex-col items-center gap-1.5 px-2 py-1 min-h-[44px]"
+                  className="flex flex-col items-center gap-1 px-2 py-0.5 min-h-[44px]"
                   aria-current={active ? "page" : undefined}
                   aria-label={item.label}
                 >
                   <SkeuoButton active={active}>
-                    <item.Icon className="w-6 h-6 text-[#1b1b1b] dark:text-white/95" />
+                    <item.Icon className="w-7 h-6 text-[#1b1b1b] dark:text-white/95" />
                   </SkeuoButton>
                   <span className="text-xs text-gray-800 dark:text-gray-200 whitespace-nowrap">
                     {item.label}
