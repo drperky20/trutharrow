@@ -169,8 +169,10 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
 
   return (
     <div
+      data-ta="card"
       className={cn(
         'relative bg-gradient-to-b from-white to-[#eef2ff] border-2 border-[#aab4d0] rounded-2xl cursor-pointer overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,.12)] active:shadow-[0_1px_4px_rgba(0,0,0,.06)] transition-all duration-200 ease-out',
+        'skeuo-card',
         isNew && 'pop-in',
         level > 0 && 'ml-12'
       )}
@@ -219,7 +221,9 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
               )}
             </div>
             
-            <p className="text-sm mb-3 whitespace-pre-wrap break-words">{post.content}</p>
+            <div data-ta="message" className="skeuo-bubble mb-3">
+              <p className="text-sm whitespace-pre-wrap break-words">{post.content}</p>
+            </div>
             
             {post.images && post.images.length > 0 && (
               <div className="mb-3 rounded-xl overflow-hidden border border-border">
@@ -235,7 +239,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
             )}
             
             {/* Actions */}
-            <div className="flex items-center gap-6 mt-2">
+            <div data-ta="reacts" className="skeuo-reacts flex items-center gap-6 mt-2">
               <button 
                 onClick={(e) => {
                   e.stopPropagation();

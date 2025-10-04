@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  /* Feed-scoped Ryos/iChat skeuo styles */
+  .skeuo-card {
+    @apply rounded-3xl backdrop-blur bg-white/[0.06] border border-white/10 shadow-[0_1px_0_rgba(255,255,255,.25),0_12px_30px_rgba(0,0,0,.4)];
+  }
+  .skeuo-bubble {
+    @apply relative rounded-3xl px-4 py-3 bg-gradient-to-b from-white/[0.14] to-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,.35),0_8px_18px_rgba(0,0,0,.35)];
+  }
+  .skeuo-reacts {
+    @apply mt-3 px-2 py-1 flex gap-2 items-center rounded-2xl bg-plate border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,.2),inset_0_-2px_6px_rgba(0,0,0,.45)];
+  }
+  .skeuo-cta {
+    @apply bg-cta text-white rounded-xl px-4 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,.4),0_6px_18px_rgba(255,106,0,.45)] active:translate-y-px;
+  }
+}
+
+/* Bubble tail (scoped to feed/thread pages only) */
+#feed-skeuo [data-ta="message"].skeuo-bubble::after,
+#thread-skeuo [data-ta="message"].skeuo-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: 0.5rem;
+  left: 2rem;
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  border-bottom-left-radius: 1rem;
+  background: inherit;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */

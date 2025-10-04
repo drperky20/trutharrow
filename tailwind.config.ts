@@ -14,6 +14,14 @@ export default {
     },
     extend: {
       colors: {
+        base: '#0F0F0F',
+        card: '#121418',
+        aquaTop: '#dff1ff',
+        aquaMid: '#8fc6ff',
+        aquaDeep: '#2a76ff',
+        plate: '#0b0e13',
+        cta: '#FF6A00',
+        alert: '#FFE302',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -80,6 +88,9 @@ export default {
         sm: "calc(var(--radius) - 4px)",
         aqua: '18px',
       },
+      dropShadow: {
+        aqua: '0 12px 28px rgba(42,118,255,.35)',
+      },
       boxShadow: {
         'skeu-raised-sm': 'var(--shadow-raised-sm)',
         'skeu-raised': 'var(--shadow-raised)',
@@ -92,6 +103,9 @@ export default {
       backgroundImage: {
         'gradient-surface': 'var(--gradient-surface)',
         'gradient-gold': 'var(--gradient-gold)',
+        aquaGloss: 'linear-gradient(180deg,#dff1ff 0%,#8fc6ff 45%,#2a76ff 100%)',
+        plateGloss: 'linear-gradient(180deg,rgba(255,255,255,.08),rgba(0,0,0,.14))',
+        pinstripe: 'repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0,rgba(255,255,255,.06) 1px,transparent 1px,transparent 4px)',
       },
       keyframes: {
         "accordion-down": {

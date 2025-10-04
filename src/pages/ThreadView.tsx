@@ -205,7 +205,7 @@ export default function ThreadView() {
   const threadTree = buildThreadTree(replies);
 
   return (
-    <div className="min-h-dvh md:min-h-screen pb-20 md:pb-0">
+    <div id="thread-skeuo" className="min-h-dvh md:min-h-screen pb-20 md:pb-0">
       <div className="max-w-2xl mx-auto md:border-x border-border min-h-dvh md:min-h-screen">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border px-4 py-3">
@@ -233,7 +233,7 @@ export default function ThreadView() {
         </div>
 
         {/* Reply composer */}
-        <div className="border-b border-border p-4">
+        <div data-ta="composer" className="border-b border-aqua-border p-4">
           <ComposeBox 
             onPost={handleNewReply} 
             parentId={rootPost.id}
