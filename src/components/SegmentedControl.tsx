@@ -64,7 +64,7 @@ export const SegmentedControl = ({ value, onValueChange, items, className }: Seg
       ref={containerRef}
       role="tablist"
       className={cn(
-        "inline-flex rounded-2xl bg-aquaGloss p-1 relative shadow-[inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_0_rgba(0,0,0,.25),0_10px_30px_rgba(42,118,255,.25)]",
+        "inline-flex rounded-2xl bg-gradient-to-b from-white/95 to-[#e8eef5]/90 p-1 relative shadow-[inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_0_rgba(0,0,0,.15),0_4px_12px_rgba(0,0,0,.12)] border border-white/40",
         className
       )}
     >
@@ -82,11 +82,11 @@ export const SegmentedControl = ({ value, onValueChange, items, className }: Seg
             onClick={() => onValueChange(item.id)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={cn(
-              "flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition-all min-w-[100px] shadow-[inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_0_rgba(0,0,0,.25)]",
-              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/80",
+              "flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition-all min-w-[100px] shadow-[inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_0_rgba(0,0,0,.1)]",
+              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/50",
               isActive 
-                ? 'bg-white/90 text-black' 
-                : 'text-black/60 hover:text-black/80'
+                ? 'bg-white text-black shadow-[inset_0_1px_0_rgba(255,255,255,1),0_2px_6px_rgba(0,0,0,.15)]' 
+                : 'text-black/50 hover:text-black/70 bg-transparent'
             )}
           >
             {item.label}
