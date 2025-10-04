@@ -30,11 +30,15 @@ export const AquaDock = () => {
             className="group flex flex-col items-center"
             title={label}
           >
-            <div className="transition-transform duration-150 group-hover:scale-125
-                            rounded-xl p-2 bg-white/70 border border-white/80 shadow">
-              <Icon className="size-6 text-slate-700" aria-hidden />
+            <div className="relative transition-transform duration-150 group-hover:scale-125
+                            rounded-xl p-3 bg-gradient-to-b from-white/90 to-[#e8eef9]/90 
+                            border border-white/90 shadow-[0_2px_8px_rgba(0,0,0,.15),inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_1px_rgba(0,0,0,.08)]">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-white/60 to-transparent" />
+              <Icon className="size-6 text-slate-700 relative z-10 drop-shadow-[0_1px_0_rgba(255,255,255,.9)]" 
+                    aria-hidden 
+                    strokeWidth={2.5} />
             </div>
-            <span className="mt-1 text-[10px] text-slate-700 aqua-font">{label}</span>
+            <span className="mt-1.5 text-[10px] text-slate-700 aqua-font font-medium drop-shadow-sm">{label}</span>
           </NavLink>
         ))}
       </nav>

@@ -58,7 +58,6 @@ const App = () => (
         >
           <AuthProvider>
             <div className="min-h-screen bg-background text-foreground">
-              <Navbar />
               <RainbowBanner />
               <div className="mobile-nav-padding">
                 <Suspense
