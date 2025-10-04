@@ -108,7 +108,6 @@ export const MobileBottomNav = () => {
             isActive={isActiveRoute(item.path)} 
           />
         ))}
-        <MobileUserButton />
       </div>
     </nav>
   );

@@ -72,7 +72,7 @@ export default function DockBar() {
     >
       {/* MOBILE: full-width bar */}
       <div className="md:hidden mx-0 rounded-t-3xl bg-white/80 dark:bg-[#1a1a1a]/90 backdrop-blur-xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_-2px_0_rgba(0,0,0,0.08),0_-10px_30px_rgba(0,0,0,0.25)] border-t-2 border-white/50 dark:border-white/10 pointer-events-auto">
-        <ul className="grid gap-1 px-3 py-2" style={{ gridTemplateColumns: `repeat(${visibleItems.length + 1}, minmax(0, 1fr))` }}>
+        <ul className="grid gap-1 px-3 py-2" style={{ gridTemplateColumns: `repeat(${visibleItems.length}, minmax(0, 1fr))` }}>
           {visibleItems.map(item => {
             const active = pathname === item.to || pathname.startsWith(item.to + "/");
             return (
@@ -93,10 +93,6 @@ export default function DockBar() {
               </li>
             );
           })}
-          {/* PROFILE: always present as last item */}
-          <li className="min-w-0">
-            <ProfileButton active={pathname.startsWith("/auth")} isMobile />
-          </li>
         </ul>
       </div>
 
@@ -123,9 +119,6 @@ export default function DockBar() {
               </li>
             );
           })}
-          <li>
-            <ProfileButton active={pathname.startsWith("/auth")} />
-          </li>
         </ul>
       </div>
     </nav>
