@@ -33,7 +33,7 @@ export const HeroSection = () => {
     }, 4000);
     return () => clearInterval(interval);
   }, [headlines.length]);
-  return <section className="relative overflow-hidden border-b border-primary/30">
+  return <section className="relative overflow-hidden border-b border-border shadow-skeu-inset mb-8">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background z-[1]" />
       <picture className="absolute inset-0 block">
         <source srcSet={heroBannerWebp} type="image/webp" />
@@ -52,17 +52,17 @@ export const HeroSection = () => {
         </p>
         <div className="flex flex-wrap gap-4">
           <Link to="/issues">
-            <Button size="lg" className="font-bold text-base min-h-[44px] px-6">
+            <Button size="lg" className="font-bold text-base min-h-[44px] px-6 skeu-interactive">
               See the Issues
             </Button>
           </Link>
           <Link to="/submit">
-            <Button size="lg" variant="outline" className="font-bold text-base min-h-[44px] px-6">
+            <Button size="lg" variant="outline" className="font-bold text-base min-h-[44px] px-6 skeu-interactive">
               Drop Your Homework
             </Button>
           </Link>
           <Link to="/about">
-            <Button size="lg" variant="outline" className="font-bold text-base min-h-[44px] px-6">
+            <Button size="lg" variant="outline" className="font-bold text-base min-h-[44px] px-6 skeu-interactive">
               Read the Yearbook
             </Button>
           </Link>

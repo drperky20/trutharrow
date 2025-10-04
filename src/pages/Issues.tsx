@@ -75,7 +75,7 @@ export default function Issues() {
         </div>
         
         {/* Sticky Search & Filter Bar */}
-        <div className="sticky top-0 z-20 bg-background/95 backdrop-blur border-y border-border -mx-4 px-4 py-4 mb-6">
+        <div className="sticky top-0 z-20 bg-gradient-surface backdrop-blur border-y border-border shadow-skeu-raised -mx-4 px-4 py-4 mb-6">
           <div className="space-y-4">
             {/* Search with sort */}
             <div className="flex gap-2">
@@ -92,9 +92,8 @@ export default function Issues() {
               <button
                 onClick={() => setSortMode(sortMode === 'updated' ? 'grade' : 'updated')}
                 className={cn(
-                  "inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card text-sm font-medium transition-all min-h-[44px] whitespace-nowrap",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                  "hover:bg-accent"
+                  "inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-gradient-surface text-sm font-medium transition-all min-h-[44px] whitespace-nowrap shadow-skeu-raised hover:shadow-skeu-raised-lg active:shadow-skeu-pressed",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 )}
                 aria-label={`Sort by ${sortMode === 'updated' ? 'grade' : 'last updated'}`}
               >

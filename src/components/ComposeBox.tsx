@@ -134,9 +134,9 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
 
   return (
     <div className={cn(
-      "bg-card/80 border border-border rounded-2xl transition-all",
+      "bg-gradient-surface border border-border rounded-2xl transition-all shadow-skeu-raised",
       compact ? "p-3" : "p-4",
-      isFocused && "ring-2 ring-primary/20"
+      isFocused && "ring-2 ring-primary/20 shadow-skeu-raised-lg"
     )}>
       <div className="flex gap-3">
         <AliasAvatar alias={alias} />

@@ -170,7 +170,7 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
   return (
     <div
       className={cn(
-        'relative bg-card/80 border border-border rounded-xl hover:bg-card/90 transition-all cursor-pointer overflow-hidden',
+        'relative bg-gradient-surface border border-border rounded-xl cursor-pointer overflow-hidden shadow-skeu-raised hover:shadow-skeu-raised-lg active:shadow-skeu-pressed transition-all duration-200 ease-out',
         isNew && 'pop-in',
         level > 0 && 'ml-12'
       )}

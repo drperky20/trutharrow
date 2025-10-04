@@ -13,7 +13,7 @@ export const Navbar = () => {
       {/* School Branding Banner */}
       
       
-      <nav className="sticky top-0 z-50 bg-card/95 backdrop-blur-md supports-[backdrop-filter]:bg-card/90 border-b border-border shadow-skeu-raised">
+      <nav className="sticky top-0 z-50 bg-gradient-surface backdrop-blur-md border-b border-border shadow-skeu-raised">
         <div className="container px-4">
           <div className="flex items-center justify-between h-16 gap-2">
             {/* Logo - Always visible */}
@@ -37,7 +37,7 @@ export const Navbar = () => {
           <div className="hidden md:flex items-center gap-2">
             {user ? <>
                 <Link to="/submit">
-                  <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs lg:text-sm">
+                  <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs lg:text-sm skeu-interactive">
                     Submit
                   </Button>
                 </Link>

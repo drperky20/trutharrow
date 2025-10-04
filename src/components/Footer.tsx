@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 export const Footer = () => {
-  return <footer className="border-t border-primary/30 bg-background-soft py-8 mt-16">
+  return <footer className="border-t border-border bg-gradient-surface shadow-skeu-inset py-8 mt-16">
       <div className="container px-4">
         <div className="text-center mb-6">
           <h3 className="text-2xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">

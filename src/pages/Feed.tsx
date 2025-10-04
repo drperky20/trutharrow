@@ -115,9 +115,9 @@ export default function Feed() {
         shouldTrigger={shouldTrigger}
       />
     <div className="min-h-dvh md:min-h-screen pb-20 md:pb-0">
-      <div className="max-w-2xl mx-auto md:border-x border-border min-h-dvh md:min-h-screen">
+      <div className="max-w-2xl mx-auto md:border-x border-border md:shadow-skeu-raised min-h-dvh md:min-h-screen">
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border">
+        <div className="sticky top-0 z-10 bg-gradient-surface backdrop-blur-md border-b border-border shadow-skeu-raised-sm">
           <div className="px-4 py-3">
             <h1 className="text-xl md:text-2xl font-black">Cafeteria</h1>
             <p className="text-muted-foreground text-xs md:text-sm">
@@ -140,7 +140,7 @@ export default function Feed() {
         </div>
         
         {/* Compose Box */}
-        <div className="border-b border-border p-4">
+        <div className="border-b border-border p-4 bg-gradient-surface">
           <ComposeBox onPost={handleNewPost} />
         </div>
         

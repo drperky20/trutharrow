@@ -9,7 +9,7 @@ interface IssueCardProps {
 export const IssueCard = ({ issue }: IssueCardProps) => {
   return (
     <Link to={`/issues/${issue.slug}`}>
-      <div className="bg-card border border-border rounded-lg p-5 hover-lift hover:border-primary hover:glow-orange transition-all">
+      <div className="bg-gradient-surface border border-border rounded-lg p-5 shadow-skeu-raised hover:shadow-skeu-raised-lg active:shadow-skeu-pressed transition-all duration-200 ease-out">
         <div className="flex items-start justify-between mb-3">
           <h3 className="text-lg font-bold">{issue.title}</h3>
           <GradeBadge grade={issue.grade} />
