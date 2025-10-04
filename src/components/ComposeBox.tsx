@@ -10,6 +10,8 @@ import { useAlias } from '@/hooks/useAlias';
 import { AliasAvatar } from '@/components/AliasAvatar';
 import { Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { postSchema, sanitizeInput } from '@/lib/validation';
+import { z } from 'zod';
 
 interface ComposeBoxProps {
   onPost?: () => void;
@@ -24,6 +26,7 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
   const [isFocused, setIsFocused] = useState(false);
   const [editingAlias, setEditingAlias] = useState(false);
   const [tempAlias, setTempAlias] = useState('');
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const { alias, setAlias } = useAlias();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -50,23 +53,28 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
     }
 
     setLoading(true);
+    setValidationErrors({});
 
     try {
+      // Validate input
+      const validatedData = postSchema.parse({
+        content: sanitizeInput(content),
+        alias: sanitizeInput(alias),
+      });
+
       // Call new content moderation service
       const { data: modResult, error: modError } = await supabase.functions.invoke('content-moderation', {
-        body: { content: content.trim() }
+        body: { content: validatedData.content }
       });
 
       // Determine post status: approved (live immediately) or pending (admin review)
       const shouldApprove = modError || !modResult ? true : modResult.shouldApprove;
       const finalStatus = shouldApprove ? 'approved' : 'pending';
 
-      console.log('[ComposeBox] Moderation result:', { shouldApprove, finalStatus, modResult });
-
       // Insert post into database
       const { error: insertError } = await supabase.from('posts').insert({
-        alias: alias.trim(),
-        content: content.trim(),
+        alias: validatedData.alias,
+        content: validatedData.content,
         parent_id: parentId || null,
         user_id: user?.id || null,
         type: 'assignment',
@@ -74,7 +82,6 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
       });
 
       if (insertError) {
-        console.error('[ComposeBox] Insert error:', insertError);
         toast({
           title: "Error posting",
           description: insertError.message,
@@ -100,25 +107,50 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
         onPost?.();
       }
     } catch (error) {
-      console.error('Submit error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to submit post. Please try again.",
-        variant: "destructive",
-      });
+      if (error instanceof z.ZodError) {
+        const errors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            errors[err.path[0].toString()] = err.message;
+          }
+        });
+        setValidationErrors(errors);
+        toast({
+          title: 'Validation error',
+          description: Object.values(errors)[0] || 'Please check your input.',
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to submit post. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleSaveAlias = () => {
-    if (tempAlias.trim()) {
-      setAlias(tempAlias.trim());
+    setValidationErrors({});
+    try {
+      const validatedAlias = postSchema.shape.alias.parse(tempAlias);
+      setAlias(validatedAlias);
       setEditingAlias(false);
       toast({
         title: "Alias saved",
-        description: `You'll post as "${tempAlias.trim()}"`,
+        description: `You'll post as "${validatedAlias}"`,
       });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setValidationErrors({ alias: error.errors[0]?.message || 'Invalid alias' });
+        toast({
+          title: 'Invalid alias',
+          description: error.errors[0]?.message,
+          variant: 'destructive'
+        });
+      }
     }
   };
 
@@ -163,13 +195,19 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
                         value={tempAlias}
                         onChange={(e) => setTempAlias(e.target.value.slice(0, 30))}
                         placeholder="e.g., Student-2025"
-                        className="mt-1.5"
+                        className={`mt-1.5 ${validationErrors.alias ? 'border-destructive' : ''}`}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') handleSaveAlias();
-                          if (e.key === 'Escape') setEditingAlias(false);
+                          if (e.key === 'Escape') {
+                            setEditingAlias(false);
+                            setValidationErrors({});
+                          }
                         }}
                         autoFocus
                       />
+                      {validationErrors.alias && (
+                        <p className="text-xs text-destructive mt-1">{validationErrors.alias}</p>
+                      )}
                     </div>
                     <Button onClick={handleSaveAlias} size="sm" className="w-full">
                       Save

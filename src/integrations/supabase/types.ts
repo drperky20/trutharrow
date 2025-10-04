@@ -312,6 +312,13 @@ export type Database = {
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "post_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       posts: {
@@ -371,23 +378,60 @@ export type Database = {
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "posts_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "posts_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       profiles: {
         Row: {
           alias: string | null
+          alias_change_count: number | null
+          alias_changed_at: string | null
           created_at: string | null
           id: string
         }
         Insert: {
           alias?: string | null
+          alias_change_count?: number | null
+          alias_changed_at?: string | null
           created_at?: string | null
           id: string
         }
         Update: {
           alias?: string | null
+          alias_change_count?: number | null
+          alias_changed_at?: string | null
           created_at?: string | null
           id?: string
+        }
+        Relationships: []
+      }
+      submission_attempts: {
+        Row: {
+          attempted_at: string | null
+          fingerprint: string | null
+          id: string
+          ip_address: string | null
+          user_id: string | null
+        }
+        Insert: {
+          attempted_at?: string | null
+          fingerprint?: string | null
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          attempted_at?: string | null
+          fingerprint?: string | null
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -524,12 +568,94 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      posts_public: {
+        Row: {
+          alias: string | null
+          content: string | null
+          created_at: string | null
+          featured: boolean | null
+          id: string | null
+          images: string[] | null
+          issue_refs: string[] | null
+          parent_id: string | null
+          reactions: Json | null
+          reply_count: number | null
+          status: string | null
+          thread_id: string | null
+          type: Database["public"]["Enums"]["post_type"] | null
+        }
+        Insert: {
+          alias?: string | null
+          content?: string | null
+          created_at?: string | null
+          featured?: boolean | null
+          id?: string | null
+          images?: string[] | null
+          issue_refs?: string[] | null
+          parent_id?: string | null
+          reactions?: Json | null
+          reply_count?: number | null
+          status?: string | null
+          thread_id?: string | null
+          type?: Database["public"]["Enums"]["post_type"] | null
+        }
+        Update: {
+          alias?: string | null
+          content?: string | null
+          created_at?: string | null
+          featured?: boolean | null
+          id?: string | null
+          images?: string[] | null
+          issue_refs?: string[] | null
+          parent_id?: string | null
+          reactions?: Json | null
+          reply_count?: number | null
+          status?: string | null
+          thread_id?: string | null
+          type?: Database["public"]["Enums"]["post_type"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "posts_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      can_change_alias: {
+        Args: { p_user_id: string }
+        Returns: boolean
+      }
+      check_submission_rate_limit: {
+        Args: { p_fingerprint?: string; p_user_id?: string }
+        Returns: Json
+      }
       cleanup_old_failed_attempts: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      cleanup_old_submission_attempts: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      decrypt_contact_info: {
+        Args: { encrypted_text: string }
+        Returns: string
+      }
+      encrypt_contact_info: {
+        Args: { contact_text: string }
+        Returns: string
       }
       generate_alias: {
         Args: Record<PropertyKey, never>
@@ -567,6 +693,10 @@ export type Database = {
           p_record_id?: string
           p_table_name?: string
         }
+        Returns: undefined
+      }
+      log_sensitive_access: {
+        Args: { p_field_accessed: string; p_submission_id: string }
         Returns: undefined
       }
       record_failed_login_attempt: {
