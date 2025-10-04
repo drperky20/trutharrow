@@ -10,6 +10,7 @@ import { RainbowBanner } from "./components/RainbowBanner";
 import { Footer } from "./components/Footer";
 import DockBar from "./components/DockBar";
 import { SmartLogo } from "./components/SmartLogo";
+import { FloatingProfileButton } from "./components/FloatingProfileButton";
 
 const Index = lazy(() => import("./pages/Index"));
 const Issues = lazy(() => import("./pages/Issues"));
@@ -59,6 +60,7 @@ const App = () => (
             <div className="min-h-screen bg-background text-foreground">
               <SmartLogo anchor="top-left" margin={16} />
               <RainbowBanner />
+              <FloatingProfileButton />
               <div className="ta-pb-dock">
                 <Suspense
                   fallback={
