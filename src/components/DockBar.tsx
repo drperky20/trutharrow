@@ -68,11 +68,10 @@ export default function DockBar() {
       aria-label="Primary navigation"
       data-avoid="critical"
       className="fixed inset-x-0 bottom-0 z-40 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:bottom-4 pointer-events-none"
-      style={{ paddingBottom: `max(${padBottom}px, env(safe-area-inset-bottom))` }}
     >
       {/* MOBILE: full-width bar */}
-      <div className="md:hidden mx-0 rounded-t-3xl bg-white/80 dark:bg-[#1a1a1a]/90 backdrop-blur-xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_-2px_0_rgba(0,0,0,0.08),0_-10px_30px_rgba(0,0,0,0.25)] border-t-2 border-white/50 dark:border-white/10 pointer-events-auto">
-        <ul className="grid gap-1 px-3 py-2" style={{ gridTemplateColumns: `repeat(${visibleItems.length}, minmax(0, 1fr))` }}>
+      <div className="md:hidden mx-0 rounded-t-3xl bg-white/80 dark:bg-[#1a1a1a]/90 backdrop-blur-xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_-2px_0_rgba(0,0,0,0.08),0_-10px_30px_rgba(0,0,0,0.25)] border-t-2 border-white/50 dark:border-white/10 pointer-events-auto pb-[env(safe-area-inset-bottom)]">
+        <ul className="grid gap-1 px-3 pt-2 pb-2" style={{ gridTemplateColumns: `repeat(${visibleItems.length}, minmax(0, 1fr))` }}>
           {visibleItems.map(item => {
             const active = pathname === item.to || pathname.startsWith(item.to + "/");
             return (
