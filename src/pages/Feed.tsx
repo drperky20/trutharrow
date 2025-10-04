@@ -115,7 +115,7 @@ export default function Feed() {
         pullDistance={pullDistance}
         shouldTrigger={shouldTrigger}
       />
-    <div id="feed-skeuo" className="min-h-dvh md:min-h-screen pb-20 md:pb-0">
+    <div id="feed-skeuo" className="min-h-dvh md:min-h-screen pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-8 space-y-4">
       <div className="max-w-2xl mx-auto min-h-dvh md:min-h-screen">
         <AquaWindow 
           title="Cafeteria" 
@@ -142,10 +142,8 @@ export default function Feed() {
             </div>
             
             {/* Compose Box */}
-            <div className="border-b border-aqua-border p-4 bg-white/80">
-              <div data-ta="composer" className="skeuo-card p-3">
-                <ComposeBox onPost={handleNewPost} />
-              </div>
+            <div className="border-b border-aqua-border p-4 md:p-5 bg-white/80">
+              <ComposeBox onPost={handleNewPost} />
             </div>
             
             {/* Posts Feed */}
@@ -171,6 +169,7 @@ export default function Feed() {
           </div>
         </AquaWindow>
       </div>
+      <div className="h-[88px] md:hidden" />
     </div>
     </>
   );

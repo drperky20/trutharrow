@@ -83,7 +83,7 @@ export const SegmentedControl = ({ value, onValueChange, items, className }: Seg
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={cn(
               "flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition-all min-w-[100px] shadow-[inset_0_1px_0_rgba(255,255,255,.9),inset_0_-1px_0_rgba(0,0,0,.25)]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/80",
               isActive 
                 ? 'bg-white/90 text-black' 
                 : 'text-black/60 hover:text-black/80'

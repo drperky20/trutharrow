@@ -134,9 +134,9 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
 
   return (
     <div className={cn(
-      "bg-gradient-surface border border-border rounded-2xl transition-all shadow-skeu-raised",
+      "rounded-3xl backdrop-blur bg-white/6 border border-white/10 shadow-[0_1px_0_rgba(255,255,255,.25),0_12px_30px_rgba(0,0,0,.4)] ring-1 ring-white/20 ring-inset transition-all",
       compact ? "p-3" : "p-4",
-      isFocused && "ring-2 ring-primary/20 shadow-skeu-raised-lg"
+      isFocused && "ring-2 ring-primary/20 shadow-[0_2px_0_rgba(255,255,255,.35),0_16px_40px_rgba(0,0,0,.5)]"
     )}>
       <div className="flex gap-3">
         <AliasAvatar alias={alias} />
@@ -241,19 +241,19 @@ export const ComposeBox = ({ onPost, parentId, placeholder = "What's the tea? ðŸ
               )}
               
               {/* Post button */}
-              <Button 
+              <button 
                 onClick={handleSubmit}
                 disabled={!canPost}
-                size="sm"
                 className={cn(
-                  "skeuo-cta disabled:opacity-50",
-                  "h-9 min-h-[36px] px-4 md:px-3 rounded-full font-semibold",
-                  "transition-all active:scale-95",
-                  "touch-manipulation" // Optimizes for touch
+                  "bg-[#FF6A00] text-white rounded-xl px-4 py-2 font-semibold",
+                  "shadow-[inset_0_1px_0_rgba(255,255,255,.4),0_6px_18px_rgba(255,106,0,.45)]",
+                  "active:translate-y-px disabled:opacity-50 transition-all",
+                  "h-9 min-h-[36px] md:px-3",
+                  "touch-manipulation focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70"
                 )}
               >
                 {loading ? 'Posting...' : parentId ? 'Reply' : 'Post'}
-              </Button>
+              </button>
             </div>
           </div>
 

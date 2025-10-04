@@ -31,6 +31,25 @@
   border-bottom-left-radius: 1rem;
   background: inherit;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+/* Right tail for self messages in thread */
+#thread-skeuo [data-me="true"].skeuo-bubble::after {
+  right: 2rem;
+  left: auto;
+}
+
+/* Global scroll padding for sticky headers */
+:root {
+  scroll-padding-top: 72px;
+}
+
+/* Hide dock labels on very narrow screens */
+@media (max-width: 380px) {
+  .dock-label {
+    display: none;
+  }
 }
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 

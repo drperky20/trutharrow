@@ -168,15 +168,16 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
   const isPending = post.status === 'pending';
 
   return (
-    <div
+    <article
       data-ta="card"
       className={cn(
-        'relative bg-gradient-to-b from-white to-[#eef2ff] border-2 border-[#aab4d0] rounded-2xl cursor-pointer overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,.12)] active:shadow-[0_1px_4px_rgba(0,0,0,.06)] transition-all duration-200 ease-out',
+        'relative bg-gradient-to-b from-white to-[#eef2ff] border-2 border-[#aab4d0] rounded-3xl cursor-pointer overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,.12)] active:shadow-[0_1px_4px_rgba(0,0,0,.06)] transition-all duration-200 ease-out ring-1 ring-white/20 ring-inset',
         'skeuo-card',
         isNew && 'pop-in',
         level > 0 && 'ml-12'
       )}
       onClick={handleOpenThread}
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '200px' }}
     >
       {/* Reply line connector */}
       {showReplyLine && level > 0 && (
@@ -208,16 +209,14 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
               
               {/* Admin delete button */}
               {isAdmin && (
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  className="ml-auto h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+                  className="ml-auto rounded-xl min-h-10 min-w-10 p-2 flex items-center justify-center bg-white/6 hover:bg-red-500/20 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70"
                   aria-label="Delete post"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
+                  <Trash2 className="h-4 w-4 opacity-90" />
+                </button>
               )}
             </div>
             
@@ -239,18 +238,18 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
             )}
             
             {/* Actions */}
-            <div data-ta="reacts" className="skeuo-reacts flex items-center gap-6 mt-2">
+            <div data-ta="reacts" className="rounded-2xl bg-[#0b0e13] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,.2),inset_0_-2px_6px_rgba(0,0,0,.45)] px-2 py-1 flex gap-2 items-center text-white/90 mt-2">
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
                   handleOpenThread();
                 }}
-                className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors group"
+                className="rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70"
                 aria-label="View thread"
               >
-                <MessageCircle className="h-4 w-4" />
+                <MessageCircle className="h-4 w-4 opacity-90" />
                 {post.reply_count > 0 && (
-                  <span className="text-xs">{post.reply_count}</span>
+                  <output aria-live="polite" className="text-sm">{post.reply_count}</output>
                 )}
               </button>
               
@@ -261,12 +260,13 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 }}
                 disabled={reacting || isPending || userReactions.has('like')}
                 className={cn(
-                  "aqua-pressable rounded-full px-2 py-1 text-xs border border-[#aab4d0] bg-gradient-to-b from-white to-[#e6ecf9] hover:to-[#dfe6fb] disabled:opacity-50 transition-all",
-                  userReactions.has('like') && "to-red-100"
+                  "rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70",
+                  userReactions.has('like') && "bg-red-500/20"
                 )}
                 aria-label="Like"
               >
-                👍 {reactions.like || 0}
+                <span className="opacity-90">👍</span>
+                <output aria-live="polite" className="text-sm">{reactions.like || 0}</output>
               </button>
               
               <button 
@@ -276,12 +276,13 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 }}
                 disabled={reacting || isPending || userReactions.has('lol')}
                 className={cn(
-                  "aqua-pressable rounded-full px-2 py-1 text-xs border border-[#aab4d0] bg-gradient-to-b from-white to-[#e6ecf9] hover:to-[#dfe6fb] disabled:opacity-50 transition-all",
-                  userReactions.has('lol') && "to-yellow-100"
+                  "rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70",
+                  userReactions.has('lol') && "bg-yellow-500/20"
                 )}
                 aria-label="Laugh"
               >
-                😂 {reactions.lol || 0}
+                <span className="opacity-90">😂</span>
+                <output aria-live="polite" className="text-sm">{reactions.lol || 0}</output>
               </button>
               
               <button 
@@ -291,17 +292,18 @@ export const PostCard = ({ post, isNew = false, showReplyLine = false, level = 0
                 }}
                 disabled={reacting || isPending || userReactions.has('angry')}
                 className={cn(
-                  "aqua-pressable rounded-full px-2 py-1 text-xs border border-[#aab4d0] bg-gradient-to-b from-white to-[#e6ecf9] hover:to-[#dfe6fb] disabled:opacity-50 transition-all",
-                  userReactions.has('angry') && "to-orange-100"
+                  "rounded-xl px-3 h-8 min-w-10 flex items-center gap-1 bg-white/6 hover:bg-white/10 active:translate-y-px transition disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70",
+                  userReactions.has('angry') && "bg-orange-500/20"
                 )}
                 aria-label="Angry"
               >
-                😠 {reactions.angry || 0}
+                <span className="opacity-90">😠</span>
+                <output aria-live="polite" className="text-sm">{reactions.angry || 0}</output>
               </button>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };

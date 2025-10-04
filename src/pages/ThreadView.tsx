@@ -205,10 +205,10 @@ export default function ThreadView() {
   const threadTree = buildThreadTree(replies);
 
   return (
-    <div id="thread-skeuo" className="min-h-dvh md:min-h-screen pb-20 md:pb-0">
+    <div id="thread-skeuo" className="min-h-dvh md:min-h-screen pb-[calc(env(safe-area-inset-bottom)+96px)] md:pb-8 space-y-4">
       <div className="max-w-2xl mx-auto md:border-x border-border min-h-dvh md:min-h-screen">
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border px-4 py-3">
+        <div className="sticky top-0 z-40 backdrop-blur bg-white/10 border-b border-white/10 px-4 py-3">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/feed')}
@@ -233,15 +233,13 @@ export default function ThreadView() {
         </div>
 
         {/* Reply composer */}
-        <div className="border-b border-aqua-border p-4">
-          <div data-ta="composer" className="skeuo-card p-3">
-            <ComposeBox 
-              onPost={handleNewReply} 
-              parentId={rootPost.id}
-              placeholder="Post your reply..."
-              compact
-            />
-          </div>
+        <div className="border-b border-aqua-border p-4 md:p-5">
+          <ComposeBox 
+            onPost={handleNewReply} 
+            parentId={rootPost.id}
+            placeholder="Post your reply..."
+            compact
+          />
         </div>
 
         {/* Replies Thread */}
@@ -257,6 +255,7 @@ export default function ThreadView() {
           </div>
         )}
       </div>
+      <div className="h-[88px] md:hidden" />
     </div>
   );
 }
