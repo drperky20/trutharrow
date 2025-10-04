@@ -233,7 +233,7 @@ export default function ThreadView() {
         </div>
 
         {/* Reply composer */}
-        <div className="border-b border-aqua-border p-4 md:p-5">
+        <div className="border-b border-white/20 p-4 md:p-5 bg-white/95">
           <ComposeBox 
             onPost={handleNewReply} 
             parentId={rootPost.id}
