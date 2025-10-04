@@ -48,6 +48,17 @@ All colors MUST be HSL.
     --glow-gold: 0 0 20px rgba(0, 150, 255, 0.4);
     --glow-tiger: 0 0 25px rgba(0, 150, 255, 0.5);
 
+    /* iOS Safe Area Support */
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+    /* Skeuomorphic DockBar tokens */
+    --skeuo-surface: #f6f7fb;
+    --skeuo-surface-dark: #0f0f0f;
+    --skeuo-gloss: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.1));
+    --skeuo-grad: linear-gradient(180deg, #ffffff, #e6e9f4 55%, #d4d8e8);
+    --skeuo-grad-dark: linear-gradient(180deg, #1a1a1a, #151515 55%, #121212);
+    --skeuo-edge: rgba(0,0,0,.25);
+
     /* Skeuomorphic Design Tokens */
     --shadow-light: 0 0% 100%;
     --shadow-dark: 211 40% 60%;
@@ -296,6 +307,66 @@ All colors MUST be HSL.
   /* Dynamic viewport height for mobile (accounts for keyboard) */
   .min-h-dvh {
     min-height: 100dvh;
+  }
+
+  /* DockBar bottom padding helper */
+  .ta-pb-dock {
+    padding-bottom: calc(88px + var(--safe-bottom));
+  }
+
+  @media (min-width: 768px) {
+    .ta-pb-dock {
+      padding-bottom: 0;
+    }
+  }
+
+  /* Skeuomorphic button styles for DockBar */
+  .skeuo-btn {
+    position: relative;
+    width: clamp(44px, 11vw, 56px);
+    height: clamp(44px, 11vw, 56px);
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    background: var(--skeuo-grad);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.9),
+      inset 0 -2px 6px rgba(0,0,0,.12),
+      0 8px 18px rgba(0,0,0,.25);
+  }
+
+  .dark .skeuo-btn {
+    background: var(--skeuo-grad-dark);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.08),
+      inset 0 -2px 6px rgba(0,0,0,.45),
+      0 12px 24px rgba(0,0,0,.6);
+  }
+
+  .skeuo-btn svg {
+    width: 1em;
+    height: 1em;
+    display: block;
+  }
+
+  .skeuo-rest:hover {
+    transform: translateY(-1px);
+  }
+
+  .skeuo-pressed,
+  .skeuo-rest:active {
+    transform: translateY(1px);
+    box-shadow:
+      inset 0 2px 6px rgba(0,0,0,.22),
+      0 4px 10px rgba(0,0,0,.18);
+  }
+
+  .dark .skeuo-pressed,
+  .dark .skeuo-rest:active {
+    box-shadow:
+      inset 0 2px 8px rgba(0,0,0,.6),
+      0 4px 10px rgba(0,0,0,.4);
   }
 }
 

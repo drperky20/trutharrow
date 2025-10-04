@@ -6,10 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { MobileBottomNav } from "./components/MobileBottomNav";
 import { RainbowBanner } from "./components/RainbowBanner";
 import { Footer } from "./components/Footer";
-import { AquaDock } from "./components/aqua/AquaDock";
+import DockBar from "./components/DockBar";
 import { SmartLogo } from "./components/SmartLogo";
 
 const Index = lazy(() => import("./pages/Index"));
@@ -60,7 +59,7 @@ const App = () => (
             <div className="min-h-screen bg-background text-foreground">
               <SmartLogo anchor="top-left" margin={16} />
               <RainbowBanner />
-              <div className="mobile-nav-padding">
+              <div className="ta-pb-dock">
                 <Suspense
                   fallback={
                     <div className="py-12 text-center text-sm text-muted-foreground">
@@ -93,8 +92,7 @@ const App = () => (
                 </Suspense>
                 <Footer />
               </div>
-              <MobileBottomNav />
-              <AquaDock />
+              <DockBar />
             </div>
           </AuthProvider>
         </BrowserRouter>
