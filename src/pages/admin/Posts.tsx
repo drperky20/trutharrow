@@ -152,6 +152,10 @@ export default function AdminPosts() {
                     src={img} 
                     alt="attachment" 
                     className="h-24 w-24 object-cover rounded border border-border"
+                    loading="lazy"
+                    decoding="async"
+                    width={96}
+                    height={96}
                   />
                 ))}
               </div>

@@ -243,6 +243,9 @@ export default function Receipts() {
                           src={ev.file}
                           alt={ev.title}
                           loading="lazy"
+                          decoding="async"
+                          width={400}
+                          height={192}
                           className="rounded-lg border border-border w-full mb-3 object-cover max-h-48"
                         />
                       )}

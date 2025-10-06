@@ -33,7 +33,17 @@ export const RainbowBanner = () => {
     return () => clearInterval(interval);
   }, [banners.length]);
   
-  if (banners.length === 0) return null;
+  // Always render container to prevent CLS, even when no banners
+  if (banners.length === 0) {
+    return (
+      <div className="rainbow-gradient relative border-y border-aqua-border h-10" 
+           style={{ contain: 'layout' }}
+           data-avoid="critical"
+           aria-hidden="true">
+        {/* Empty placeholder to maintain height */}
+      </div>
+    );
+  }
   
   const currentBanner = banners[currentIndex];
   
@@ -47,7 +57,7 @@ export const RainbowBanner = () => {
   );
   
   return (
-    <div className="rainbow-gradient relative border-y border-aqua-border" 
+    <div className="rainbow-gradient relative border-y border-aqua-border h-10" 
          style={{ contain: 'layout' }}
          data-avoid="critical">
       {currentBanner.url ? (

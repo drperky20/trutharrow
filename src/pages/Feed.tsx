@@ -7,17 +7,50 @@ import { PullToRefreshIndicator } from '@/components/PullToRefresh';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { supabase } from '@/integrations/supabase/client';
 import { AquaWindow } from '@/components/aqua/AquaWindow';
+import { usePostData } from '@/hooks/usePostData';
+import { useQuery } from '@tanstack/react-query';
 
 type FeedMode = 'for-you' | 'latest';
 
 export default function Feed() {
-  const [posts, setPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<FeedMode>('for-you');
+  
+  const { data: posts = [], isLoading: loading, refetch } = useQuery({
+    queryKey: ['feed-posts', mode],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('status', 'approved')
+        .is('parent_id', null)
+        .order('created_at', { ascending: false })
+        .limit(50);
+      
+      if (error) throw error;
+      
+      if (mode === 'for-you') {
+        // Hybrid ranking: engagement-weighted with time decay
+        const rankedPosts = data.map(post => {
+          const reactions = post.reactions as any;
+          const totalReactions = (reactions?.like || 0) + (reactions?.lol || 0) + (reactions?.angry || 0);
+          const hoursAgo = (Date.now() - new Date(post.created_at).getTime()) / (1000 * 60 * 60);
+          const score = totalReactions / Math.pow(hoursAgo + 2, 0.5);
+          return { ...post, score };
+        });
+        rankedPosts.sort((a, b) => b.score - a.score);
+        return rankedPosts;
+      }
+      
+      return data || [];
+    },
+    staleTime: 30 * 1000, // 30 seconds
+  });
+  
+  // Batch fetch post data for all posts
+  const postIds = posts.map(post => post.id);
+  const { data: postDataMap } = usePostData(postIds);
 
   useEffect(() => {
-    fetchPosts();
-
     const channel = supabase
       .channel('posts-feed')
       .on(
@@ -31,7 +64,7 @@ export default function Feed() {
         (payload) => {
           const newPost = payload.new;
           if (!newPost.parent_id) {
-            setPosts((curr) => [newPost, ...curr]);
+            refetch();
           }
         }
       )
@@ -47,14 +80,9 @@ export default function Feed() {
           const old = payload.old;
 
           if (updated.status === 'approved' && !updated.parent_id) {
-            setPosts((curr) => {
-              const exists = curr.find((p) => p.id === updated.id);
-              return exists
-                ? curr.map((p) => (p.id === updated.id ? updated : p))
-                : [updated, ...curr];
-            });
+            refetch();
           } else if (old.status === 'approved' && updated.status !== 'approved') {
-            setPosts((curr) => curr.filter((p) => p.id !== updated.id));
+            refetch();
           }
         }
       )
@@ -63,47 +91,15 @@ export default function Feed() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [mode]);
-
-  const fetchPosts = async () => {
-    setLoading(true);
-    
-    // Fetch only root posts (no parent_id)
-    const { data } = await supabase
-      .from('posts')
-      .select('*')
-      .eq('status', 'approved')
-      .is('parent_id', null)
-      .order('created_at', { ascending: false })
-      .limit(50);
-    
-    if (data) {
-      if (mode === 'for-you') {
-        // Hybrid ranking: engagement-weighted with time decay
-        const rankedPosts = data.map(post => {
-          const reactions = post.reactions as any;
-          const totalReactions = (reactions?.like || 0) + (reactions?.lol || 0) + (reactions?.angry || 0);
-          const hoursAgo = (Date.now() - new Date(post.created_at).getTime()) / (1000 * 60 * 60);
-          const score = totalReactions / Math.pow(hoursAgo + 2, 0.5);
-          return { ...post, score };
-        });
-        rankedPosts.sort((a, b) => b.score - a.score);
-        setPosts(rankedPosts);
-      } else {
-        setPosts(data);
-      }
-    }
-    
-    setLoading(false);
-  };
+  }, [refetch]);
 
   const handleNewPost = () => {
-    fetchPosts();
+    refetch();
   };
 
   const { isPulling, isRefreshing, pullDistance, shouldTrigger } = usePullToRefresh({
     onRefresh: async () => {
-      await fetchPosts();
+      await refetch();
     },
   });
 
@@ -120,6 +116,7 @@ export default function Feed() {
         <AquaWindow 
           title="Cafeteria" 
           className="min-h-dvh md:min-h-screen"
+          headingLevel="h1"
         >
           <div>
             <div className="px-4 py-3 border-b border-aqua-border bg-white/80">
@@ -161,7 +158,8 @@ export default function Feed() {
                   <PostCard 
                     key={post.id} 
                     post={post} 
-                    onDelete={() => setPosts(prev => prev.filter(p => p.id !== post.id))}
+                    postData={postDataMap?.get(post.id)}
+                    onDelete={() => refetch()}
                   />
                 ))}
               </div>

@@ -6,11 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { RainbowBanner } from "./components/RainbowBanner";
+import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import DockBar from "./components/DockBar";
-import { SmartLogo } from "./components/SmartLogo";
-import { FloatingProfileButton } from "./components/FloatingProfileButton";
 
 const Index = lazy(() => import("./pages/Index"));
 const Issues = lazy(() => import("./pages/Issues"));
@@ -58,9 +56,7 @@ const App = () => (
         >
           <AuthProvider>
             <div className="min-h-screen bg-background text-foreground">
-              <SmartLogo anchor="top-left" margin={16} />
-              <RainbowBanner />
-              <FloatingProfileButton />
+              <Header />
               <div className="ta-pb-dock">
                 <Suspense
                   fallback={

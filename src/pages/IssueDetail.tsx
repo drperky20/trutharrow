@@ -129,6 +129,10 @@ export default function IssueDetail() {
                           src={ev.file}
                           alt={ev.title}
                           className="rounded border border-border w-full max-w-2xl mt-3"
+                          loading="lazy"
+                          decoding="async"
+                          width={800}
+                          height={600}
                         />
                       )}
                     </div>

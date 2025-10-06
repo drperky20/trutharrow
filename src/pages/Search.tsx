@@ -5,32 +5,73 @@ import { Search as SearchIcon } from 'lucide-react';
 import { IssueCard } from '@/components/IssueCard';
 import { PostCard } from '@/components/PostCard';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
+import { usePostData } from '@/hooks/usePostData';
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') || '');
   const [activeTab, setActiveTab] = useState<'all' | 'issues' | 'posts' | 'evidence'>('all');
-  const [issues, setIssues] = useState<any[]>([]);
-  const [posts, setPosts] = useState<any[]>([]);
-  const [evidence, setEvidence] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-  
-  const fetchData = async () => {
-    const [issuesData, postsData, evidenceData] = await Promise.all([
-      supabase.from('issues').select('*'),
-      supabase.from('posts').select('*, profiles(alias)').eq('status', 'approved'),
-      supabase.from('evidence').select('*'),
-    ]);
+  // Server-side search queries
+  const { data: issues = [], isLoading: issuesLoading } = useQuery({
+    queryKey: ['search-issues', query],
+    queryFn: async () => {
+      if (!query.trim()) return [];
+      
+      const { data, error } = await supabase
+        .from('issues')
+        .select('*')
+        .or(`title.ilike.%${query}%,summary.ilike.%${query}%`)
+        .limit(20);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!query.trim(),
+    staleTime: 30 * 1000,
+  });
 
-    setIssues(issuesData.data || []);
-    setPosts(postsData.data || []);
-    setEvidence(evidenceData.data || []);
-    setLoading(false);
-  };
+  const { data: posts = [], isLoading: postsLoading } = useQuery({
+    queryKey: ['search-posts', query],
+    queryFn: async () => {
+      if (!query.trim()) return [];
+      
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*, profiles(alias)')
+        .eq('status', 'approved')
+        .ilike('content', `%${query}%`)
+        .limit(20);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!query.trim(),
+    staleTime: 30 * 1000,
+  });
+
+  const { data: evidence = [], isLoading: evidenceLoading } = useQuery({
+    queryKey: ['search-evidence', query],
+    queryFn: async () => {
+      if (!query.trim()) return [];
+      
+      const { data, error } = await supabase
+        .from('evidence')
+        .select('*')
+        .or(`title.ilike.%${query}%,caption.ilike.%${query}%`)
+        .limit(20);
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!query.trim(),
+    staleTime: 30 * 1000,
+  });
+
+  // Batch fetch post data for posts
+  const postIds = posts.map(post => post.id);
+  const { data: postDataMap } = usePostData(postIds);
   
   useEffect(() => {
     if (query) {
@@ -38,33 +79,8 @@ export default function Search() {
     }
   }, [query, setSearchParams]);
   
-  const searchQuery = query.toLowerCase();
-  
-  const matchedIssues = issues.filter(
-    i => i.title.toLowerCase().includes(searchQuery) || 
-         i.summary.toLowerCase().includes(searchQuery) ||
-         (i.tags && i.tags.some((t: string) => t.toLowerCase().includes(searchQuery)))
-  );
-  
-  const matchedPosts = posts.filter(
-    p => p.content.toLowerCase().includes(searchQuery) ||
-         p.type.toLowerCase().includes(searchQuery)
-  );
-  
-  const matchedEvidence = evidence.filter(
-    e => e.title.toLowerCase().includes(searchQuery) ||
-         e.caption.toLowerCase().includes(searchQuery)
-  );
-  
-  const hasResults = matchedIssues.length > 0 || matchedPosts.length > 0 || matchedEvidence.length > 0;
-
-  if (loading) {
-    return (
-      <div className="container px-4 py-12">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
+  const hasResults = issues.length > 0 || posts.length > 0 || evidence.length > 0;
+  const loading = issuesLoading || postsLoading || evidenceLoading;
   
   return (
     <div className="container px-4 py-12">
@@ -107,7 +123,7 @@ export default function Search() {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Issues ({matchedIssues.length})
+              Issues ({issues.length})
               {activeTab === 'issues' && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
               )}
@@ -120,7 +136,7 @@ export default function Search() {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Posts ({matchedPosts.length})
+              Posts ({posts.length})
               {activeTab === 'posts' && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
               )}
@@ -133,7 +149,7 @@ export default function Search() {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Evidence ({matchedEvidence.length})
+              Evidence ({evidence.length})
               {activeTab === 'evidence' && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
               )}
@@ -141,39 +157,49 @@ export default function Search() {
           </div>
           
           {/* Results */}
-          {!hasResults && (
+          {loading && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Searching...</p>
+            </div>
+          )}
+          
+          {!loading && !hasResults && query && (
             <div className="text-center py-12">
               <p className="text-muted-foreground">No results found for "{query}"</p>
             </div>
           )}
           
-          {(activeTab === 'all' || activeTab === 'issues') && matchedIssues.length > 0 && (
+          {!loading && (activeTab === 'all' || activeTab === 'issues') && issues.length > 0 && (
             <section className="mb-12">
               {activeTab === 'all' && <h2 className="text-2xl font-black mb-4">Issues</h2>}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {matchedIssues.map(issue => (
+                {issues.map(issue => (
                   <IssueCard key={issue.id} issue={issue} />
                 ))}
               </div>
             </section>
           )}
           
-          {(activeTab === 'all' || activeTab === 'posts') && matchedPosts.length > 0 && (
+          {!loading && (activeTab === 'all' || activeTab === 'posts') && posts.length > 0 && (
             <section className="mb-12">
               {activeTab === 'all' && <h2 className="text-2xl font-black mb-4">Posts</h2>}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {matchedPosts.map(post => (
-                  <PostCard key={post.id} post={post} />
+                {posts.map(post => (
+                  <PostCard 
+                    key={post.id} 
+                    post={post} 
+                    postData={postDataMap?.get(post.id)}
+                  />
                 ))}
               </div>
             </section>
           )}
           
-          {(activeTab === 'all' || activeTab === 'evidence') && matchedEvidence.length > 0 && (
+          {!loading && (activeTab === 'all' || activeTab === 'evidence') && evidence.length > 0 && (
             <section>
               {activeTab === 'all' && <h2 className="text-2xl font-black mb-4">Evidence</h2>}
               <div className="space-y-4">
-                {matchedEvidence.map(ev => (
+                {evidence.map(ev => (
                   <div
                     key={ev.id}
                     className="bg-card border border-border rounded-lg p-5"

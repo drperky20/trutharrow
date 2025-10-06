@@ -9,19 +9,22 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getFingerprint } from '@/lib/fingerprint';
+import { PostData } from '@/hooks/usePostData';
 interface PostCardProps {
   post: any;
   isNew?: boolean;
   showReplyLine?: boolean;
   level?: number;
   onDelete?: () => void;
+  postData?: PostData;
 }
 export const PostCard = ({
   post,
   isNew = false,
   showReplyLine = false,
   level = 0,
-  onDelete
+  onDelete,
+  postData
 }: PostCardProps) => {
   const navigate = useNavigate();
   const {
@@ -38,12 +41,21 @@ export const PostCard = ({
   });
   const [reacting, setReacting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  // Use batched data if available, otherwise fallback to individual queries
   const [userReactions, setUserReactions] = useState<Set<string>>(new Set());
   const [isPostAuthorAdmin, setIsPostAuthorAdmin] = useState(false);
+  
   useEffect(() => {
-    checkUserReactions();
-    checkIfAuthorIsAdmin();
-  }, [post.id, user]);
+    if (postData) {
+      setUserReactions(postData.userReactions);
+      setIsPostAuthorAdmin(postData.isAuthorAdmin);
+    } else {
+      // Fallback to individual queries if no batched data
+      checkUserReactions();
+      checkIfAuthorIsAdmin();
+    }
+  }, [post.id, user, postData]);
+  
   const checkUserReactions = async () => {
     const fingerprint = getFingerprint();
     const {
@@ -53,6 +65,7 @@ export const PostCard = ({
       setUserReactions(new Set(data.map(r => r.reaction_type)));
     }
   };
+  
   const checkIfAuthorIsAdmin = async () => {
     if (!post.user_id) {
       setIsPostAuthorAdmin(false);
@@ -200,7 +213,18 @@ export const PostCard = ({
             </div>
             
             {post.images && post.images.length > 0 && <div className="mb-3 rounded-xl overflow-hidden border border-border">
-                {post.images.map((img: string, idx: number) => <img key={idx} src={img} alt="Post attachment" className="w-full object-cover max-h-96" />)}
+                {post.images.map((img: string, idx: number) => (
+                  <img 
+                    key={idx} 
+                    src={img} 
+                    alt="Post attachment" 
+                    className="w-full object-cover max-h-96" 
+                    loading="lazy"
+                    decoding="async"
+                    width={800}
+                    height={600}
+                  />
+                ))}
               </div>}
             
             {/* Actions */}

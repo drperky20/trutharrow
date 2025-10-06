@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { IssueCard } from '@/components/IssueCard';
 import { IssueCardSkeletonList } from '@/components/IssueCardSkeleton';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { PullToRefreshIndicator } from '@/components/PullToRefresh';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
 
 type SortMode = 'updated' | 'grade';
 
@@ -15,21 +16,19 @@ export default function Issues() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [sortMode, setSortMode] = useState<SortMode>('updated');
-  const [issues, setIssues] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchIssues();
-  }, []);
-
-  const fetchIssues = async () => {
-    const { data } = await supabase
-      .from('issues')
-      .select('*')
-      .order('last_updated', { ascending: false });
-    setIssues(data || []);
-    setLoading(false);
-  };
+  const { data: issues = [], isLoading: loading, refetch } = useQuery({
+    queryKey: ['issues'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('issues')
+        .select('*')
+        .order('last_updated', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
   
   const allTags = Array.from(new Set(issues.flatMap(i => i.tags || [])));
   
@@ -53,7 +52,7 @@ export default function Issues() {
 
   const { isPulling, isRefreshing, pullDistance, shouldTrigger } = usePullToRefresh({
     onRefresh: async () => {
-      await fetchIssues();
+      await refetch();
     },
   });
   

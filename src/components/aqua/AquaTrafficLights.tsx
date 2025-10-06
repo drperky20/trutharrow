@@ -9,7 +9,6 @@ export const AquaTrafficLights: FC<{className?: string}> = ({ className }) => (
     ].map((b,i)=>(
       <span
         key={i}
-        aria-label={b.label}
         aria-hidden="true"
         className="relative inline-block h-3.5 w-3.5 rounded-full"
         style={{ 
