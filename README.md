@@ -32,7 +32,11 @@ cd <YOUR_PROJECT_NAME>
 # Step 3: Install the necessary dependencies.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Set up environment variables.
+cp .env.example .env
+# Edit .env and add your Supabase credentials
+
+# Step 5: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
 
@@ -59,6 +63,24 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+
+## Environment Setup
+
+This project requires Supabase configuration. Follow these steps:
+
+1. Copy `.env.example` to `.env`:
+   ```sh
+   cp .env.example .env
+   ```
+
+2. Get your Supabase credentials from your [Supabase project dashboard](https://app.supabase.com)
+
+3. Fill in the values in `.env`:
+   - `VITE_SUPABASE_PROJECT_ID`: Your Supabase project ID
+   - `VITE_SUPABASE_PUBLISHABLE_KEY`: Your Supabase anon/public key
+   - `VITE_SUPABASE_URL`: Your Supabase project URL
+
+**Important**: Never commit `.env` to git. It's already in `.gitignore`.
 
 ## How can I deploy this project?
 
